@@ -1,4 +1,8 @@
-<!DOCTYPE html>  <html lang="en">  
+<!-- =========================  
+FILE : admin-pyq.html  
+STRICT FINAL RULES COMPATIBLE VERSION  
+AUTO LOGIN + PDF + QUESTION + BULK + DELETE  
+========================= -->  <!DOCTYPE html>  <html lang="en">  
 <head>  
 <meta charset="UTF-8">  
 <meta name="viewport" content="width=device-width,initial-scale=1.0">  
@@ -284,7 +288,7 @@ window.extractPdf = async function(){
   
 if(!auth.currentUser) return alert("Admin not logged in");  
   
-const file = document.getElementById("pdfFile").files;  
+const file = document.getElementById("pdfFile").files[0];  
   
 if(!file) return alert("Choose PDF/Image");  
   
@@ -329,62 +333,80 @@ status("OCR Failed","red");
 }  
   
 };  
-
-window.bulkSave = async function () {
-  if (!auth.currentUser) return alert("Admin not logged in");
-  const category = val("category");
-  const post = val("post");
-  const bulk = val("bulk");
-  if (!category || !post || !bulk) return alert("Select category/post and paste data");
-
-  try {
-    status("Uploading Bulk...", "blue");
-    // Extra spaces aur lines hatakar blocks banana
-    let blocks = bulk.trim().split(/\n\s*\n/);
-
-    for (let block of blocks) {
-      let lines = block.split("\n").map(x => x.trim()).filter(Boolean);
-      // Agar 6 line se kam hai toh skip karega taaki crash na ho
-      if (lines.length < 6) continue;
-
-      let question = lines.replace(/^\d+[\.\)\-\s]*/, "");
-      let a = lines.replace(/^[a-dA-D][\.\)\-\s]*/i, "").trim();
-      let b = lines.replace(/^[a-dA-D][\.\)\-\s]*/i, "").trim();
-      let c = lines.replace(/^[a-dA-D][\.\)\-\s]*/i, "").trim();
-      let d = lines.replace(/^[a-dA-D][\.\)\-\s]*/i, "").trim();
-
-      // Answer nikalne ka sabse simple aur safe tarika
-      let ansLine = lines.toUpperCase();
-      let ansChar = "A"; // Default
-      if (ansLine.includes("B")) ansChar = "B";
-      if (ansLine.includes("C")) ansChar = "C";
-      if (ansLine.includes("D")) ansChar = "D";
-
-      let finalAnswer = a;
-      if (ansChar === "B") finalAnswer = b;
-      if (ansChar === "C") finalAnswer = c;
-      if (ansChar === "D") finalAnswer = d;
-
-      // Database Save
-      await addDoc(collection(db, "pyqQuestions"), {
-        category: esc(category),
-        post: esc(post),
-        question: esc(question),
-        options: [esc(a), esc(b), esc(c), esc(d)],
-        answer: esc(finalAnswer),
-        createdAt: serverTimestamp()
-      });
-    }
-
-    document.getElementById("bulk").value = "";
-    status("Bulk Upload Successful ✅");
-    loadAll();
-  } catch (err) {
-    console.log(err);
-    status("Bulk Upload Failed ❌", "red");
-  }
-};
-
+window.bulkSave = async function () {  
+  
+if (!auth.currentUser) return alert("Admin not logged in");  
+  
+const category = val("category");  
+const post = val("post");  
+const bulk = val("bulk");  
+  
+if (!category || !post || !bulk) {  
+return alert("Select category/post and paste data");  
+}  
+  
+try {  
+  
+status("Uploading Bulk...", "blue");  
+  
+/* Split by blank lines = each question block */  
+let blocks = bulk.split(/\n\s*\n/);  
+  
+for (let block of blocks) {  
+  
+let lines = block  
+.split("\n")  
+.map(x => x.trim())  
+.filter(Boolean);  
+  
+if (lines.length < 6) continue;  
+  
+/* STRICT FORMAT PARSER */  
+let question = lines[0];  
+  
+let a = lines[1].replace(/^A\)\s*/i, "").trim();  
+let b = lines[2].replace(/^B\)\s*/i, "").trim();  
+let c = lines[3].replace(/^C\)\s*/i, "").trim();  
+let d = lines[4].replace(/^D\)\s*/i, "").trim();  
+  
+let ansLine = lines[5].toUpperCase();  
+  
+/* extract A/B/C/D */  
+let ans = ansLine.match(/[ABCD]/)?.[0] || "";  
+  
+/* skip invalid */  
+if (!question || !a || !b || !c || !d || !ans) {  
+console.log("SKIPPED:", block);  
+continue;  
+}  
+  
+let answer = a;  
+if (ans === "B") answer = b;  
+if (ans === "C") answer = c;  
+if (ans === "D") answer = d;  
+  
+await addDoc(collection(db, "pyqQuestions"), {  
+category: esc(category),  
+post: esc(post),  
+question: esc(question),  
+options: [esc(a), esc(b), esc(c), esc(d)],  
+answer: esc(answer),  
+createdAt: serverTimestamp()  
+});  
+  
+}  
+  
+document.getElementById("bulk").value = "";  
+status("Bulk Upload Successful");  
+  
+loadAll();  
+  
+} catch (err) {  
+console.log(err);  
+status("Bulk Upload Failed", "red");  
+}  
+  
+};  
     
 /* LOAD ALL */  
 async function loadAll(){  
@@ -453,10 +475,10 @@ ${safe(d.category)} | ${safe(d.post)}
 </div>  
   
 <div class="small" style="margin-top:10px;line-height:1.8;font-size:15px">  
-A. ${safe(d.options)}<br>  
-B. ${safe(d.options)}<br>  
-C. ${safe(d.options)}<br>  
-D. ${safe(d.options)}  
+A. ${safe(d.options[0])}<br>  
+B. ${safe(d.options[1])}<br>  
+C. ${safe(d.options[2])}<br>  
+D. ${safe(d.options[3])}  
 </div>  
   
 <div class="small" style="margin-top:10px;font-weight:bold;color:green;font-size:15px;">  
