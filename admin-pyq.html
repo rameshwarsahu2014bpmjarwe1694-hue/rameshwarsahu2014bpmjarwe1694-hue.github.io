@@ -335,84 +335,78 @@ status("OCR Failed","red");
 }  
   
 };  
-window.bulkSave = async function () {  
-  
-if (!auth.currentUser) return alert("Admin not logged in");  
-  
-const category = val("category");  
-const post = val("post");  
-const bulk = val("bulk");  
-  
-if (!category || !post || !bulk) {  
-return alert("Select category/post and paste data");  
-}  
-  
-try {  
-  
-status("Uploading Bulk...", "blue");  
-  
-/* Split by blank lines = each question block */  
-let blocks = bulk.split(/\n\s*\n/);  
-  
-for (let block of blocks) {  
-  
-let lines = block  
-.split("\n")  
-.map(x => x.trim())  
-.filter(Boolean);  
-  
-if (lines.length < 6) continue;  
-  
-/* STRICT FORMAT PARSER */  
-let question = lines[0];  
-  
-let a = lines[1].replace(/^A\)\s*/i, "").trim();  
-let b = lines[2].replace(/^B\)\s*/i, "").trim();  
-let c = lines[3].replace(/^C\)\s*/i, "").trim();  
-let d = lines[4].replace(/^D\)\s*/i, "").trim();  
-  
-/* --- Purana Logic --- */
-let ans = ansLine.match(/[ABCD]/)?. || "";
+window.bulkSave = async function () {
+  if (!auth.currentUser) return alert("Admin not logged in");
 
-/* --- Naya aur Behtar Logic --- */
-// 1. Match ko case-insensitive banayein (i flag) aur trim karein
-let match = ansLine.match(/ANSWER:\s*([A-D])/i); 
-let ans = match ? match.toUpperCase() : "";
+  const category = val("category");
+  const post = val("post");
+  const bulk = val("bulk");
 
-if (!question || !a || !b || !c || !d || !ans) {
-    console.log("SKIPPED (Missing Data):", block);
-    continue;
-}
+  if (!category || !post || !bulk) {
+    return alert("Category, Post aur Data fill karein");
+  }
 
-let answer = "";
-if (ans === "A") answer = a;
-else if (ans === "B") answer = b;
-else if (ans === "C") answer = c;
-else if (ans === "D") answer = d;
+  try {
+    status("Uploading Bulk...", "blue");
 
-  
-await addDoc(collection(db, "pyqQuestions"), {  
-category: esc(category),  
-post: esc(post),  
-question: esc(question),  
-options: [esc(a), esc(b), esc(c), esc(d)],  
-answer: esc(answer),  
-createdAt: serverTimestamp()  
-});  
-  
-}  
-  
-document.getElementById("bulk").value = "";  
-status("Bulk Upload Successful");  
-  
-loadAll();  
-  
-} catch (err) {  
-console.log(err);  
-status("Bulk Upload Failed", "red");  
-}  
-  
-};  
+    // Question blocks ko split karna (Double line break se)
+    let blocks = bulk.trim().split(/\n\s*\n/);
+
+    for (let block of blocks) {
+      let lines = block.split("\n").map(x => x.trim()).filter(Boolean);
+
+      // Kam se kam 6 lines honi chahiye (1 Question + 4 Options + 1 Answer)
+      if (lines.length < 6) {
+        console.warn("Skipping invalid block (too short):", block);
+        continue;
+      }
+
+      let question = lines;
+
+      // Sabhi common formats ko handle karne ke liye (A), A), A.)
+      let a = lines.replace(/^[\(\[]?A[\)\]\.\s]+/i, "").trim();
+      let b = lines.replace(/^[\(\[]?B[\)\]\.\s]+/i, "").trim();
+      let c = lines.replace(/^[\(\[]?C[\)\]\.\s]+/i, "").trim();
+      let d = lines.replace(/^[\(\[]?D[\)\]\.\s]+/i, "").trim();
+
+      // Answer line se sirf A, B, C, ya D nikalna
+      let ansLine = lines.toUpperCase();
+      let match = ansLine.match(/ANS[WER]*[:\s]*([A-D])/i);
+      let ansChar = match ? match.toUpperCase() : "";
+
+      if (!question || !a || !b || !c || !d || !ansChar) {
+        console.error("Parsing failed for block:", block);
+        continue;
+      }
+
+      // Sahi text value assign karna
+      let correctText = "";
+      if (ansChar === "A") correctText = a;
+      else if (ansChar === "B") correctText = b;
+      else if (ansChar === "C") correctText = c;
+      else if (ansChar === "D") correctText = d;
+
+      // Firebase mein save karna
+      await addDoc(collection(db, "pyqQuestions"), {
+        category: esc(category),
+        post: esc(post),
+        question: esc(question),
+        options: [esc(a), esc(b), esc(c), esc(d)],
+        answer: esc(correctText),
+        createdAt: serverTimestamp()
+      });
+    }
+
+    document.getElementById("bulk").value = "";
+    status("Bulk Upload Successful ✅");
+    loadAll();
+
+  } catch (err) {
+    console.error("Bulk Upload Error:", err);
+    status("Upload Failed ❌", "red");
+  }
+};
+
     
 /* LOAD ALL */  
 async function loadAll(){  
