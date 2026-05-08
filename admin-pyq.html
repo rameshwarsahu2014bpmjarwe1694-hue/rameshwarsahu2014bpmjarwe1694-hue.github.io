@@ -395,7 +395,7 @@ if (!auth.currentUser) return alert("Admin not logged in");
 const category = val("category");
 const post = val("post");
 const bulk = val("bulk");
-
+const ans=val("ans");
 if (!category || !post || !bulk) {
 return alert("Select category/post and paste data");
 }
@@ -424,7 +424,7 @@ let b = lines[2].replace(/^B\)\s*/i, "").trim();
 let c = lines[3].replace(/^C\)\s*/i, "").trim();
 let d = lines[4].replace(/^D\)\s*/i, "").trim();
 
-let ansLine = lines[5].toUpperCase();
+let ansLine = lines[5];
 
 /* extract A/B/C/D */
 let ans = ansLine.match(/[ABCD]/)?.[0] || "";
