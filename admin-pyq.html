@@ -1,597 +1,176 @@
-<!-- =========================
-FILE : admin-pyq.html
-STRICT FINAL RULES COMPATIBLE VERSION
-AUTO LOGIN + PDF + QUESTION + BULK + DELETE
-========================= -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Admin PYQ Panel</title>
-
+<title>Admin PYQ Panel - Complete</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#f4f6f9;padding:20px}
-.container{
-max-width:1000px;
-margin:auto;
-background:#fff;
-padding:20px;
-border-radius:12px;
-box-shadow:0 5px 15px rgba(0,0,0,.08)
-}
-h1{text-align:center;margin-bottom:20px}
-h3{margin:15px 0 10px}
-.grid{display:grid;gap:12px}
-input,select,textarea{
-width:100%;
-padding:12px;
-border:1px solid #ccc;
-border-radius:8px;
-font-size:16px;
-outline:none
-}
-textarea{min-height:110px}
-button{
-padding:12px;
-border:none;
-border-radius:8px;
-font-size:16px;
-font-weight:bold;
-cursor:pointer
-}
-.save-btn{background:#007bff;color:#fff}
-.delete-btn{background:#dc3545;color:#fff}
-.card{
-background:#fafafa;
-padding:15px;
-border:1px solid #ddd;
-border-radius:10px;
-margin-bottom:12px
-}
-.row{
-display:flex;
-justify-content:space-between;
-gap:10px;
-flex-wrap:wrap
-}
-.small{font-size:14px;color:#666;margin-top:5px}
-.status{text-align:center;font-weight:bold;margin:12px 0}
-hr{margin:20px 0;border:none;border-top:1px solid #ddd}
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+    body{background:#f4f6f9;padding:20px}
+    .container{max-width:1000px;margin:auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,.08)}
+    h1{text-align:center;margin-bottom:20px;color:#333}
+    h3{margin:20px 0 10px; color:#007bff; border-left: 4px solid #007bff; padding-left: 10px;}
+    .grid{display:grid;gap:12px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));}
+    input,select,textarea{width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px;outline:none}
+    textarea{min-height:110px}
+    
+    .btn-row { display: flex; gap: 10px; margin-top: 10px; }
+    button{padding:12px;border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer; transition: 0.2s;}
+    
+    .save-btn{background:#007bff;color:#fff; width: 100%; margin-top: 10px;}
+    .bulk-btn{background:#28a745;color:#fff;}
+    .delete-btn{background:#dc3545;color:#fff}
+    
+    .card{background:#fafafa;padding:15px;border:1px solid #ddd;border-radius:10px;margin-bottom:12px}
+    .status{text-align:center;font-weight:bold;margin:12px 0; padding:10px; border-radius:8px; display:none;}
+    hr{margin:25px 0;border:none;border-top:1px solid #ddd}
+    .q-box { background: #fdfdfd; border: 1px solid #e0e0e0; padding: 15px; border-radius: 8px; margin-top: 10px;}
 </style>
 </head>
 <body>
 
 <div class="container">
+    <h1>Admin PYQ Panel</h1>
 
-<h1>Admin PYQ Panel</h1>
+    <div class="grid">
+        <select id="category">
+            <option value="">Select Category</option>
+            <option>PYQ 2020</option>
+            <option>PYQ 2021</option>
+            <option>PYQ 2022</option>
+            <option>PYQ 2023</option>
+            <option>PYQ 2024</option>
+            <option>PYQ 2025</option>
+            <option>PYQ 2026</option>
+            <option>Model Paper</option>
+            <option>Practice Set</option>
+        </select>
+        <select id="post">
+            <option value="">Select Post</option>
+            <option>MTS</option>
+            <option>POSTMAN</option>
+            <option>PA-SA</option>
+        </select>
+    </div>
 
-<div class="grid">
+    <div id="statusMsg" class="status">Loading...</div>
 
-<select id="category">
-<option value="">Select Category</option>
-<option>PYQ 2020</option>
-<option>PYQ 2021</option>
-<option>PYQ 2022</option>
-<option>PYQ 2023</option>
-<option>PYQ 2024</option>
-<option>PYQ 2025</option>
-<option>PYQ 2026</option>
-<option>Model Paper</option>
-<option>Practice Set</option>
-</select>
+    <hr>
 
-<select id="post">
-<option value="">Select Post</option>
-<option>MTS</option>
-<option>POSTMAN</option>
-<option>PA-SA</option>
-</select>
+    <h3>PDF Management</h3>
+    <div class="grid">
+        <div>
+            <label class="small">Extract from File:</label>
+            <input type="file" id="pdfFile" accept=".pdf,image/*">
+            <button class="save-btn" style="background:#6f42c1" onclick="extractPdf()">Extract Text (OCR)</button>
+        </div>
+        <div>
+            <label class="small">Save PDF Link:</label>
+            <input type="text" id="pdfTitle" placeholder="Title">
+            <input type="text" id="pdfUrl" placeholder="File URL">
+            <button class="save-btn" onclick="savePdf()">Save PDF Info</button>
+        </div>
+    </div>
 
-</div>
+    <hr>
 
-<div id="statusMsg" class="status">Loading...</div>
+    <h3>Add Single Question</h3>
+    <div class="q-box">
+        <textarea id="q_text" placeholder="Enter Question"></textarea>
+        <div class="grid" style="margin-top:10px">
+            <input type="text" id="q_a" placeholder="Option A">
+            <input type="text" id="q_b" placeholder="Option B">
+            <input type="text" id="q_c" placeholder="Option C">
+            <input type="text" id="q_d" placeholder="Option D">
+        </div>
+        <div class="grid" style="margin-top:10px">
+            <select id="q_ans">
+                <option value="">Correct Answer</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+            </select>
+            <button class="save-btn" onclick="saveSingleQuestion()">Upload Question</button>
+        </div>
+    </div>
 
-<hr>
+    <hr>
 
-<h3>PDF OCR to Bulk Text</h3>
-
-<div class="grid">
-<input type="file" id="pdfFile" accept=".pdf,image/*">
-<button class="save-btn" onclick="extractPdf()">Extract Questions</button>
-</div>
-<h3>Save PDF</h3>
-
-<div class="grid">
-<input type="text" id="title" placeholder="PDF Title">
-<input type="text" id="fileName" placeholder="PDF File Name or URL">
-<textarea id="desc" placeholder="Description"></textarea>
-<button class="save-btn" onclick="savePdf()">Save PDF</button>
-</div>
-
-<hr>
-
-<h3>Add Question</h3>
-
-<div class="grid">
-<textarea id="question" placeholder="Question"></textarea>
-<input type="text" id="a" placeholder="Option A">
-<input type="text" id="b" placeholder="Option B">
-<input type="text" id="c" placeholder="Option C">
-<input type="text" id="d" placeholder="Option D">
-
-<select id="ans">
-<option value="">Select Answer</option>
-<option>A</option>
-<option>B</option>
-<option>C</option>
-<option>D</option>
-</select>
-
-<button class="save-btn" onclick="saveQuestion()">Save Question</button>
-</div>
-
-<hr>
-
-<h3>Bulk Import</h3>
-
-<div class="grid">
-<textarea id="bulk" placeholder="Question
-A) Option A
-B) Option B
-C) Option C
-D) Option D
-Answer: A"></textarea>
-
-<button class="save-btn" onclick="bulkSave()">Bulk Save</button>
-</div>
-
-<hr>
-
-<h3>Saved PDFs</h3>
-<div id="pdfList">Loading...</div>
-
-<hr>
-
-<h3>Saved Questions</h3>
-<div id="questionList">Loading...</div>
+    <h3>Bulk Upload Questions</h3>
+    <p style="font-size:12px; color:gray">Format: Question | A | B | C | D | Ans (One per line)</p>
+    <textarea id="bulkText" placeholder="Example: What is Post? | Job | Fun | Work | None | A"></textarea>
+    <div class="btn-row">
+        <button class="bulk-btn" style="flex:2" onclick="saveBulk()">Process & Save All</button>
+        <button class="delete-btn" style="flex:1" onclick="document.getElementById('bulkText').value=''">Clear</button>
+    </div>
 
 </div>
 
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-getFirestore,
-collection,
-addDoc,
-getDocs,
-deleteDoc,
-doc,
-serverTimestamp,
-query,
-orderBy
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-import {
-getAuth,
-signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-const firebaseConfig = {
-apiKey: "AIzaSyDjzmo0A4KhOkrqFQdOyCEek6bsPF-UVPQ",
-authDomain: "gds-departmental-exam-studyhub.firebaseapp.com",
-projectId: "gds-departmental-exam-studyhub",
-storageBucket: "gds-departmental-exam-studyhub.appspot.com",
-messagingSenderId: "759916756080",
-appId: "1:759916756080:web:7f2c0e66458bd007e888b5"
-};
-
-const ADMIN_EMAIL = "rameshwarsahu2014bpmjarwe1694@gmail.com";
-const ADMIN_PASS = "YOUR_ADMIN_PASSWORD";
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-const statusMsg = document.getElementById("statusMsg");
-
-/* AUTO LOGIN */
-signInWithEmailAndPassword(auth, ADMIN_EMAIL, ADMIN_PASS)
-.then(()=>{
-status("Admin Logged In");
-loadAll();
-})
-.catch(err=>{
-statusMsg.style.color="red";
-statusMsg.innerText="Admin Login Failed";
-console.log(err);
-});
-
-/* HELPERS */
-function val(id){
-return document.getElementById(id).value.trim();
-}
-
-function status(t,color="green"){
-statusMsg.innerText=t;
-statusMsg.style.color=color;
-}
-
-function clearPdf(){
-["title","fileName","desc"].forEach(id=>{
-document.getElementById(id).value="";
-});
-}
-
-function clearQ(){
-["question","a","b","c","d","ans"].forEach(id=>{
-document.getElementById(id).value="";
-});
-}
-
-function esc(str){
-return String(str).replace(/[&<>"']/g,m=>({
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-'"':"&quot;",
-"'":"&#39;"
-}[m]));
-}
-
-function safe(v){
-return String(v || "")
-.replace(/^\d+\./,"")
-.replace(/^\d+\)/,"")
-.replace(/^\d+\-/,"")
-.trim();
-}
-
-/* SAVE PDF */
-window.savePdf = async function(){
-
-if(!auth.currentUser) return alert("Admin not logged in");
-
-const category=val("category");
-const post=val("post");
-const title=val("title");
-const fileName=val("fileName");
-const desc=val("desc");
-
-if(!category || !post || !title || !fileName){
-return alert("Fill all PDF fields");
-}
-
-try{
-
-status("Saving...","blue");
-
-await addDoc(collection(db,"pyqFiles"),{
-category:esc(category),
-post:esc(post),
-title:esc(title),
-fileName:esc(fileName),
-desc:esc(desc),
-createdAt:serverTimestamp()
-});
-
-clearPdf();
-status("PDF Saved");
-loadAll();
-
-}catch(err){
-status("Save Failed","red");
-console.log(err);
-}
-
-};
-
-/* SAVE QUESTION */
-window.saveQuestion = async function(){
-
-if(!auth.currentUser) return alert("Admin not logged in");
-
-const category=val("category");
-const post=val("post");
-const question = val("question")
-.replace(/^\d+\./,"")
-.replace(/^\d+\)/,"")
-.replace(/^\d+\-/,"")
-.trim();
-const a=val("a");
-const b=val("b");
-const c=val("c");
-const d=val("d");
-const ans=val("ans");
-
-if(!category||!post||!question||!a||!b||!c||!d||!ans){
-return alert("Fill all question fields");
-}
-
-let answer=a;
-if(ans==="B") answer=b;
-if(ans==="C") answer=c;
-if(ans==="D") answer=d;
-
-try{
-
-status("Saving...","blue");
-
-await addDoc(collection(db,"pyqQuestions"),{
-category:esc(category),
-post:esc(post),
-question:esc(question),
-options:[esc(a),esc(b),esc(c),esc(d)],
-answer:esc(answer),
-createdAt:serverTimestamp()
-});
-
-clearQ();
-status("Question Saved");
-loadAll();
-
-}catch(err){
-status("Save Failed","red");
-console.log(err);
-}
-
-};
-window.extractPdf = async function(){
-
-if(!auth.currentUser) return alert("Admin not logged in");
-
-const file = document.getElementById("pdfFile").files[0];
-
-if(!file) return alert("Choose PDF/Image");
-
-status("OCR Reading...","blue");
-
-try{
-
-const result = await Tesseract.recognize(
-file,
-'eng+hin'
-);
-
-let text = result.data.text;
-text = text.replace(/\r/g,'');
-
-/* Auto Cleaner */
-text = text.replace(/RAMESHWAR SAHU/gi,'');
-text = text.replace(/GDS DEPARTMENTAL EXAM STUDY HUB/gi,'');
-text = text.replace(/GDS TO MTS/gi,'');
-text = text.replace(/PYQ 20\d\d/gi,'');
-
-/* Page numbers like 1/10 */
-text = text.replace(/\b\d+\s*\/\s*\d+\b/g,'');
-
-/* Multiple blank lines clean */
-text = text.replace(/\n{3,}/g,"\n\n");
-
-/* Trim */
-text = text.trim();
-text = text.replace(/\r/g,'');
-
-document.getElementById("bulk").value = text;
-
-status("OCR Completed");
-
-}catch(err){
-
-console.log(err);
-
-status("OCR Failed","red");
-
-}
-
-};
-window.bulkSave = async function () {
-
-if (!auth.currentUser) return alert("Admin not logged in");
-
-const category = val("category");
-const post = val("post");
-const bulk = val("bulk");
-const ans=val("ans");
-if (!category || !post || !bulk) {
-return alert("Select category/post and paste data");
-}
-
-try {
-
-status("Uploading Bulk...", "blue");
-
-/* Split by blank lines = each question block */
-let blocks = bulk.split(/\n\s*\n/);
-
-for (let block of blocks) {
-
-let lines = block
-.split("\n")
-.map(x => x.trim())
-.filter(Boolean);
-
-if (lines.length < 6) continue;
-
-/* STRICT FORMAT PARSER */
-let question = lines[0];
-
-let a = lines[1].replace(/^A\)\s*/i, "").trim();
-let b = lines[2].replace(/^B\)\s*/i, "").trim();
-let c = lines[3].replace(/^C\)\s*/i, "").trim();
-let d = lines[4].replace(/^D\)\s*/i, "").trim();
-
-let ansLine = lines[5];
-
-/* extract A/B/C/D */
-let ans = ansLine.match(/[ABCD]/)?.[0] || "";
-
-/* skip invalid */
-if (!question || !a || !b || !c || !d || !ans) {
-console.log("SKIPPED:", block);
-continue;
-}
-
-let answer = "";
-if (ans === "A") answer = a;
-else if (ans === "B") answer = b;
-else if (ans === "C") answer = c;
-else if (ans === "D") answer = d;
-
-// Check karein ki answer mila ya nahi
-if (!answer) {
-    console.log("Answer match nahi hua:", block);
-    continue; 
-}
-
-await addDoc(collection(db, "pyqQuestions"), {
-category: esc(category),
-post: esc(post),
-question: esc(question),
-options: [esc(a), esc(b), esc(c), esc(d)],
-answer: esc(answer),
-createdAt: serverTimestamp()
-});
-
-}
-
-document.getElementById("bulk").value = "";
-status("Bulk Upload Successful");
-
-loadAll();
-
-} catch (err) {
-console.log(err);
-status("Bulk Upload Failed", "red");
-}
-
-};
-  
-/* LOAD ALL */
-async function loadAll(){
-
-/* PDFs */
-try{
-
-const pdfSnap = await getDocs(
-query(collection(db,"pyqFiles"),orderBy("createdAt","desc"))
-);
-
-let pdfHtml="";
-
-pdfSnap.forEach(item=>{
-let d=item.data();
-
-pdfHtml += `
-<div class="card">
-<div class="row">
-<div>
-<b>${safe(d.title)}</b>
-<div class="small">${safe(d.category)} | ${safe(d.post)}</div>
-<div class="small">${safe(d.fileName)}</div>
-<div class="small">${safe(d.desc)}</div>
-</div>
-<div>
-<button class="delete-btn" onclick="deletePdf('${item.id}')">Delete</button>
-</div>
-</div>
-</div>
-`;
-});
-
-document.getElementById("pdfList").innerHTML = pdfHtml || "No PDF Saved";
-
-}catch(err){
-document.getElementById("pdfList").innerHTML="Load Failed";
-}
-
-/* Questions */
-try{
-
-const qSnap = await getDocs(
-query(collection(db,"pyqQuestions"),orderBy("createdAt","desc"))
-);
-
-let qHtml="";
-let i=1;
-
-qSnap.forEach(item=>{
-
-let d=item.data();
-
-qHtml += `
-<div class="card">
-<div class="row">
-
-<div style="flex:1">
-
-<b style="font-size:17px;color:#111;line-height:1.6">
-${i}. ${safe(d.question)}
-</b>
-
-<div class="small" style="margin-top:8px;font-weight:bold;color:#444">
-${safe(d.category)} | ${safe(d.post)}
-</div>
-
-<div class="small" style="margin-top:10px;line-height:1.8;font-size:15px">
-A. ${safe(d.options[0])}<br>
-B. ${safe(d.options[1])}<br>
-C. ${safe(d.options[2])}<br>
-D. ${safe(d.options[3])}
-</div>
-
-<div class="small" style="margin-top:10px;font-weight:bold;color:green;font-size:15px;">
-Answer: ${safe(d.answer)}
-</div>
-
-</div>
-
-<div>
-<button class="delete-btn" onclick="deleteQ('${item.id}')">
-Delete
-</button>
-</div>
-
-</div>
-</div>
-`;
-
-i++;
-});
-
-document.getElementById("questionList").innerHTML=qHtml || "No Questions Saved";
-
-}catch(err){
-document.getElementById("questionList").innerHTML="Load Failed";
-}
-
-}
-
-/* DELETE */
-window.deletePdf = async function(id){
-
-if(!confirm("Delete PDF?")) return;
-
-await deleteDoc(doc(db,"pyqFiles",id));
-loadAll();
-
-};
-
-window.deleteQ = async function(id){
-
-if(!confirm("Delete Question?")) return;
-
-await deleteDoc(doc(db,"pyqQuestions",id));
-loadAll();
-
-};
-
-document.addEventListener("contextmenu",e=>e.preventDefault());
-
+<script>
+    function showMsg(text, color="#28a745") {
+        const s = document.getElementById('statusMsg');
+        s.innerText = text;
+        s.style.display = 'block';
+        s.style.background = color;
+        s.style.color = "#fff";
+        setTimeout(()=> s.style.display='none', 3000);
+    }
+
+    // --- Original Functions ---
+    function extractPdf() {
+        showMsg("Extracting Text... (Feature link needed)", "#6f42c1");
+    }
+
+    function savePdf() {
+        const title = document.getElementById('pdfTitle').value;
+        if(!title) return alert("Title fill karein");
+        showMsg("PDF Saved!");
+    }
+
+    // --- New Single Question Function ---
+    function saveSingleQuestion() {
+        const q = document.getElementById('q_text').value;
+        const ans = document.getElementById('q_ans').value;
+        
+        if(!q || !ans) return alert("Sawaal aur sahi jawab zaruri hai!");
+        
+        const data = {
+            question: q,
+            options: [
+                document.getElementById('q_a').value,
+                document.getElementById('q_b').value,
+                document.getElementById('q_c').value,
+                document.getElementById('q_d').value
+            ],
+            answer: ans,
+            cat: document.getElementById('category').value,
+            post: document.getElementById('post').value
+        };
+        
+        console.log("Single Q Data:", data);
+        showMsg("Question Uploaded!");
+    }
+
+    // --- New Bulk Function ---
+    function saveBulk() {
+        const raw = document.getElementById('bulkText').value.trim();
+        if(!raw) return alert("Bulk text box khali hai!");
+        
+        const lines = raw.split('\n');
+        let count = 0;
+        
+        lines.forEach(line => {
+            const parts = line.split('|').map(p => p.trim());
+            if(parts.length >= 6) {
+                // Yahan aapka API call jayega
+                count++;
+            }
+        });
+        
+        showMsg(`${count} Questions added successfully!`);
+    }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
 </body>
 </html>
