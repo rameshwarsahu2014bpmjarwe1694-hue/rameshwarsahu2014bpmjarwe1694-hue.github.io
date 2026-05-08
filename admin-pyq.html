@@ -18,7 +18,6 @@ button{padding:12px;border:none;border-radius:8px;font-size:16px;font-weight:bol
 .delete-btn{background:#dc3545;color:#fff}
 .card{background:#fafafa;padding:15px;border:1px solid #ddd;border-radius:10px;margin-bottom:12px}
 .row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.small{font-size:14px;color:#666;margin-top:5px}
 .status{text-align:center;font-weight:bold;margin:12px 0}
 hr{margin:20px 0;border:none;border-top:1px solid #ddd}
 </style>
@@ -56,7 +55,7 @@ hr{margin:20px 0;border:none;border-top:1px solid #ddd}
 </div>
 
 <hr>
-<h3>Save PDF Metadata</h3>
+<h3>Save PDF Info</h3>
 <div class="grid">
 <input type="text" id="title" placeholder="PDF Title">
 <input type="text" id="fileName" placeholder="PDF File Name/URL">
@@ -98,13 +97,10 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const ADMIN_EMAIL = "rameshwarsahu2014bpmjarwe1694@gmail.com";
 
-// ORIGINAL HELPERS
 function val(id){ return document.getElementById(id).value.trim(); }
 function status(t,color="green"){ let s = document.getElementById("statusMsg"); s.innerText=t; s.style.color=color; }
-function esc(str){ return String(str).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
 function safe(v){ return String(v || "").replace(/^\d+[\.\)\-]\s*/,"").trim(); }
 
-// LOGIN
 window.manualLogin = function() {
     const p = document.getElementById("adminPass").value;
     signInWithEmailAndPassword(auth, ADMIN_EMAIL, p)
@@ -116,7 +112,6 @@ window.manualLogin = function() {
     .catch(err => alert("Login Error: " + err.message));
 };
 
-// OCR
 window.extractPdf = async function(){
     const file = document.getElementById("pdfFile").files;
     if(!file) return alert("Select File");
@@ -128,11 +123,9 @@ window.extractPdf = async function(){
     } catch(e) { status("OCR Failed", "red"); }
 };
 
-// SAVE PDF
 window.savePdf = async function(){
     if(!auth.currentUser) return alert("Login First");
     try {
-        status("Saving PDF...", "blue");
         await addDoc(collection(db, "pyqFiles"), {
             category: val("category"), post: val("post"), title: val("title"),
             fileName: val("fileName"), desc: val("desc"), createdAt: serverTimestamp()
@@ -141,23 +134,23 @@ window.savePdf = async function(){
     } catch(e) { alert(e.message); }
 };
 
-// BULK SAVE (FIXED ENGINE)
 window.bulkSave = async function() {
     if(!auth.currentUser) return alert("Login First");
     const cat = val("category"), post = val("post"), bulkTxt = val("bulk");
     if(!cat || !post || !bulkTxt) return alert("Fill All Fields");
 
     try {
-        status("Uploading Questions... ⏳", "blue");
-        const blocks = bulkTxt.split(/\n\s*\n/);
+        status("Uploading... ⏳", "blue");
+        const blocks = bulkTxt.trim().split(/\n\s*\n/);
         let count = 0;
 
         for (let block of blocks) {
             let lines = block.split('\n').map(l => l.trim()).filter(Boolean);
             if (lines.length >= 6) {
                 let q = lines, a = lines, b = lines, c = lines, d = lines;
-                let ansLine = lines.toUpperCase();
                 
+                // FIXED: 'lines' single string hai, ispar toUpperCase chalega
+                let ansLine = lines.toUpperCase();
                 let correct = a; 
                 if(ansLine.includes("B")) correct = b;
                 else if(ansLine.includes("C")) correct = c;
@@ -176,31 +169,27 @@ window.bulkSave = async function() {
     } catch(e) { alert("Upload Failed: " + e.message); }
 };
 
-// LOAD & DELETE
 async function loadAll(){
     try {
         const pSnap = await getDocs(query(collection(db,"pyqFiles"), orderBy("createdAt","desc")));
         let pHtml = "";
         pSnap.forEach(d => {
-            pHtml += `<div class="card"><div class="row"><span><b>PDF:</b> ${d.data().title}</span><button class="delete-btn" onclick="del('${d.id}','pyqFiles')">Delete</button></div></div>`;
+            pHtml += `<div class="card"><div class="row"><span>${d.data().title}</span><button class="delete-btn" onclick="del('${d.id}','pyqFiles')">Delete</button></div></div>`;
         });
-        document.getElementById("pdfList").innerHTML = pHtml || "No PDFs Found";
+        document.getElementById("pdfList").innerHTML = pHtml || "No PDFs";
 
         const qSnap = await getDocs(query(collection(db,"pyqQuestions"), orderBy("createdAt","desc")));
         let qHtml = "";
         qSnap.forEach(d => {
-            let data = d.data();
-            qHtml += `<div class="card"><div class="row"><span><b>Q:</b> ${safe(data.question)}<br><small>Ans: ${data.answer}</small></span><button class="delete-btn" onclick="del('${d.id}','pyqQuestions')">Delete</button></div></div>`;
+            qHtml += `<div class="card"><div class="row"><span>${safe(d.data().question)}</span><button class="delete-btn" onclick="del('${d.id}','pyqQuestions')">Delete</button></div></div>`;
         });
-        document.getElementById("questionList").innerHTML = qHtml || "No Questions Found";
+        document.getElementById("questionList").innerHTML = qHtml || "No Questions";
     } catch(err) { console.log(err); }
 }
 
 window.del = async function(id, col){
-    if(confirm("Are you sure?")){ await deleteDoc(doc(db, col, id)); loadAll(); }
+    if(confirm("Delete?")){ await deleteDoc(doc(db, col, id)); loadAll(); }
 };
-
-document.addEventListener("contextmenu", e => e.preventDefault());
 </script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </body>
