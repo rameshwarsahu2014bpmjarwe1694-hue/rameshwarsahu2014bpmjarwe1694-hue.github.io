@@ -197,30 +197,29 @@ window.bulkSave = async function() {
     const selectedPost = document.getElementById('post').value;
 
     if (!rawInput || !selectedCat || !selectedPost) {
-        return alert("Category aur Post select karein!");
+        return alert("Pehle Category aur Post select karein!");
     }
 
     const allLines = rawInput.split('\n');
     let countSuccess = 0;
 
     try {
-        status("Uploading...", "orange");
+        status("Connecting to Database...", "orange");
 
         for (let currentLine of allLines) {
             let trimmedLine = currentLine.trim();
             if (!trimmedLine || !trimmedLine.includes('|')) continue;
 
+            // 1. Pipe se split kiya -> lineSplit ab ek list hai
             const lineSplit = trimmedLine.split('|').map(item => item.trim());
             
-            // lineSplit = Sawal
-            // lineSplit = Options aur Answer ka text
             if (lineSplit.length >= 2) {
-                const finalQuestion = lineSplit;
+                const finalQuestion = lineSplit; // Sawal mil gaya
                 
-                // lineSplit string hai, ispar split chalega
+                // FIXED: lineSplit ke baad lagaya hai (taki split text par chale)
                 const contentArray = lineSplit.split(',').map(item => item.trim()).filter(Boolean);
 
-                // Humein 4 options + 1 answer = 5 items chahiye
+                // Check: 4 options + 1 answer = total 5
                 if (contentArray.length >= 5) {
                     await addDoc(collection(db, "pyqQuestions"), {
                         question: finalQuestion,
@@ -249,8 +248,8 @@ window.bulkSave = async function() {
         }
 
     } catch (err) { 
-        console.error("Error Details:", err);
-        status("Error: " + err.message, "red"); 
+        console.error("Debug Error:", err);
+        status("Fatal Error: " + err.message, "red"); 
     }
 };
 
