@@ -200,56 +200,51 @@ window.bulkSave = async function() {
         return alert("Pehle Category aur Post select karein!");
     }
 
-    const allLines = rawInput.split('\n');
+    // Lines ko split kiya aur khali lines hata di
+    const allLines = rawInput.split('\n').map(l => l.trim()).filter(l => l !== "");
     let countSuccess = 0;
 
     try {
-        status("Connecting to Database...", "orange");
+        status("Uploading Questions...", "orange");
 
-        for (let currentLine of allLines) {
-            let trimmedLine = currentLine.trim();
-            if (!trimmedLine || !trimmedLine.includes('|')) continue;
-
-            // 1. Pipe se split kiya -> lineSplit ab ek list hai
-            const lineSplit = trimmedLine.split('|').map(item => item.trim());
+        // Har question 6 line ka hai, isliye loop 6 ke gap se chalega
+        for (let i = 0; i < allLines.length; i += 6) {
             
-            if (lineSplit.length >= 2) {
-                const finalQuestion = lineSplit; // Sawal mil gaya
-                
-                // FIXED: lineSplit ke baad lagaya hai (taki split text par chale)
-                const contentArray = lineSplit.split(',').map(item => item.trim()).filter(Boolean);
+            // 6 lines ka data uthaya
+            const qText = allLines[i];
+            const optA  = allLines[i+1];
+            const optB  = allLines[i+2];
+            const optC  = allLines[i+3];
+            const optD  = allLines[i+4];
+            const ansLine = allLines[i+5];
 
-                // Check: 4 options + 1 answer = total 5
-                if (contentArray.length >= 5) {
-                    await addDoc(collection(db, "pyqQuestions"), {
-                        question: finalQuestion,
-                        options: [
-                            contentArray, 
-                            contentArray, 
-                            contentArray, 
-                            contentArray
-                        ],
-                        answer: contentArray,
-                        category: selectedCat,
-                        post: selectedPost,
-                        createdAt: serverTimestamp()
-                    });
-                    countSuccess++;
-                }
+            // Answer nikalne ke liye "Answer:" shabd ko hataya
+            if (qText && optD && ansLine) {
+                const finalAns = ansLine.replace(/Answer:|Answer|Ans:|Ans/gi, "").trim();
+
+                await addDoc(collection(db, "pyqQuestions"), {
+                    question: qText,
+                    options: [optA, optB, optC, optD],
+                    answer: finalAns,
+                    category: selectedCat,
+                    post: selectedPost,
+                    createdAt: serverTimestamp()
+                });
+                countSuccess++;
             }
         }
 
         if (countSuccess > 0) {
-            status(`${countSuccess} Questions Saved! ✅`, "green");
+            status(`${countSuccess} Questions Uploaded! ✅`, "green");
             document.getElementById('bulk').value = "";
             loadAll();
         } else {
-            status("Format Check: Sawal | A, B, C, D, Ans", "red");
+            status("Format mismatch! Har question 6 line ka hona chahiye.", "red");
         }
 
     } catch (err) { 
-        console.error("Debug Error:", err);
-        status("Fatal Error: " + err.message, "red"); 
+        console.error("Firebase Error:", err);
+        status("Error: " + err.message, "red"); 
     }
 };
 
