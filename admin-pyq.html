@@ -168,21 +168,23 @@ window.saveQuestion = async function() {
     const ans = document.getElementById('ans').value;
     const cat = document.getElementById('category').value;
     const post = document.getElementById('post').value;
-    if(!q || !ans || !cat || !post) return alert("Sari fields bharein!");
+
+    if(!q || !ans || !cat || !post) return alert("Fill all fields!");
+
     try {
         await addDoc(collection(db, "pyqQuestions"), {
-    question: q,
-    options: [
-        document.getElementById('a').value,
-        document.getElementById('b').value,
-        document.getElementById('c').value,
-        document.getElementById('d').value
-    ],
-    answer: ans,
-    category: cat,
-    post: post,
-    createdAt: serverTimestamp()
-});
+            question: q,
+            options: [
+                document.getElementById('a').value,
+                document.getElementById('b').value,
+                document.getElementById('c').value,
+                document.getElementById('d').value
+            ], // Yahan nested array nahi banega ab
+            answer: ans,
+            category: cat,
+            post: post,
+            createdAt: serverTimestamp()
+        });
         status("Question Saved! ✅");
         loadAll();
     } catch(e) { status("Error: " + e.message, "red"); }
@@ -193,21 +195,22 @@ window.bulkSave = async function() {
     const raw = document.getElementById('bulk').value.trim();
     const cat = document.getElementById('category').value;
     const post = document.getElementById('post').value;
-    if(!raw || !cat || !post) return alert("Details bharein!");
+
+    if (!raw || !cat || !post) return alert("Details bharein!");
+
     const lines = raw.split('\n');
     try {
-        status(`Uploading ${lines.length} items...`, "orange");
         for (let line of lines) {
             const p = line.split('|').map(x => x.trim());
             if (p.length >= 6) {
                 await addDoc(collection(db, "pyqQuestions"), {
-    question: p,
-    options: [p, p, p, p],
-    answer: p,
-    category: cat,
-    post: post,
-    createdAt: serverTimestamp()
-});
+                    question: p,
+                    options: [p, p, p, p], // Individual elements daale hain, array nahi
+                    answer: p,
+                    category: cat,
+                    post: post,
+                    createdAt: serverTimestamp()
+                });
             }
         }
         status("Bulk Upload Success! ✅");
@@ -215,6 +218,7 @@ window.bulkSave = async function() {
         loadAll();
     } catch (e) { status("Error: " + e.message, "red"); }
 };
+
 
 // --- FIX 4: OCR EXTRACT ---
 window.extractPdf = function() {
