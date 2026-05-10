@@ -76,6 +76,17 @@ border-radius:20px;
 margin-bottom:8px;
 }
 
+.file-info {
+background: #eee;
+padding: 8px;
+border-radius: 6px;
+font-size: 13px;
+color: #444;
+margin: 10px 0;
+border-left: 4px solid #28a745;
+word-break: break-all;
+}
+
 .small{
 font-size:14px;
 color:#666;
@@ -185,50 +196,33 @@ window.location.href = "login.html";
 
 /* LOAD DATA */
 async function loadData(){
-
 try{
-
 const q = query(collection(db,"syllabus"),orderBy("createdAt","desc"));
 const snap = await getDocs(q);
-
 allData = [];
-
 snap.forEach(doc=>{
 allData.push({
 id: doc.id,
 ...doc.data()
 });
 });
-
 renderData();
-
 }catch(error){
-
 list.innerHTML = `<div class="empty">Failed to Load</div>`;
 console.log(error);
-
 }
-
 }
 
 /* RENDER DATA */
 function renderData(){
-
 const category = categoryFilter.value;
 const search = searchBox.value.toLowerCase().trim();
 
 let filtered = allData.filter(item=>{
-
-let categoryMatch =
-category === "All" || item.category === category;
-
-let searchMatch =
-(item.title || "").toLowerCase().includes(search) ||
-(item.desc || "").toLowerCase().includes(search) ||
-(item.fileName || "").toLowerCase().includes(search);
-
+let categoryMatch = category === "All" || item.category === category;
+let searchMatch = (item.title || "").toLowerCase().includes(search) || 
+                  (item.fileName || "").toLowerCase().includes(search);
 return categoryMatch && searchMatch;
-
 });
 
 if(filtered.length === 0){
@@ -239,27 +233,22 @@ return;
 list.innerHTML = "";
 
 filtered.forEach(item=>{
-
-const secureUrl = `${BACKEND_URL}/get-pdf?email=${encodeURIComponent(currentUserEmail)}&year=Syllabus&post=${encodeURIComponent(item.category || item.title)}`;
+// exact file name matching for backend
+const fileName = item.fileName || "";
+const secureUrl = `${BACKEND_URL}/get-pdf?email=${encodeURIComponent(currentUserEmail)}&year=Syllabus&post=${encodeURIComponent(fileName)}`;
 
 list.innerHTML += `
 <div class="card">
-
-<h3>${safe(item.title)}</h3>
-
-<div class="category">${safe(item.category)}</div>
-
-<p class="small">${safe(item.desc)}</p>
-
-<button class="download-btn" onclick="window.open('${secureUrl}', '_blank')">
-📄 Open Syllabus PDF
-</button>
-
+    <h3>${safe(item.title)}</h3>
+    <div class="category">${safe(item.category)}</div>
+    <div class="file-info">📄 File: ${safe(fileName)}</div>
+    <p class="small">${safe(item.desc)}</p>
+    <button class="download-btn" onclick="window.open('${secureUrl}', '_blank')">
+        📄 Open PDF
+    </button>
 </div>
 `;
-
 });
-
 }
 
 /* EVENTS */
