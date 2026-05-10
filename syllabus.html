@@ -163,11 +163,12 @@ orderBy
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import {import {
+import {
 getAuth,
 onAuthStateChanged
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 /* FIREBASE CONFIG */
 
 const firebaseConfig = {
@@ -208,29 +209,19 @@ document.getElementById("searchBox");
 
 let allData = [];
 
-/* LOGIN + LOAD */
+/* LOGIN CHECK */
 
-signInWithEmailAndPassword(
-auth,
-USER_EMAIL,
-USER_PASS
-)
+onAuthStateChanged(auth,(user)=>{
 
-.then(()=>{
+if(user){
 
 loadData();
 
-})
+}else{
 
-.catch((error)=>{
+window.location.href = "login.html";
 
-console.log(error);
-
-list.innerHTML = `
-<div class="empty">
-${error.message}
-</div>
-`;
+}
 
 });
 
