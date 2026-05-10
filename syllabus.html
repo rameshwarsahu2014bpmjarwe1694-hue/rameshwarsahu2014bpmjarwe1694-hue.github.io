@@ -1,169 +1,262 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>Syllabus Hub - Departmental Exams</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #f0f2f5; color: #333; padding: 15px; }
-        .container { max-width: 800px; margin: auto; }
-        
-        header { text-align: center; padding: 20px 0; background: #007bff; color: white; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h1 { font-size: 24px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Candidate Syllabus</title>
 
-        /* Tabs for Categories */
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
-        .tab-btn { 
-            padding: 10px 20px; background: #fff; border: 2px solid #007bff; color: #007bff; 
-            border-radius: 25px; cursor: pointer; font-weight: bold; white-space: nowrap; transition: 0.3s;
-        }
-        .tab-btn.active { background: #007bff; color: #fff; }
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
 
-        /* Syllabus Cards */
-        #syllabus-list { display: grid; gap: 15px; }
-        .syllabus-card { 
-            background: #fff; padding: 20px; border-radius: 12px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid #007bff;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .info h3 { margin-bottom: 5px; color: #222; }
-        .info p { font-size: 14px; color: #666; line-height: 1.4; }
-        .category-tag { 
-            display: inline-block; background: #e7f3ff; color: #007bff; 
-            padding: 3px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; margin-top: 8px;
-        }
+body{
+background:#f4f6f9;
+padding:20px;
+}
 
-        .view-btn { 
-            background: #28a745; color: white; text-decoration: none; 
-            padding: 10px 18px; border-radius: 8px; font-weight: bold; font-size: 14px;
-            transition: 0.2s; border: none; cursor: pointer;
-        }
-        .view-btn:hover { background: #218838; transform: scale(1.05); }
+.container{
+max-width:900px;
+margin:auto;
+background:#fff;
+padding:20px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
 
-        .loader { text-align: center; padding: 50px; font-weight: bold; color: #666; }
-        .empty-msg { text-align: center; padding: 40px; color: #999; background: #fff; border-radius: 10px; }
-    </style>
+h1{
+text-align:center;
+margin-bottom:20px;
+color:#222;
+}
+
+.top-controls{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-bottom:18px;
+}
+
+input,select{
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+outline:none;
+width:100%;
+}
+
+input:focus,select:focus{
+border-color:#007bff;
+}
+
+.card{
+background:#fafafa;
+padding:15px;
+border:1px solid #ddd;
+border-radius:10px;
+margin-bottom:12px;
+}
+
+.card h3{
+color:#111;
+margin-bottom:5px;
+}
+
+.category{
+display:inline-block;
+padding:4px 10px;
+background:#007bff;
+color:#fff;
+font-size:12px;
+border-radius:20px;
+margin-bottom:8px;
+}
+
+.small{
+font-size:14px;
+color:#666;
+margin-top:6px;
+line-height:1.5;
+}
+
+.download-btn{
+display:inline-block;
+margin-top:12px;
+padding:10px 14px;
+background:#28a745;
+color:#fff;
+text-decoration:none;
+border-radius:8px;
+font-weight:bold;
+font-size:14px;
+}
+
+.download-btn:hover{
+background:#218838;
+}
+
+.empty{
+text-align:center;
+padding:25px;
+color:#666;
+font-weight:bold;
+}
+
+@media(max-width:700px){
+.top-controls{
+grid-template-columns:1fr;
+}
+}
+</style>
 </head>
+
 <body>
 
 <div class="container">
-    <header>
-        <h1>Study Syllabus</h1>
-        <p style="font-size: 14px; opacity: 0.9;">Official Departmental Exam Resources</p>
-    </header>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="filterSyllabus('All')">All</button>
-        <button class="tab-btn" onclick="filterSyllabus('MTS')">MTS</button>
-        <button class="tab-btn" onclick="filterSyllabus('Postman')">Postman</button>
-        <button class="tab-btn" onclick="filterSyllabus('PA/SA')">PA/SA</button>
-    </div>
+<h1>Candidate Syllabus</h1>
 
-    <div id="syllabus-list">
-        <div class="loader">Fetching Syllabus...</div>
-    </div>
+<div class="top-controls">
+
+<select id="categoryFilter">
+<option value="All">All Categories</option>
+<option value="MTS">MTS</option>
+<option value="Postman">Postman</option>
+<option value="PA/SA">PA/SA</option>
+</select>
+
+<input type="text" id="searchBox" placeholder="Search syllabus...">
+
+</div>
+
+<div id="list">Loading...</div>
+
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { 
-        getFirestore, 
-        collection, 
-        getDocs, 
-        query, 
-        orderBy 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // Same config as your Admin Panel
-    const firebaseConfig = {
-        apiKey: "AIzaSyDjzmo0A4KhOkrqFQdOyCEek6bsPF-UVPQ",
-        authDomain: "gds-departmental-exam-studyhub.firebaseapp.com",
-        projectId: "gds-departmental-exam-studyhub",
-        storageBucket: "gds-departmental-exam-studyhub.appspot.com",
-        messagingSenderId: "759916756080",
-        appId: "1:759916756080:web:7f2c0e66458bd007e888b5"
-    };
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    let allSyllabusData = [];
+import {
+getFirestore,
+collection,
+getDocs,
+query,
+orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const listDiv = document.getElementById("syllabus-list");
+const firebaseConfig = {
+apiKey: "AIzaSyDjzmo0A4KhOkrqFQdOyCEek6bsPF-UVPQ",
+authDomain: "gds-departmental-exam-studyhub.firebaseapp.com",
+projectId: "gds-departmental-exam-studyhub",
+storageBucket: "gds-departmental-exam-studyhub.appspot.com",
+messagingSenderId: "759916756080",
+appId: "1:759916756080:web:7f2c0e66458bd007e888b5"
+};
 
-    // Load Data from Firestore
-    async function fetchSyllabus() {
-        try {
-            const q = query(collection(db, "syllabus"), orderBy("createdAt", "desc"));
-            const querySnapshot = await getDocs(q);
-            
-            allSyllabusData = [];
-            querySnapshot.forEach((doc) => {
-                allSyllabusData.push(doc.data());
-            });
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-            renderSyllabus("All");
-        } catch (error) {
-            console.error("Error fetching syllabus: ", error);
-            listDiv.innerHTML = `<div class="empty-msg">Error loading data. Please refresh.</div>`;
-        }
-    }
+const list = document.getElementById("list");
+const categoryFilter = document.getElementById("categoryFilter");
+const searchBox = document.getElementById("searchBox");
 
-    // Render Data to UI
-    window.renderSyllabus = function(category) {
-        listDiv.innerHTML = "";
-        
-        const filtered = category === "All" 
-            ? allSyllabusData 
-            : allSyllabusData.filter(item => item.category === category);
+let allData = [];
 
-        if (filtered.length === 0) {
-            listDiv.innerHTML = `<div class="empty-msg">No syllabus available for ${category}.</div>`;
-            return;
-        }
+/* LOAD DATA */
+async function loadData(){
 
-        filtered.forEach(data => {
-            // Decoding HTML entities back for display
-            const title = decodeHtml(data.title);
-            const desc = decodeHtml(data.desc);
-            const file = data.fileName;
+try{
 
-            listDiv.innerHTML += `
-                <div class="syllabus-card">
-                    <div class="info">
-                        <h3>${title}</h3>
-                        <p>${desc}</p>
-                        <span class="category-tag">${data.category}</span>
-                    </div>
-                    <a href="pdfs/${file}" class="view-btn" target="_blank">View PDF</a>
-                </div>
-            `;
-        });
-    }
+const q = query(collection(db,"syllabus"),orderBy("createdAt","desc"));
+const snap = await getDocs(q);
 
-    // Tab Filtering Logic
-    window.filterSyllabus = function(category) {
-        // Update Buttons
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-            if(btn.innerText === category) btn.classList.add('active');
-        });
-        
-        renderSyllabus(category);
-    }
+allData = [];
 
-    function decodeHtml(html) {
-        var txt = document.createElement("textarea");
-        txt.innerHTML = html;
-        return txt.value;
-    }
+snap.forEach(doc=>{
+allData.push({
+id: doc.id,
+...doc.data()
+});
+});
 
-    // Anti-copy protection (Matches your admin panel)
-    document.addEventListener("contextmenu", e => e.preventDefault());
+renderData();
 
-    // Start
-    fetchSyllabus();
+}catch(error){
+
+list.innerHTML = `<div class="empty">Failed to Load</div>`;
+console.log(error);
+
+}
+
+}
+
+/* RENDER DATA */
+function renderData(){
+
+const category = categoryFilter.value;
+const search = searchBox.value.toLowerCase().trim();
+
+let filtered = allData.filter(item=>{
+
+let categoryMatch =
+category === "All" || item.category === category;
+
+let searchMatch =
+(item.title || "").toLowerCase().includes(search) ||
+(item.desc || "").toLowerCase().includes(search) ||
+(item.fileName || "").toLowerCase().includes(search);
+
+return categoryMatch && searchMatch;
+
+});
+
+if(filtered.length === 0){
+list.innerHTML = `<div class="empty">No syllabus found</div>`;
+return;
+}
+
+list.innerHTML = "";
+
+filtered.forEach(item=>{
+
+list.innerHTML += `
+<div class="card">
+
+<h3>${safe(item.title)}</h3>
+
+<div class="category">${safe(item.category)}</div>
+
+<p class="small">${safe(item.desc)}</p>
+
+<a class="download-btn" href="${safe(item.fileName)}" download>
+📄 ${safe(item.fileName)}
+</a>
+
+</div>
+`;
+
+});
+
+}
+
+/* EVENTS */
+categoryFilter.addEventListener("change",renderData);
+searchBox.addEventListener("input",renderData);
+
+/* SAFE */
+function safe(str){
+return str ? str : "";
+}
+
+/* START */
+loadData();
 
 </script>
+
 </body>
 </html>
