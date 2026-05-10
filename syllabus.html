@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Syllabus Dashboard</title>
     <style>
-        /* Exact UI matching your candidate screenshot */
+        /* Exact UI matching your candidate dashboard screenshot */
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI', Tahoma, sans-serif;}
         body{background:#f9f9f9;padding:15px;display:flex;justify-content:center;}
         .container{width:100%;max-width:450px;}
@@ -13,12 +13,13 @@
         .badge{background:#e7f1ff;color:#007bff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:bold;display:inline-block;}
         .card h3{margin:10px 0 5px;font-size:22px;color:#111;}
         .btn-pdf{display:block;width:100%;padding:14px;background:#28a745;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;border:none;cursor:pointer;font-size:16px;}
+        .loading{text-align:center;padding:50px;color:#666;}
     </style>
 </head>
 <body>
 
 <div class="container" id="syllabus-list">
-    <div style="text-align:center;padding:20px;">Fetching Latest Syllabus...</div>
+    <div class="loading">Fetching Syllabus...</div>
 </div>
 
 <script type="module">
@@ -26,6 +27,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+// Firebase Configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDjzmo0A4KhOkrqFQdOyCEek6bsPF-UVPQ",
     authDomain: "gds-departmental-exam-studyhub.firebaseapp.com",
@@ -42,6 +44,7 @@ const auth = getAuth(app);
 const BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
 let userEmail = "";
 
+// Auth state observer to get the logged-in user's email
 onAuthStateChanged(auth, (user) => {
     if (user) { 
         userEmail = user.email; 
@@ -51,6 +54,13 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
+// Function to decode HTML entities (fixes the &amp; issue from Admin esc() function)
+function decodeHTMLEntities(text) {
+    const textArea = document.createElement('textarea');
+    textArea.innerHTML = text;
+    return textArea.value.trim();
+}
+
 async function loadSyllabus() {
     const listDiv = document.getElementById("syllabus-list");
     try {
@@ -58,29 +68,33 @@ async function loadSyllabus() {
         const snap = await getDocs(q);
         listDiv.innerHTML = "";
         
+        if (snap.empty) {
+            listDiv.innerHTML = "<p style='text-align:center;'>No syllabus found.</p>";
+            return;
+        }
+
         snap.forEach(doc => {
             const d = doc.data();
             
-            // Post = Category (MTS, Postman, PA/SA)
-            // Filename = Exact File Name from Admin Panel
-            const postType = d.category || "General"; 
-            const exactFileName = (d.fileName || "").trim();
+            // Setting Parameters based on your requirement
+            const postType = (d.category || "").trim(); // MTS, Postman, PA/SA
+            const exactFileName = decodeHTMLEntities(d.fileName || ""); // Exact file name from DB
 
-            // Link matching your requirement: Post aur Filename dono bhej rahe hain
+            // Constructing URL with all 3 parameters: email, post, and filename
             const url = `${BACKEND_URL}/get-pdf?email=${encodeURIComponent(userEmail)}&post=${encodeURIComponent(postType)}&filename=${encodeURIComponent(exactFileName)}`;
 
             listDiv.innerHTML += `
                 <div class="card">
                     <span class="badge">${postType}</span>
                     <h3>${d.title}</h3>
-                    <p style="color:#666; font-size:13px; margin-bottom:15px;">File: ${exactFileName}</p>
+                    <p style="color:#666; font-size:13px; margin-bottom:15px;">${d.desc || 'Latest Pattern'}</p>
                     <button class="btn-pdf" onclick="window.open('${url}', '_blank')">
-                        📖 Open ${postType} Syllabus
+                        📖 Open Syllabus PDF
                     </button>
                 </div>`;
         });
     } catch(err) { 
-        listDiv.innerHTML = "Error loading data."; 
+        listDiv.innerHTML = "<p style='text-align:center; color:red;'>Error loading data.</p>"; 
     }
 }
 </script>
