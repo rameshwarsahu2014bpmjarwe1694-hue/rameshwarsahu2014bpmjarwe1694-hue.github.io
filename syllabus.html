@@ -192,9 +192,9 @@ appId: "1:759916756080:web:7f2c0e66458bd007e888b5"
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
-
 const auth = getAuth(app);
-
+const BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
+  
 /* ELEMENTS */
 
 const list = document.getElementById("list");
@@ -208,12 +208,14 @@ document.getElementById("searchBox");
 /* DATA */
 
 let allData = [];
-
+let currentUserEmail = "";
 /* LOGIN CHECK */
 
 onAuthStateChanged(auth,(user)=>{
 
 if(user){
+
+currentUserEmail = user.email;
 
 loadData();
 
@@ -224,7 +226,7 @@ window.location.href = "login.html";
 }
 
 });
-
+  
 /* LOAD DATA */
 
 async function loadData(){
