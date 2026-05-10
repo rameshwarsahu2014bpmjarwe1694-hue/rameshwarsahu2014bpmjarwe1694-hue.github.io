@@ -1,189 +1,447 @@
+<!-- =========================
+FILE : pyq.html
+ULTRA STRICT FINAL VERSION
+PDF + Quiz + Same Firebase Config
+========================= -->
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>PYQ Hub - Official Study</title>
-    <style>
-        :root { --primary: #007bff; --success: #28a745; --warning: #ff9800; --dark: #2c3e50; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-        body { background: #f0f2f5; padding: 15px; color: #333; }
-        .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: var(--dark); margin-bottom: 20px; font-size: 22px; border-bottom: 3px solid var(--primary); padding-bottom: 10px; }
-        .selector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        select, input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 15px; outline: none; }
-        .status-bar { text-align: center; font-size: 14px; font-weight: bold; margin-bottom: 15px; padding: 8px; border-radius: 5px; display: none; }
-        .card { background: #fafafa; border: 1px solid #eee; padding: 15px; border-radius: 12px; margin-top: 15px; }
-        .btn { padding: 13px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: #fff; width: 100%; font-size: 16px; margin-top: 8px; }
-        .btn-open { background: var(--primary); }
-        .btn-start { background: #6f42c1; width: 100%; margin-top: 15px; }
-        .option { display: block; width: 100%; text-align: left; padding: 12px; margin: 8px 0; border: 2px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; }
-        .correct { background: #d4edda !important; border-color: #28a745 !important; font-weight: bold; }
-        .wrong { background: #f8d7da !important; border-color: #dc3545 !important; }
-        .btn-row { display: flex; gap: 10px; margin-top: 20px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PYQ Section</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f6f9;
+padding:15px;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+background:#fff;
+padding:18px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+h1{
+text-align:center;
+margin-bottom:18px;
+font-size:28px;
+}
+
+h3{
+margin:18px 0 10px;
+}
+
+.grid{
+display:grid;
+gap:12px;
+}
+
+select{
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+}
+
+.card{
+background:#fafafa;
+border:1px solid #ddd;
+border-radius:10px;
+padding:15px;
+margin-bottom:12px;
+}
+
+.small{
+font-size:14px;
+color:#666;
+margin-top:6px;
+line-height:1.5;
+}
+
+a,button{
+display:inline-block;
+padding:10px 14px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+text-decoration:none;
+font-weight:bold;
+margin-top:10px;
+}
+
+a{
+background:#007bff;
+color:#fff;
+}
+
+.start-btn,.nav-btn,.submit-btn{
+margin-right:10px;
+padding:10px 16px;
+border-radius:10px;
+}
+
+.start-btn{
+background:#28a745;
+color:#fff;
+}
+
+.nav-btn{
+background:#007bff;
+color:#fff;
+}
+
+.submit-btn{
+background:#dc3545;
+color:#fff;
+}
+
+.option{
+display:flex;
+align-items:center;
+gap:12px;
+width:100%;
+text-align:left;
+background:#fff;
+color:#111;
+margin:10px 0;
+padding:14px 16px;
+border:2px solid #dfe3e8;
+border-radius:14px;
+font-size:15px;
+font-weight:600;
+cursor:pointer;
+transition:.18s;
+}
+
+.option::before{
+content:"";
+width:20px;
+height:20px;
+border:2px solid #9aa0a6;
+border-radius:50%;
+background:#fff;
+}
+
+.option:hover{
+border-color:#0d6efd;
+background:#f5f9ff;
+}
+
+.selected{
+background:#eaf3ff !important;
+border-color:#0d6efd !important;
+color:#0d6efd !important;
+}
+
+.selected::before{
+border-color:#0d6efd;
+background:#0d6efd;
+box-shadow:inset 0 0 0 4px #fff;
+}
+
+.empty{
+padding:20px;
+text-align:center;
+font-weight:bold;
+color:#666;
+}
+</style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Previous Year Questions</h1>
 
-    <div class="selector-grid">
-        <select id="yearSelect">
-            <option value="">वर्ष चुनें</option>
-            <option>PYQ 2020</option>
-            <option>PYQ 2021</option>
-            <option>PYQ 2022</option>
-            <option>PYQ 2023</option>
-            <option>PYQ 2024</option>
-            <option>PYQ 2025</option>
-            <option>PYQ 2026</option>
-            <option>Model Paper</option>
-            <option>Practice Set</option>
-        </select>
-        <select id="postSelect">
-            <option value="">पोस्ट चुनें</option>
-            <option>MTS</option><option>POSTMAN</option><option>PA-SA</option>
-        </select>
-    </div>
+<h1>Previous Year Questions</h1>
 
-    <div id="statusBox" class="status-bar"></div>
+<div class="grid">
+<select id="pyqSelect">
+<option value="" selected disabled>Select PYQ Year</option>
+<option>PYQ 2020</option>
+<option>PYQ 2021</option>
+<option>PYQ 2022</option>
+<option>PYQ 2023</option>
+<option>PYQ 2024</option>
+<option>PYQ 2025</option>
+<option>PYQ 2026</option>
+<option>Model Paper</option>
+<option>Practice Set</option>
+</select>
 
-    <div class="card" id="pdfSection">
-        <button class="btn btn-open" id="openPdfBtn">Open PDF</button>
-    </div>
+<!-- Post Category -->
+<select id="postSelect">
+<option value="" selected disabled>Select Post Category</option>
+<option>MTS</option>
+<option>POSTMAN</option>
+<option>PA-SA</option>
+</select>
+</div>
 
-    <button class="btn btn-start" id="startQuizBtn">Start MCQ Practice</button>
-    
-    <div id="quizDisplay" style="display:none; margin-top:20px;"></div>
-    <div id="resultBox" style="display:none; margin-top:20px; text-align:center;" class="card"></div>
+<h3>PDF Files</h3>
+<div id="pdfBox">Loading...</div>
+
+<h3>Quiz</h3>
+<button class="start-btn" id="startBtn">Start Quiz</button>
+
+<div id="quizBox" style="display:none;"></div>
+<div id="resultBox" style="display:none;"></div>
+
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyDjzmo0A4KhOkrqFQdOyCEek6bsPF-UVPQ",
-        authDomain: "gds-departmental-exam-studyhub.firebaseapp.com",
-        projectId: "gds-departmental-exam-studyhub",
-        storageBucket: "gds-departmental-exam-studyhub.appspot.com",
-        messagingSenderId: "759916756080",
-        appId: "1:759916756080:web:7f2c0e66458bd007e888b5"
-    };
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
+import {
+getFirestore,
+collection,
+getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    let allQuestions = [];
-    let currentIdx = 0;
-    let score = 0;
-    let quizHistory = {}; 
+const firebaseConfig = {
+apiKey: "AIzaSyDjzmo0A4KhOkrqFQdOyCEek6bsPF-UVPQ",
+authDomain: "gds-departmental-exam-studyhub.firebaseapp.com",
+projectId: "gds-departmental-exam-studyhub",
+storageBucket: "gds-departmental-exam-studyhub.appspot.com",
+messagingSenderId: "759916756080",
+appId: "1:759916756080:web:7f2c0e66458bd007e888b5"
+};
 
-    async function fetchQuestions() {
-        const year = document.getElementById("yearSelect").value;
-        const post = document.getElementById("postSelect").value;
-        const status = document.getElementById("statusBox");
-        if (!year || !post) return;
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-        status.style.display = "block";
-        status.style.background = "#e1f5fe";
-        status.innerHTML = "लोड हो रहा है...";
+let questions = [];
+let current = 0;
+let answers = [];
 
-        try {
-            const q = query(collection(db, "pyqQuestions"), where("category", "==", year), where("post", "==", post));
-            const querySnapshot = await getDocs(q);
-            allQuestions = [];
-            querySnapshot.forEach((doc) => { allQuestions.push({ id: doc.id, ...doc.data() }); });
+function val(id){
+return document.getElementById(id).value.trim();
+}
 
-            if (allQuestions.length > 0) {
-                status.style.background = "#d4edda";
-                status.innerHTML = `✅ ${allQuestions.length} सवाल मिले!`;
-            } else {
-                status.style.background = "#fff3cd";
-                status.innerHTML = "❌ डेटा नहीं मिला।";
-            }
-        } catch (error) { status.innerHTML = "⚠️ Error loading data."; }
+function safe(v){
+return v || "";
+}
+
+function esc(v){
+return String(v || "").replace(/'/g,"\\'");
+}
+
+/* LOAD DATA */
+async function loadAll(){
+
+document.getElementById("pdfBox").innerHTML="Loading...";
+document.getElementById("quizBox").style.display="none";
+document.getElementById("resultBox").style.display="none";
+document.getElementById("startBtn").style.display="inline-block";
+
+questions=[];
+current=0;
+answers=[];
+
+const category=val("pyqSelect");
+const post=val("postSelect");
+
+/* PDF */
+let pdfHtml="";
+
+const pdfSnap=await getDocs(collection(db,"pyqFiles"));
+
+pdfSnap.forEach(doc=>{
+const d=doc.data();
+
+if(d.category!==category) return;
+if(d.post!==post) return;
+
+pdfHtml+=`
+<div class="card">
+<b>${safe(d.title)}</b>
+<div class="small">${safe(d.desc)}</div>
+<div class="small">${safe(d.fileName)}</div>
+<a href="${safe(d.fileName)}" target="_blank">Open PDF</a>
+</div>
+`;
+});
+
+document.getElementById("pdfBox").innerHTML=
+pdfHtml || "<div class='empty'>No PDF Found</div>";
+
+/* QUESTIONS */
+let temp=[];
+
+const qSnap=await getDocs(collection(db,"pyqQuestions"));
+
+qSnap.forEach(doc=>{
+const d=doc.data();
+
+if(d.category!==category) return;
+if(d.post!==post) return;
+
+temp.push(d);
+});
+
+questions=temp.sort((a,b)=>{
+const na=parseInt(String(a.question).match(/^\d+/)?.[0] || 9999);
+const nb=parseInt(String(b.question).match(/^\d+/)?.[0] || 9999);
+return na-nb;
+}).map((item,index)=>{
+
+let cleanQ=String(item.question || "")
+.replace(/^\d+[\).\-\s:]*/,"")
+.trim();
+
+return{
+...item,
+question:cleanQ,
+serial:index+1
+};
+
+});
+
+}
+
+/* START QUIZ */
+function startQuiz(){
+    if(questions.length===0){
+        alert("No Questions Found");
+        return;
+    }
+    document.getElementById("startBtn").style.display="none";
+    document.getElementById("resultBox").style.display="none";
+    document.getElementById("quizBox").style.display="block";
+    showQuestion();
+}
+
+/* SHOW QUESTION */
+function showQuestion(){
+    const q = questions[current];
+    let html = `
+    <div class="card">
+    <h3>Question ${q.serial} / ${questions.length}</h3>
+    <p style="margin:15px 0;"><b>${safe(q.question)}</b></p>
+    `;
+
+    for(let i=0; i<4; i++){
+        const letter = String.fromCharCode(65+i); // A, B, C, D
+        const op = safe(q.options?.[i]);
+        const active = answers[current] === letter ? "selected" : "";
+
+        html += `
+        <button class="option ${active}" onclick="selectAns('${letter}')">
+        ${letter}. ${op}
+        </button>
+        `;
     }
 
-    window.renderQuiz = function() {
-        const quizDisplay = document.getElementById("quizDisplay");
-        const q = allQuestions[currentIdx];
-        const options = q.options || []; 
-        const correct = q.answer;
+    html += "<br>";
+    if(current > 0) html += `<button class="nav-btn" onclick="prevQ()">Previous</button>`;
+    if(current < questions.length - 1) html += `<button class="nav-btn" onclick="nextQ()">Next</button>`;
+    html += `<button class="submit-btn" onclick="submitQuiz()">Submit</button></div>`;
 
-        quizDisplay.innerHTML = `
-            <div class="card">
-                <span style="color:red; font-weight:bold;">प्रश्न: ${currentIdx + 1} / ${allQuestions.length}</span>
-                <p style="margin:15px 0; font-weight:bold;">${q.question}</p>
-                <div id="optArea">
-                    ${options.map((opt, i) => `
-                        <button class="option" onclick="window.checkAns(this, \`${opt}\`, \`${correct}\`)">
-                            ${String.fromCharCode(65+i)}. ${opt}
-                        </button>
-                    `).join('')}
-                </div>
-                <div class="btn-row">
-                    <button class="btn" style="background:#6c757d; flex:1; ${currentIdx===0?'display:none':''}" onclick="window.nav(-1)">Previous</button>
-                    ${currentIdx === allQuestions.length - 1 
-                        ? `<button class="btn" style="background:var(--success); flex:1;" onclick="window.showFinal()">Submit Result</button>` 
-                        : `<button class="btn" style="background:var(--dark); flex:1;" onclick="window.nav(1)">Next</button>`
-                    }
-                </div>
-            </div>
-        `;
+    document.getElementById("quizBox").innerHTML = html;
+}
 
-        if(quizHistory[currentIdx]) {
-            const btns = document.querySelectorAll('.option');
-            btns.forEach(b => {
-                b.disabled = true;
-                if(b.innerText.includes(quizHistory[currentIdx].selected)) b.classList.add(quizHistory[currentIdx].isCorrect ? 'correct' : 'wrong');
-                if(b.innerText.includes(correct)) b.classList.add('correct');
-            });
-        }
-    };
+/* ACTIONS */
+window.selectAns = function(letter){
+    answers[current] = letter; 
+    showQuestion();
+};
 
-    window.checkAns = function(btn, selected, correct) {
-        const btns = document.querySelectorAll('.option');
-        btns.forEach(b => b.disabled = true);
-        const isCorrect = (selected === correct);
-        if(isCorrect) { btn.classList.add('correct'); score++; }
-        else { btn.classList.add('wrong'); btns.forEach(b => { if(b.innerText.includes(correct)) b.classList.add('correct'); }); }
-        quizHistory[currentIdx] = { selected, isCorrect };
-    };
+window.nextQ=function(){
+if(current<questions.length-1){
+current++;
+showQuestion();
+}
+};
 
-    window.nav = function(dir) {
-        currentIdx += dir;
-        window.renderQuiz();
-    };
+window.prevQ=function(){
+if(current>0){
+current--;
+showQuestion();
+}
+};
 
-    window.showFinal = function() {
-        document.getElementById("quizDisplay").style.display = "none";
-        const rb = document.getElementById("resultBox");
-        rb.style.display = "block";
-        rb.innerHTML = `<h3>📊 Your Final Score</h3><p style="font-size:35px; color:#007bff; margin:15px 0;">${score} / ${allQuestions.length}</p>
-                        <button class="btn" style="background:var(--primary); width:100%;" onclick="location.reload()">Restart Quiz</button>`;
-    };
+/* SUBMIT */
+window.submitQuiz=function(){
 
-    document.getElementById("openPdfBtn").onclick = () => {
-        const year = document.getElementById("yearSelect").value;
-        const post = document.getElementById("postSelect").value;
-        if(!year || !post) return alert("Pehle Year aur Post select karein!");
-        const url = `${BACKEND_URL}/get-pdf?year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}`;
-        window.open(url, "_blank");
-    };
+let score=0;
+let attempted=0;
+let review="";
 
-    document.getElementById("yearSelect").onchange = fetchQuestions;
-    document.getElementById("postSelect").onchange = fetchQuestions;
-    document.getElementById("startQuizBtn").onclick = () => {
-        if(allQuestions.length === 0) return alert("Pehle Year aur Post select karke load hone dein!");
-        document.getElementById("pdfSection").style.display = "none";
-        document.getElementById("startQuizBtn").style.display = "none";
-        document.getElementById("quizDisplay").style.display = "block";
-        window.renderQuiz();
-    };
+for(let i=0;i<questions.length;i++){
+
+const q=questions[i];
+const user=answers[i] || "Not Answered";
+const ans=safe(q.answer);
+const ok = String(user).trim().toUpperCase() === String(ans).trim().toUpperCase();
+if(user!=="Not Answered") attempted++;
+if(ok) score++;
+
+review+=`
+<div class="card" style="border-left:6px solid ${ok ? '#28a745':'#dc3545'};">
+<b>Q${q.serial}. ${safe(q.question)}</b>
+
+<div class="small">
+Your Answer:
+<span style="color:${ok ? 'green':'red'};font-weight:bold;">
+${user}
+</span>
+</div>
+
+<div class="small">
+Correct Answer:
+<span style="color:green;font-weight:bold;">
+${ans}
+</span>
+</div>
+
+<div class="small" style="font-weight:bold;color:${ok ? 'green':'red'};">
+${ok ? '✔ Correct':'✘ Wrong'}
+</div>
+</div>
+`;
+}
+
+document.getElementById("quizBox").style.display="none";
+document.getElementById("resultBox").style.display="block";
+
+document.getElementById("resultBox").innerHTML=`
+<div class="card" style="text-align:center;">
+<h2>Quiz Result</h2>
+
+<p><b>Total Questions:</b> ${questions.length}</p>
+<p><b>Attempted:</b> ${attempted}</p>
+<p><b>Correct:</b> ${score}</p>
+<p><b>Wrong:</b> ${attempted-score}</p>
+<p><b>Score:</b> ${score}/${questions.length}</p>
+
+<button class="start-btn" onclick="location.reload()">
+Restart Quiz
+</button>
+</div>
+
+${review}
+`;
+};
+
+/* EVENTS */
+document.getElementById("pyqSelect").addEventListener("change",loadAll);
+document.getElementById("postSelect").addEventListener("change",loadAll);
+document.getElementById("startBtn").addEventListener("click",startQuiz);
+
+loadAll();
+
 </script>
+
 </body>
 </html>
-
