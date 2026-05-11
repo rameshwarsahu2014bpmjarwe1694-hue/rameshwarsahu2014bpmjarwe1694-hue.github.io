@@ -192,7 +192,16 @@ ${currentIdx !== allQuestions.length - 1
             });
         }
     };
+/* Line 203 aur 205 ke beech mein ye paste karein */
 
+window.nav = function(step) {
+    const newIdx = currentIdx + step;
+    if (newIdx >= 0 && newIdx < allQuestions.length) {
+        currentIdx = newIdx;
+        window.renderQuiz();
+    }
+};
+    
     window.checkAns = function(btn, selected, correct) {
 
     const btns = document.querySelectorAll('.option');
