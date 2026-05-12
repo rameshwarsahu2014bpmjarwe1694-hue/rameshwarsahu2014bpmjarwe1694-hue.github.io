@@ -386,14 +386,13 @@ window.nav = function(step) {
         return alert("Pehle Year aur Post select karein!");
 
     // PDF filename generate
-    const fileName =
-    `${year}-${post}.pdf`;
+    const pdfURL =
+`${BACKEND_URL}/get-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}`;
 
-    // Open protected viewer
-    const viewerURL =
-    `viewer.html?file=${encodeURIComponent(fileName)}`;
+const viewerURL =
+`viewer.html?pdf=${encodeURIComponent(pdfURL)}`;
 
-    window.open(viewerURL, "_blank");
+window.open(viewerURL, "_blank");
 
 };
 
