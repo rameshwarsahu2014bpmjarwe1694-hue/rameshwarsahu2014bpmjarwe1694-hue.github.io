@@ -371,25 +371,38 @@ window.nav = function(step) {
     `;
 };
 
-    document.getElementById("openPdfBtn").onclick = () => {
+    document.getElementById("openPdfBtn").onclick = async () => {
+    const year = document.getElementById("yearSelect").value;
+    const post = document.getElementById("postSelect").value;
 
-    const year =
-    document.getElementById("yearSelect").value;
+    if (!currentUserEmail) return alert("Pehle login karein!");
+    if (!year || !post) return alert("Pehle Year aur Post select karein!");
 
-    const post =
-    document.getElementById("postSelect").value;
+    const openBtn = document.getElementById("openPdfBtn");
+    const originalText = openBtn.innerText;
+    openBtn.innerText = "Securing Connection... ⏳";
+    openBtn.disabled = true;
 
-    if(!currentUserEmail)
-        return alert("Pehle login karein!");
+    try {
+        const url = `${BACKEND_URL}/get-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}`;
 
-    if(!year || !post)
-        return alert("Pehle Year aur Post select karein!");
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: { 'X-Source-Auth': 'RSH-GDS-SECURE-ACCESS' }
+        });
 
-    const url =
-`${BACKEND_URL}/get-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}`;
+        if (!response.ok) throw new Error("File load nahi ho saki.");
 
-    window.open(url, "_blank");
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        window.open(blobUrl, "_blank");
 
+    } catch (err) {
+        alert("Error: " + err.message);
+    } finally {
+        openBtn.innerText = originalText;
+        openBtn.disabled = false;
+    }
 };
 
     document.getElementById("yearSelect").onchange = fetchQuestions;
