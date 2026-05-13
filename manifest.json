@@ -4,7 +4,7 @@
   "short_name": "GDS Notes",
   "description": "Complete GDS Departmental Exam Notes, Mock Tests, PDF Study Material and Practice Platform",
   "start_url": "/gdsnotes/",
-  "scope": "/gdsnotes/",
+  "scope": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#8d151a",
