@@ -3,17 +3,17 @@
   "name": "GDS Departmental Exam Notes",
   "icons": [
     {
-      "src": "https://rameshwarsahu2014bpmjarwe1694-hue.github.io/GDS-DEPARTMETAL-EXAM-NOTES/icon-192.png",
+      "src": "icon-192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "https://rameshwarsahu2014bpmjarwe1694-hue.github.io/GDS-DEPARTMETAL-EXAM-NOTES/icon-512.png",
+      "src": "icon-512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
-  "start_url": "/GDS-DEPARTMETAL-EXAM-NOTES/index.html",
+  "start_url": "./",
   "background_color": "#2c3e50",
   "display": "standalone",
   "scope": "/GDS-DEPARTMETAL-EXAM-NOTES/",
