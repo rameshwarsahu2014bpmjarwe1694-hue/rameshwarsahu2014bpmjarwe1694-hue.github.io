@@ -17,7 +17,30 @@
 
   "lang": "hi",
   "dir": "ltr",
-
+"screenshots": [
+  {
+    "src": "Screenshots1dashboard.jpg",
+    "sizes": "720x1604",
+    "type": "image/jpeg",
+    "form_factor": "narrow",
+    "label": "GDS Notes Home Screen"
+  },
+  {
+    "src": "Screenshotpyq.jpg",
+    "sizes": "720x1604",
+    "type": "image/jpeg",
+    "form_factor": "narrow",
+    "label": "Study Material View"
+  },
+  {
+  "src": "Screenshotsquiz.jpg",
+    "sizes": "720x1604",
+    "type": "image/jpeg",
+    "form_factor": "narrow",
+    "label": "mock test View"
+  }
+]
+  
   "icons": [
     {
       "src": "/icon-192.png",
