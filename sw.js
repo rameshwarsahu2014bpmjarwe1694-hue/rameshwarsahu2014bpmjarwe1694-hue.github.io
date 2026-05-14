@@ -1,12 +1,12 @@
-const CACHE_NAME = "gds-cache-v2";
+const CACHE_NAME = "gds-cache-v1";
 
 const urlsToCache = [
-  "/",
-  "/index.html",
-  "/manifest.json",
-  "/icon-192.png",
-  "/icon-512.png",
-  "/RSH.png"
+  "/gdsnotes/",
+  "/gdsnotes/index.html",
+  "/gdsnotes/manifest.json",
+  "/gdsnotes/icon-192.png",
+  "/gdsnotes/icon-512.png",
+  "/gdsnotes/RSH.png"
 ];
 
 // INSTALL
