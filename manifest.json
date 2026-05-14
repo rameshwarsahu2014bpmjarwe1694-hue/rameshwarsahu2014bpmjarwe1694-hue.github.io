@@ -2,6 +2,7 @@
   "id": "io.gdsnotes.rshtwa",
   "name": "RAMESHWAR SAHU GDS DEPARTMENTAL EXAM APP",
   "short_name": "GDS Notes",
+  "description": "Complete GDS Departmental Exam Notes",
 
   "start_url": "/",
   "scope": "/",
@@ -12,7 +13,10 @@
   "background_color": "#ffffff",
   "theme_color": "#8d151a",
 
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
+
+  "lang": "hi",
+  "dir": "ltr",
 
   "icons": [
     {
