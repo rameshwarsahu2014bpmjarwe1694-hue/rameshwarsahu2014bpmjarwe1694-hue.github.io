@@ -96,7 +96,24 @@ alert(error.message);
 });
 
 };
+window.resetPassword = function () {
 
+  let email = document.getElementById("loginEmail").value.trim();
+
+  if(email === ""){
+    alert("Please enter your registered email first.");
+    return;
+  }
+
+  window.sendPasswordResetEmail(window.auth, email)
+  .then(() => {
+    alert("Password reset link sent.\n\nCheck Inbox + Spam folder.");
+  })
+  .catch((error) => {
+    alert(error.message);
+  });
+
+};
 /* =========================
 REGISTER
 ========================= */
