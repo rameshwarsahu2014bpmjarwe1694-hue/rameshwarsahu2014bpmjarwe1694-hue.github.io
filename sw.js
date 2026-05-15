@@ -1,4 +1,7 @@
-const CACHE_NAME = 'gds-notes-v6';
+const CACHE_PREFIX = 'gds-notes-';
+
+/* AUTO CACHE VERSION */
+const CACHE_NAME = CACHE_PREFIX + Date.now();
 
 // ALL PATHS UPDATED FOR /gdsnotes/
 const ASSETS = [
@@ -13,10 +16,14 @@ const ASSETS = [
 self.addEventListener('install', (event) => {
 
   event.waitUntil(
+
     caches.open(CACHE_NAME)
       .then((cache) => {
+
         return cache.addAll(ASSETS);
+
       })
+
   );
 
   self.skipWaiting();
@@ -34,9 +41,16 @@ self.addEventListener('activate', (event) => {
 
         cacheNames.map((cache) => {
 
-          if (cache !== CACHE_NAME) {
+          /* DELETE ONLY OLD APP CACHE */
+          if (
+            cache.startsWith(CACHE_PREFIX) &&
+            cache !== CACHE_NAME
+          ) {
 
-            console.log('Service Worker: Clearing Old Cache');
+            console.log(
+              'Service Worker: Clearing Old Cache ->',
+              cache
+            );
 
             return caches.delete(cache);
 
@@ -46,16 +60,19 @@ self.addEventListener('activate', (event) => {
 
       );
 
-    })
+    }).then(() => self.clients.claim())
 
   );
-
-  return self.clients.claim();
 
 });
 
 // FETCH
 self.addEventListener('fetch', (event) => {
+
+  /* ONLY HANDLE GET REQUESTS */
+  if (event.request.method !== 'GET') {
+    return;
+  }
 
   event.respondWith(
 
@@ -63,30 +80,57 @@ self.addEventListener('fetch', (event) => {
 
       .then((networkResponse) => {
 
-        return caches.open(CACHE_NAME).then((cache) => {
+        return caches.open(CACHE_NAME)
+          .then((cache) => {
 
-          // Cache only valid requests
-          if (event.request.url.startsWith('http')) {
+            /* CACHE ONLY VALID HTTP REQUESTS */
+            if (
+              event.request.url.startsWith('http')
+            ) {
 
-            cache.put(event.request, networkResponse.clone());
+              cache.put(
+                event.request,
+                networkResponse.clone()
+              );
 
-          }
+            }
 
-          return networkResponse;
+            return networkResponse;
 
-        });
+          });
 
       })
 
       .catch(() => {
 
-        return caches.match(event.request);
+        return caches.match(event.request)
+          .then((cachedResponse) => {
+
+            return (
+              cachedResponse ||
+              caches.match('/gdsnotes/index.html')
+            );
+
+          });
 
       })
 
   );
 
 });
+
+
+/* FORCE UPDATE MESSAGE */
+self.addEventListener('message', (event) => {
+
+  if (event.data === 'SKIP_WAITING') {
+
+    self.skipWaiting();
+
+  }
+
+});
+
 
 // BACKGROUND SYNC
 self.addEventListener('sync', (event) => {
@@ -96,7 +140,9 @@ self.addEventListener('sync', (event) => {
     event.waitUntil(
 
       Promise.resolve(
-        console.log('Background Sync: Data being sent to server...')
+        console.log(
+          'Background Sync: Data being sent to server...'
+        )
       )
 
     );
@@ -113,7 +159,9 @@ self.addEventListener('periodicsync', (event) => {
     event.waitUntil(
 
       Promise.resolve(
-        console.log('Periodic Sync: Checking for new content...')
+        console.log(
+          'Periodic Sync: Checking for new content...'
+        )
       )
 
     );
@@ -125,15 +173,29 @@ self.addEventListener('periodicsync', (event) => {
 // PUSH NOTIFICATION
 self.addEventListener('push', (event) => {
 
+  let notificationData = {};
+
+  try {
+
+    notificationData =
+      event.data ? event.data.json() : {};
+
+  } catch {
+
+    notificationData = {};
+
+  }
+
   const options = {
 
-    body: 'Naya study material update ho gaya hai!',
+    body:
+      notificationData.body ||
+      'Naya study material update ho gaya hai!',
 
     icon: '/gdsnotes/icon-192.png',
 
     badge: '/gdsnotes/icon-192.png',
 
-    // FIXED VIBRATE ERROR
     vibrate: [200, 100, 200],
 
     data: {
@@ -145,8 +207,12 @@ self.addEventListener('push', (event) => {
   event.waitUntil(
 
     self.registration.showNotification(
+
+      notificationData.title ||
       'GDS Notes Update',
+
       options
+
     )
 
   );
@@ -171,7 +237,7 @@ self.addEventListener('notificationclick', (event) => {
         let client = windowClients[i];
 
         if (
-          client.url === event.notification.data.url &&
+          client.url.includes('/gdsnotes/') &&
           'focus' in client
         ) {
 
