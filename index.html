@@ -112,17 +112,33 @@
 
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('https://rameshwarsahu2014bpmjarwe1694-hue.github.io/sw.js')
-                .then(reg => {
-                    console.log('SW Registered!', reg);
-                    if ('sync' in reg) {
-                        reg.sync.register('sync-exam-data').catch(err => console.log('Sync failed', err));
-                    }
-                })
-                .catch(err => console.log('SW Registration Failed', err));
-            });
-        }
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('/sw.js');
+      console.log('Service Worker Registered');
+
+      // 1. Request Background Sync
+      if ('sync' in reg) {
+        await reg.sync.register('sync-exam-data');
+      }
+
+      // 2. Request Periodic Sync (Requires Permission)
+      const status = await navigator.permissions.query({ name: 'periodic-background-sync' });
+      if (status.state === 'granted' && 'periodicSync' in reg) {
+        await reg.periodicSync.register('get-latest-notes', {
+          minInterval: 24 * 60 * 60 * 1000 // 24 hours
+        });
+      }
+
+      // 3. Request Push Notification Permission
+      Notification.requestPermission();
+
+    } catch (err) {
+      console.error('Registration failed:', err);
+    }
+  });
+}
+
     </script>
 
 </body>
