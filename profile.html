@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
 <title>Candidate Profile Card</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -27,6 +31,7 @@ body{
 }
 
 /* Background Glow */
+
 body::before{
     content:"";
     position:absolute;
@@ -48,6 +53,7 @@ body::after{
 }
 
 /* Profile Card */
+
 .profile-card{
     width:360px;
     padding:30px 25px;
@@ -65,6 +71,7 @@ body::after{
 }
 
 /* Animated Border */
+
 .profile-card::before{
     content:"";
     position:absolute;
@@ -83,21 +90,35 @@ body::after{
 }
 
 @keyframes borderMove{
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
+
+    0%{
+        background-position:0% 50%;
+    }
+
+    50%{
+        background-position:100% 50%;
+    }
+
+    100%{
+        background-position:0% 50%;
+    }
+
 }
 
 @keyframes floatCard{
+
     0%,100%{
         transform:translateY(0px);
     }
+
     50%{
         transform:translateY(-10px);
     }
+
 }
 
 /* Profile Image */
+
 .profile-img{
     width:150px;
     height:150px;
@@ -115,19 +136,28 @@ body::after{
 }
 
 /* Candidate Name */
+
 .name{
     margin-top:20px;
     font-size:34px;
     font-weight:700;
     letter-spacing:1px;
-    background:linear-gradient(45deg,#00f0ff,#ff00ea,#ffd500);
+    background:linear-gradient(
+        45deg,
+        #00f0ff,
+        #ff00ea,
+        #ffd500
+    );
+
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
+
     text-shadow:
         0 4px 15px rgba(0,0,0,0.3);
 }
 
 /* Role */
+
 .role{
     color:#ddd;
     margin-top:8px;
@@ -135,13 +165,38 @@ body::after{
     letter-spacing:1px;
 }
 
+/* Email */
+
+.email{
+    color:#ffffff;
+    margin-top:8px;
+    font-size:14px;
+    opacity:0.9;
+    word-break:break-word;
+}
+
+/* Status */
+
+.status{
+    margin-top:10px;
+    color:#00ff99;
+    font-weight:600;
+    font-size:14px;
+}
+
 /* Change Name Button */
+
 .edit-btn{
     margin-top:15px;
     padding:10px 20px;
     border:none;
     border-radius:30px;
-    background:linear-gradient(45deg,#00c3ff,#ff00ea);
+    background:linear-gradient(
+        45deg,
+        #00c3ff,
+        #ff00ea
+    );
+
     color:#fff;
     font-weight:600;
     cursor:pointer;
@@ -153,6 +208,7 @@ body::after{
 }
 
 /* Stats */
+
 .stats{
     display:flex;
     justify-content:space-between;
@@ -187,6 +243,7 @@ body::after{
 }
 
 /* Buttons */
+
 .btn-group{
     margin-top:30px;
     display:flex;
@@ -205,15 +262,29 @@ body::after{
 }
 
 .follow-btn{
-    background:linear-gradient(45deg,#00c3ff,#0066ff);
+    background:linear-gradient(
+        45deg,
+        #00c3ff,
+        #0066ff
+    );
+
     color:#fff;
-    box-shadow:0 5px 15px rgba(0,195,255,0.4);
+
+    box-shadow:
+        0 5px 15px rgba(0,195,255,0.4);
 }
 
 .message-btn{
-    background:linear-gradient(45deg,#ff0066,#ff4d00);
+    background:linear-gradient(
+        45deg,
+        #ff0066,
+        #ff4d00
+    );
+
     color:#fff;
-    box-shadow:0 5px 15px rgba(255,0,102,0.4);
+
+    box-shadow:
+        0 5px 15px rgba(255,0,102,0.4);
 }
 
 .btn:hover{
@@ -221,6 +292,7 @@ body::after{
 }
 
 /* Views */
+
 .views{
     margin-top:25px;
     color:#fff;
@@ -238,6 +310,7 @@ body::after{
 }
 
 </style>
+
 </head>
 
 <body>
@@ -245,54 +318,138 @@ body::after{
 <div class="profile-card">
 
     <!-- Profile Image -->
-    <img src="https://i.imgur.com/8Km9tLL.jpg" class="profile-img" id="profileImage">
+
+    <img
+    src="/gdsnotes/icon-192.png"
+    class="profile-img"
+    id="profileImage">
 
     <!-- Candidate Name -->
-    <h1 class="name" id="candidateName">RAMESHWAR SAHU</h1>
+
+    <h1
+    class="name"
+    id="candidateName">
+
+        Loading...
+
+    </h1>
 
     <!-- Role -->
-    <p class="role">GDS Departmental Exam Candidate</p>
+
+    <p class="role">
+        GDS Departmental Exam Candidate
+    </p>
+
+    <!-- Email -->
+
+    <div
+    class="email"
+    id="candidateEmail">
+
+        Loading...
+
+    </div>
+
+    <!-- Status -->
+
+    <div class="status">
+        ● LIVE FIREBASE ACCOUNT CONNECTED
+    </div>
 
     <!-- Change Name -->
-    <button class="edit-btn" onclick="changeName()">
+
+    <button
+    class="edit-btn"
+    onclick="changeName()">
+
         Change Name
+
     </button>
 
     <!-- Stats -->
+
     <div class="stats">
 
         <div class="stat-box">
-            <div class="stat-number">125</div>
-            <div class="stat-label">Mock Tests</div>
+
+            <div
+            class="stat-number"
+            id="userCount">
+
+                0
+
+            </div>
+
+            <div class="stat-label">
+                Users
+            </div>
+
         </div>
 
         <div class="stat-box">
-            <div class="stat-number">98%</div>
-            <div class="stat-label">Accuracy</div>
+
+            <div class="stat-number">
+                98%
+            </div>
+
+            <div class="stat-label">
+                Accuracy
+            </div>
+
         </div>
 
         <div class="stat-box">
-            <div class="stat-number">1st</div>
-            <div class="stat-label">Rank</div>
+
+            <div class="stat-number">
+                1st
+            </div>
+
+            <div class="stat-label">
+                Rank
+            </div>
+
         </div>
 
     </div>
 
     <!-- Buttons -->
+
     <div class="btn-group">
-        <button class="btn follow-btn">Follow</button>
-        <button class="btn message-btn">Message</button>
+
+        <button
+        class="btn follow-btn"
+        onclick="window.location.href='dashboard.html'">
+
+            Dashboard
+
+        </button>
+
+        <button
+        class="btn message-btn"
+        onclick="logoutUser()">
+
+            Logout
+
+        </button>
+
     </div>
 
     <!-- Views -->
+
     <div class="views">
+
         Total Views :
-        <span id="viewCount">0</span>
+
+        <span id="viewCount">
+            0
+        </span>
+
     </div>
 
 </div>
 
-<!-- FIREBASE PROFILE CONNECT -->
+<!-- FIREBASE -->
+
 <script type="module">
 
 import { initializeApp }
@@ -300,7 +457,8 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
     getAuth,
-    onAuthStateChanged
+    onAuthStateChanged,
+    signOut
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
@@ -308,7 +466,9 @@ import {
     getFirestore,
     doc,
     getDoc,
-    setDoc
+    setDoc,
+    collection,
+    getDocs
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -316,17 +476,23 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
 
-    apiKey: "AIzaSyDjzmo0A4KhOkrqFQdOyCEek6bsPF-UVPQ",
+    apiKey:
+    "AIzaSyDjzmo0A4KhOkrqFQdOyCEek6bsPF-UVPQ",
 
-    authDomain: "gds-departmental-exam-studyhub.firebaseapp.com",
+    authDomain:
+    "gds-departmental-exam-studyhub.firebaseapp.com",
 
-    projectId: "gds-departmental-exam-studyhub",
+    projectId:
+    "gds-departmental-exam-studyhub",
 
-    storageBucket: "gds-departmental-exam-studyhub.appspot.com",
+    storageBucket:
+    "gds-departmental-exam-studyhub.appspot.com",
 
-    messagingSenderId: "759916756080",
+    messagingSenderId:
+    "759916756080",
 
-    appId: "1:759916756080:web:7f2c0e66458bd007e888b5"
+    appId:
+    "1:759916756080:web:7f2c0e66458bd007e888b5"
 
 };
 
@@ -338,75 +504,219 @@ const auth = getAuth(app);
 
 const db = getFirestore(app);
 
+/* VIEW COUNTER */
 
-/* LOAD USER */
+let views =
+localStorage.getItem("profileViews");
 
-onAuthStateChanged(auth, async(user)=>{
+if(!views){
+
+    views = 1;
+
+}else{
+
+    views = parseInt(views) + 1;
+
+}
+
+localStorage.setItem(
+    "profileViews",
+    views
+);
+
+document.getElementById(
+    "viewCount"
+).innerText = views;
+
+/* USER COUNT */
+
+async function loadUserCount(){
+
+    try{
+
+        const querySnapshot =
+        await getDocs(
+            collection(db,"candidates")
+        );
+
+        document.getElementById(
+            "userCount"
+        ).innerText = querySnapshot.size;
+
+    }catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+loadUserCount();
+
+/* AUTH STATE */
+
+onAuthStateChanged(auth,
+async(user)=>{
 
     if(user){
 
-        const userRef = doc(db,"candidates",user.uid);
+        const userRef =
+        doc(db,"candidates",user.uid);
 
-        const snap = await getDoc(userRef);
+        const snap =
+        await getDoc(userRef);
 
         if(snap.exists()){
 
             const data = snap.data();
 
-            document.getElementById("candidateName").innerText =
-            data.name || user.email.split("@")[0];
+            document.getElementById(
+                "candidateName"
+            ).innerText =
+            data.name ||
+            user.email.split("@")[0];
+
+            document.getElementById(
+                "candidateEmail"
+            ).innerText =
+            data.email ||
+            user.email;
 
         }else{
 
-            const defaultName = user.email.split("@")[0];
+            const defaultName =
+            user.email.split("@")[0];
 
             await setDoc(userRef,{
-                name: defaultName,
-                email:user.email
+
+                name:defaultName,
+
+                email:user.email,
+
+                createdAt:
+                new Date().toISOString()
+
             });
 
-            document.getElementById("candidateName").innerText =
+            document.getElementById(
+                "candidateName"
+            ).innerText =
             defaultName;
+
+            document.getElementById(
+                "candidateEmail"
+            ).innerText =
+            user.email;
+
         }
 
     }else{
 
-        window.location.href="login.html";
+        window.location.href =
+        "/gdsnotes/login.html";
 
     }
 
 });
 
-
 /* CHANGE NAME */
 
-window.changeName = async function(){
+window.changeName =
+async function(){
 
-    const user = auth.currentUser;
+    const user =
+    auth.currentUser;
 
     if(!user){
 
         alert("Please Login");
 
         return;
+
     }
 
-    let newName = prompt("Enter Candidate Name");
+    let newName =
+    prompt(
+        "Enter Candidate Name"
+    );
 
-    if(newName && newName.trim() !== ""){
+    if(
+        newName &&
+        newName.trim() !== ""
+    ){
 
-        await setDoc(
-            doc(db,"candidates",user.uid),
-            {
-                name:newName,
-                email:user.email
-            }
-        );
+        newName =
+        newName.trim();
 
-        document.getElementById("candidateName").innerText =
-        newName;
+        try{
 
-        alert("Name Updated");
+            await setDoc(
+
+                doc(
+                    db,
+                    "candidates",
+                    user.uid
+                ),
+
+                {
+
+                    name:newName,
+
+                    email:user.email,
+
+                    updatedAt:
+                    new Date().toISOString()
+
+                },
+
+                {
+
+                    merge:true
+
+                }
+
+            );
+
+            document.getElementById(
+                "candidateName"
+            ).innerText =
+            newName;
+
+            alert(
+                "Name Updated Successfully"
+            );
+
+        }catch(error){
+
+            console.log(error);
+
+            alert(
+                "Update Failed"
+            );
+
+        }
+
+    }
+
+}
+
+/* LOGOUT */
+
+window.logoutUser =
+async function(){
+
+    try{
+
+        await signOut(auth);
+
+        alert("Logout Successful");
+
+        window.location.href =
+        "/gdsnotes/login.html";
+
+    }catch(error){
+
+        console.log(error);
 
     }
 
