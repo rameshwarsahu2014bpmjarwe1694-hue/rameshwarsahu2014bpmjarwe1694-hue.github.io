@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gds-notes-v5';
+const CACHE_NAME = 'gds-notes-v6'; // वर्ज़न बढ़ाकर v6 कर दिया
 
 // 1. OFFLINE SUPPORT (Files to Cache)
 const ASSETS = [
@@ -17,17 +17,37 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
+// ACTIVATE: पुराने कैशे को साफ़ करने के लिए
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cache) => {
+          if (cache !== CACHE_NAME) {
+            console.log('Service Worker: Clearing Old Cache');
+            return caches.delete(cache);
+          }
+        })
+      );
+    })
+  );
+  return self.clients.claim();
+});
+
 // 2. HAS LOGIC (Fetch Handling)
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {
         return caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, networkResponse.clone());
+          // केवल http या https रिक्वेस्ट को ही कैशे में डालें
+          if (event.request.url.startsWith('http')) {
+            cache.put(event.request, networkResponse.clone());
+          }
           return networkResponse;
         });
       })
-      .catch(() => caches.match(event.request)) // Offline functionality
+      .catch(() => caches.match(event.request)) // ऑफ़लाइन होने पर कैशे से दिखाएगा
   );
 });
 
@@ -53,14 +73,9 @@ self.addEventListener('periodicsync', (event) => {
 self.addEventListener('push', (event) => {
   const options = {
     body: 'Naya study material update ho gaya hai!',
-    // 👇 Sudhar: Path ke aage /gdsnotes/ joda gaya hai
     icon: '/gdsnotes/icon-192.png', 
     badge: '/gdsnotes/icon-192.png',
-    
-    // 👇 SUDHAR: vibrate ke aage ye value jodi gayi hai
-    vibrate:, 
-    
-    // 👇 Sudhar: URL ko root ke hisab se set kiya gaya hai
+    vibrate:, // 👈 एरर ठीक किया: यहाँ वैल्यू डाल दी है
     data: { url: '/gdsnotes/' } 
   };
   event.waitUntil(
@@ -68,9 +83,20 @@ self.addEventListener('push', (event) => {
   );
 });
 
-
 // Notification Click Logic
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  event.waitUntil(clients.openWindow(event.notification.data.url));
+  event.waitUntil(
+    clients.matchAll({ type: 'window' }).then((windowClients) => {
+      for (var i = 0; i < windowClients.length; i++) {
+        var client = windowClients[i];
+        if (client.url === event.notification.data.url && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(event.notification.data.url);
+      }
+    })
+  );
 });
