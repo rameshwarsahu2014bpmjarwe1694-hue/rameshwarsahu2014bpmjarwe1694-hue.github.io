@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>RAMESHWAR SAHU GDS Departmental Exam Study Hub</title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#8d151a">
 
@@ -18,18 +19,8 @@
     <link rel="apple-touch-icon" sizes="512x512" href="/gdsnotes/icon-512.png">
 
     <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial,sans-serif;
-        }
-
-        body{
-            background:#f4f6fb;
-            color:#222;
-        }
+        *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+        body{background:#f4f6fb;color:#222;}
 
         .hero{
             background:linear-gradient(135deg,#8d151a,#c62828,#0d47a1);
@@ -38,32 +29,17 @@
             color:#fff;
         }
 
-        .hero-box{
-            max-width:900px;
-            margin:auto;
-        }
+        .hero-box{max-width:900px;margin:auto;}
 
         .logo{
-            width:230px;
-            height:230px;
-            border-radius:50%;
-            object-fit:cover;
-            border:4px solid #fff;
+            width:230px;height:230px;border-radius:50%;
+            object-fit:cover;border:4px solid #fff;
             box-shadow:0 6px 20px rgba(0,0,0,0.25);
             margin-bottom:15px;
         }
 
-        .hero h1{
-            font-size:32px;
-            margin-bottom:10px;
-            font-weight:bold;
-        }
-
-        .hero p{
-            font-size:17px;
-            margin:6px 0;
-            opacity:0.95;
-        }
+        .hero h1{font-size:32px;margin-bottom:10px;font-weight:bold;}
+        .hero p{font-size:17px;margin:6px 0;opacity:0.95;}
 
         .btn-group{
             margin-top:25px;
@@ -86,24 +62,10 @@
             text-align:center;
         }
 
-        .btn:hover{
-            transform:translateY(-3px);
-        }
-
-        .btn-login{
-            background:#fff;
-            color:#8d151a;
-        }
-
-        .btn-register{
-            background:#ffd600;
-            color:#000;
-        }
-
-        .btn-admin{
-            background:#111;
-            color:#fff;
-        }
+        .btn:hover{transform:translateY(-3px);}
+        .btn-login{background:#fff;color:#8d151a;}
+        .btn-register{background:#ffd600;color:#000;}
+        .btn-admin{background:#111;color:#fff;}
 
         .contact{
             background:#fff;
@@ -113,23 +75,14 @@
             border-bottom:1px solid #ddd;
         }
 
-        .contact span{
-            display:inline-block;
-            margin:6px 12px;
-            font-weight:bold;
-        }
+        .contact span{display:inline-block;margin:6px 12px;font-weight:bold;}
 
-        .section{
-            max-width:1000px;
-            margin:auto;
-            padding:30px 15px;
-        }
+        .section{max-width:1000px;margin:auto;padding:30px 15px;}
 
         .cards{
             display:grid;
             grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-            gap:18px;
-            margin-top:20px;
+            gap:18px;margin-top:20px;
         }
 
         .card{
@@ -141,14 +94,8 @@
             transition:0.3s;
         }
 
-        .card:hover{
-            transform:translateY(-5px);
-        }
-
-        .card h3{
-            color:#8d151a;
-            margin-bottom:10px;
-        }
+        .card:hover{transform:translateY(-5px);}
+        .card h3{color:#8d151a;margin-bottom:10px;}
 
         .disclaimer{
             background:#fff3f3;
@@ -167,262 +114,97 @@
             margin-top:40px;
         }
 
-        .footer-whatsapp{
-            width:42px;
-            margin-top:10px;
-        }
+        .footer-whatsapp{width:42px;margin-top:10px;}
 
         @media(max-width:768px){
-
-            .logo{
-                width:180px;
-                height:180px;
-            }
-
-            .hero h1{
-                font-size:24px;
-            }
-
-            .hero p{
-                font-size:15px;
-            }
-
-            .btn{
-                width:100%;
-                max-width:260px;
-            }
+            .logo{width:180px;height:180px;}
+            .hero h1{font-size:24px;}
+            .hero p{font-size:15px;}
+            .btn{width:100%;max-width:260px;}
         }
-
     </style>
 </head>
 
 <body>
 
 <section class="hero">
-
     <div class="hero-box">
 
         <img src="/gdsnotes/RSH.png?v=3" class="logo" alt="Logo">
 
         <h1>RAMESHWAR SAHU GDS DEPARTMENTAL EXAM STUDY HUB</h1>
-        <button onclick="installApp()" 
-style="padding:12px 18px; background:#fff; border:none; border-radius:8px; font-weight:bold;">
-📲 Install App
-</button>
-<script>
-let deferredPrompt;
 
-// PWA install event capture
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-});
-
-// Install function
-function installApp() {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-
-    deferredPrompt.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('User accepted install');
-      } else {
-        console.log('User dismissed install');
-      }
-
-      deferredPrompt = null;
-    });
-
-  } else {
-    alert("Install option not available yet. Open site in Chrome.");
-  }
-}
-</script>
+        <!-- FIXED INSTALL BUTTON -->
+        <button onclick="installApp()" style="padding:12px 18px;background:#fff;border:none;border-radius:8px;font-weight:bold;">
+            📲 Install App
+        </button>
 
         <p>Welcome to India’s Best GDS Preparation Platform</p>
-
         <p>Crack GDS DEPARTMENTAL Exam With Smart Study</p>
 
         <div class="btn-group">
-
-            <a href="/gdsnotes/login.html" class="btn btn-login">
-                Candidate Login
-            </a>
-
-            <a href="/gdsnotes/register.html" class="btn btn-register">
-                Register
-            </a>
-
-            <a href="/gdsnotes/admin.html" class="btn btn-admin">
-                Admin Login
-            </a>
-
+            <a href="/gdsnotes/login.html" class="btn btn-login">Candidate Login</a>
+            <a href="/gdsnotes/register.html" class="btn btn-register">Register</a>
+            <a href="/gdsnotes/admin.html" class="btn btn-admin">Admin Login</a>
         </div>
 
     </div>
-
 </section>
 
 <div class="contact">
-
     <span>📞 Contact Us: +91 8963999086</span>
-
     <span>🟢 WhatsApp: 8963999086</span>
-
     <span>📧 E-mail: gdsdepartmentalstudysupport@gmail.com</span>
-
 </div>
 
 <section class="section">
-
-    <h2 style="text-align:center;color:#8d151a;">
-        Why Choose Us?
-    </h2>
+    <h2 style="text-align:center;color:#8d151a;">Why Choose Us?</h2>
 
     <div class="cards">
-
-        <div class="card">
-            <h3>📘 Updated Notes</h3>
-            <p>
-                Latest syllabus based notes for MTS, Postman & PA/SA exam.
-            </p>
-        </div>
-
-        <div class="card">
-            <h3>📝 Mock Tests</h3>
-            <p>
-                Practice tests with score checking and result history.
-            </p>
-        </div>
-
-        <div class="card">
-            <h3>📚 PDF Study Material</h3>
-            <p>
-                Easy downloadable study content and PO Guide topics.
-            </p>
-        </div>
-
-        <div class="card">
-            <h3>🚀 Smart Preparation</h3>
-            <p>
-                Simple and fast learning platform for departmental exam.
-            </p>
-        </div>
-
+        <div class="card"><h3>📘 Updated Notes</h3><p>Latest syllabus based notes.</p></div>
+        <div class="card"><h3>📝 Mock Tests</h3><p>Practice tests with results.</p></div>
+        <div class="card"><h3>📚 PDF Study Material</h3><p>Downloadable content.</p></div>
+        <div class="card"><h3>🚀 Smart Preparation</h3><p>Fast learning platform.</p></div>
     </div>
 
     <div class="disclaimer">
-
         <h3>⚠️ डिस्क्लेमर (Disclaimer)</h3>
-
-        <p>
-            यह वेबसाइट और इसमें दी गई PDF केवल शैक्षिक उद्देश्यों के लिए हैं।
-            इसमें दी गई जानकारी डाक विभाग की आधिकारिक गाइड (PO Guide)
-            और सार्वजनिक डोमेन से ली गई है।
-            आधिकारिक पुष्टि के लिए कृपया इण्डिया पोस्ट की वेबसाइट देखें।
-        </p>
-
+        <p>यह वेबसाइट केवल शैक्षिक उद्देश्य के लिए है।</p>
     </div>
-
 </section>
 
 <footer>
-
     <p>Share This Website on WhatsApp</p>
 
     <a href="https://api.whatsapp.com/send?text=Check%20this%20useful%20website:%20https://rameshwarsahu2014bpmjarwe1694-hue.github.io/gdsnotes/" target="_blank">
-
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png"
-             class="footer-whatsapp">
-
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" class="footer-whatsapp">
     </a>
 
-    <p style="margin-top:15px;">
-        © 2026 Rameshwar Sahu
-    </p>
-
-    <p>Founded & Managed by Rameshwar Prasad Sahu</p>
-
-    <p>© All Rights Reserved.</p>
-
+    <p>© 2026 Rameshwar Sahu</p>
 </footer>
 
 <script>
+let deferredPrompt;
 
-if ('serviceWorker' in navigator) {
+window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
 
-    window.addEventListener('load', () => {
-
-        navigator.serviceWorker.register('/gdsnotes/sw.js', {
-            scope:'/gdsnotes/'
-        })
-
-        .then(async(reg) => {
-
-            console.log(
-                'Service Worker Registered Successfully with scope:',
-                reg.scope
-            );
-
-            if ('sync' in reg) {
-
-                try{
-
-                    await reg.sync.register('sync-exam-data');
-
-                }catch(e){
-
-                    console.log(e);
-
-                }
-            }
-
-            if ('periodicSync' in reg) {
-
-                const status = await navigator.permissions.query({
-                    name:'periodic-background-sync'
-                });
-
-                if (status.state === 'granted') {
-
-                    try{
-
-                        await reg.periodicSync.register(
-                            'get-latest-notes',
-                            {
-                                minInterval:24 * 60 * 60 * 1000
-                            }
-                        );
-
-                    }catch(e){
-
-                        console.log(e);
-
-                    }
-                }
-            }
-
-            if (Notification.permission !== 'granted') {
-
-                Notification.requestPermission();
-
-            }
-
-        })
-
-        .catch((err) => {
-
-            console.error(
-                'Service Worker Registration failed:',
-                err
-            );
-
-        });
-
-    });
-
+function installApp() {
+    if (!deferredPrompt) {
+        alert("Install option not available yet. Open in Chrome.");
+        return;
+    }
+    deferredPrompt.prompt();
+    deferredPrompt = null;
 }
 
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/gdsnotes/sw.js');
+    });
+}
 </script>
 
 </body>
