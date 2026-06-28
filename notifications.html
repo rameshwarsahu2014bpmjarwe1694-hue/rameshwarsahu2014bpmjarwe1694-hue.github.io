@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Notification Panel</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+  background:#f1f5f9;
+  padding:15px;
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+}
+
+.card{
+  background:#fff;
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:18px;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+h1{
+  text-align:center;
+  margin-bottom:20px;
+  color:#111827;
+}
+
+h2{
+  margin-bottom:12px;
+  color:#1e293b;
+}
+
+input, textarea{
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  border:1px solid #cbd5e1;
+  border-radius:10px;
+  outline:none;
+  font-size:15px;
+}
+
+textarea{
+  min-height:120px;
+  resize:vertical;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.btn{
+  background:#2563eb;
+  color:#fff;
+}
+
+.btn:hover{
+  background:#1d4ed8;
+}
+
+.notice{
+  border-left:5px solid #2563eb;
+  padding:14px;
+  margin-bottom:12px;
+  background:#eff6ff;
+  border-radius:10px;
+}
+
+.notice h3{
+  margin-bottom:6px;
+  color:#1e3a8a;
+}
+
+.notice p{
+  color:#334155;
+  margin-bottom:8px;
+  white-space:pre-wrap;
+}
+
+.notice small{
+  color:#64748b;
+}
+
+.deleteBtn{
+  margin-top:10px;
+  background:#dc2626;
+  color:#fff;
+  padding:8px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.deleteBtn:hover{
+  background:#b91c1c;
+}
+
+.empty{
+  text-align:center;
+  color:#64748b;
+  padding:20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🔔 Notification Panel</h1>
+
+<!-- Admin Panel -->
+<div class="card">
+<h2>Admin Add Notification</h2>
+
+<input type="text" id="title" placeholder="Notification Title">
+<textarea id="message" placeholder="Write notification details..."></textarea>
+
+<button class="btn" onclick="saveNotice()">Publish Notification</button>
+</div>
+
+<!-- Candidate View -->
+<div class="card">
+<h2>Latest Notifications</h2>
+<div id="noticeList" class="empty">Loading...</div>
+</div>
+
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+serverTimestamp,
+query,
+orderBy,
+onSnapshot,
+deleteDoc,
+doc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ===============================
+   YOUR FIREBASE CONFIG
+================================= */
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "XXXXXX",
+  appId: "XXXXXX"
+};
+/* =============================== */
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* SAVE NOTICE */
+window.saveNotice = async function(){
+
+  const title = document.getElementById("title").value.trim();
+  const message = document.getElementById("message").value.trim();
+
+  if(!title || !message){
+    alert("Fill all fields");
+    return;
+  }
+
+  try{
+    await addDoc(collection(db,"notifications"),{
+      title,
+      message,
+      createdAt: serverTimestamp()
+    });
+
+    document.getElementById("title").value="";
+    document.getElementById("message").value="";
+
+    alert("Notification Published Successfully");
+
+  }catch(error){
+    alert("Error : " + error.message);
+  }
+}
+
+/* LIVE LOAD */
+const q = query(
+  collection(db,"notifications"),
+  orderBy("createdAt","desc")
+);
+
+onSnapshot(q,(snapshot)=>{
+
+  const box = document.getElementById("noticeList");
+
+  if(snapshot.empty){
+    box.innerHTML = `<div class="empty">No Notifications Found</div>`;
+    return;
+  }
+
+  let html = "";
+
+  snapshot.forEach((docSnap)=>{
+
+    const data = docSnap.data();
+
+    let date = "Just Now";
+
+    if(data.createdAt){
+      date = data.createdAt.toDate().toLocaleString();
+    }
+
+    html += `
+      <div class="notice">
+        <h3>${escapeHTML(data.title)}</h3>
+        <p>${escapeHTML(data.message)}</p>
+        <small>${date}</small>
+        <button class="deleteBtn" onclick="deleteNotice('${docSnap.id}')">
+          Delete
+        </button>
+      </div>
+    `;
+  });
+
+  box.innerHTML = html;
+});
+
+/* DELETE */
+window.deleteNotice = async function(id){
+
+  if(!confirm("Delete this notification?")) return;
+
+  try{
+    await deleteDoc(doc(db,"notifications",id));
+    alert("Deleted");
+  }catch(error){
+    alert(error.message);
+  }
+}
+
+/* SECURITY ESCAPE */
+function escapeHTML(str){
+  return str
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+</script>
+
+</body>
+</html>

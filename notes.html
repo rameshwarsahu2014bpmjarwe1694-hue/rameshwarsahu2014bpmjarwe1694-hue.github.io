@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Notes</title>
+    <style>
+        *{ margin:0; padding:0; box-sizing:border-box; font-family:Arial,Helvetica,sans-serif; }
+        body{ background:#f4f6f9; padding:15px; }
+        .container{ max-width:1000px; margin:auto; }
+        .topbar{ background:#b30000; color:#fff; padding:16px; text-align:center; font-size:24px; font-weight:700; border-radius:14px; margin-bottom:16px; }
+        .tools{ display:grid; grid-template-columns: 1.5fr 1fr 1fr; gap:12px; margin-bottom:16px; }
+        input,select{ width:100%; padding:13px; border:1px solid #ccc; border-radius:12px; font-size:15px; outline:none; background:#fff; }
+        #notesList{ display:grid; gap:14px; }
+        .note{ background:#fff; padding:18px; border-radius:16px; box-shadow:0 5px 14px rgba(0,0,0,.08); }
+        .note h3{ font-size:20px; margin-bottom:8px; color:#111; }
+        .meta{ font-size:14px; color:#666; margin-bottom:10px; display: flex; gap: 10px; }
+        .book-image-link { display: block; position: relative; cursor: pointer; transition: transform 0.2s; text-decoration: none; }
+        .book-image-link:hover { transform: scale(1.02); }
+        .pdf-overlay { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: #355da9; color: white; padding: 8px 16px; border-radius: 6px; font-weight: bold; font-size: 14px; }
+        .tag{ background: #eee; padding: 4px 8px; border-radius: 6px; }
+        .desc{ line-height:1.6; white-space:pre-wrap; color:#222; margin-top:8px; }
+        .preview { width: 100%; max-height: 300px; object-fit: contain; border-radius: 12px; margin-top: 10px; background: #f9f9f9; }
+        .empty{ background:#fff; padding:18px; border-radius:14px; text-align:center; color:#666; }
+        .back-btn { display: inline-block; padding: 10px 15px; background: #444; color: #fff; border: none; border-radius: 8px; cursor: pointer; margin-bottom: 15px; font-size: 14px; }
+        @media(max-width:700px){ .tools{ grid-template-columns:1fr; } }
+    </style>
+</head>
+<body>
+<div id="qrBox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:#fff; padding:25px; border-radius:15px; text-align:center; max-width:400px; width:100%;">
+        <h3>Payment Required</h3>
+        <h4 id="amountDisplay" style="margin: 10px 0;">Amount: ₹29</h4>
+        
+        <img id="qrImage" src="" style="width:200px; height:200px; margin: 10px auto; display: block;" />
+        
+        <div style="background:#f0f0f0; padding:10px; border-radius:5px; margin:10px 0; font-weight:bold;">
+            <span id="upiDisplay">6268782886@ybl</span>
+            <button onclick="navigator.clipboard.writeText('6268782886@ybl'); alert('Copied!');" style="margin-left:10px; cursor:pointer;">Copy</button>
+        </div>
+
+        <div style="margin-top:15px; border-top:1px solid #ddd; padding-top:10px; text-align:left;">
+            <p style="font-size:13px; margin-bottom:5px;">Payment Karne Ke Baad Details bhejein (Transaction ID ya Screenshot):</p>
+            <input type="text" id="txnIdInput" placeholder="Enter Transaction ID" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:4px;">
+            <input type="file" id="screenshotInput" accept="image/*" style="width:100%; margin-bottom:8px;">
+            <button onclick="submitPaymentProof()" style="width:100%; padding:10px; background:#28a745; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Submit Proof</button>
+        </div>
+
+        <button onclick="closeQR()" style="margin-top:15px; background:red; color:white; border:none; padding:8px 20px; border-radius:5px;">Close</button>
+    </div>
+</div>
+
+    
+<div class="container">
+    <button class="back-btn" onclick="window.location.href='dashboard.html'">← Back</button>
+    <div class="topbar">📚 Notes</div>
+    <div class="tools">
+        <input type="text" id="searchInput" placeholder="Search notes...">
+        <select id="postFilter"><option value="ALL">All Posts</option><option value="MTS">MTS</option><option value="POSTMAN">POSTMAN</option><option value="PA/SA">PA/SA</option></select>
+        <select id="subFilter"><option value="ALL">All Subjects</option><option value="GK">GK</option><option value="Maths">Maths</option><option value="Reasoning">Reasoning</option><option value="PO GUIDE 1">PO Guide 1</option><option value="PO GUIDE 2">PO Guide 2</option><option value="POSTAL MANUAL 5">Postal Manual Vol 5</option><option value="POSTAL MANUAL 6">Postal Manual Vol 6 Part 3</option><option value="POSTAL MANUAL 7">Postal Manual Vol 7</option></select>
+    </div>
+    <div id="notesList"><div class="empty">Loading...</div></div>
+    
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDjzmo0A4KhOkrqFQdOyCEek6bsPF-UVPQ",
+        authDomain: "gds-departmental-exam-studyhub.firebaseapp.com",
+        projectId: "gds-departmental-exam-studyhub",
+        storageBucket: "gds-departmental-exam-studyhub.appspot.com",
+        messagingSenderId: "759916756080",
+        appId: "1:759916756080:web:7f2c0e66458bd007e888b5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    console.log("Firebase initialized successfully");
+    window.BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
+    window.allNotes = [];
+window.pendingTxn = null;
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        window.currentUserEmail = user.email;
+        loadNotes();
+        // ऑटोमैटिक स्टेटस चेक करने के लिए इंटरवल (हर 10 सेकंड में)
+        setInterval(updateUIBasedOnPayment, 10000); 
+    } else {
+        alert("Step 2 Error: User login nahi hai");
+        window.location.href = "login.html";
+    }
+});
+
+async function loadNotes(){
+    const box = document.getElementById("notesList");
+    try {
+        const q = query(collection(db, "notes"), orderBy("createdAt", "desc"));
+        const snap = await getDocs(q);
+        window.allNotes = [];
+        snap.forEach((doc) => { window.allNotes.push({ id: doc.id, ...doc.data() }); });
+        renderNotes(window.allNotes);
+        updateUIBasedOnPayment();
+    } catch(e) { 
+        alert("Step 5 Error (Database): " + e.message);
+        box.innerHTML = `<div class="empty">Error loading data.</div>`; }
+}
+
+// यह फंक्शन बटन्स को अपडेट करेगा
+async function updateUIBasedOnPayment() {
+    if (!window.currentUserEmail) return;
+    const token = await auth.currentUser.getIdToken();
+    try {
+        // हम एक नया बैकएंड रूट मान रहे हैं जो सिर्फ status देता है
+        const res = await fetch(`${BACKEND_URL}/payment-status?email=${window.currentUserEmail}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (data.status === "COMPLETED") {
+            const buttons = document.querySelectorAll('button[id^="btn-"]');
+            buttons.forEach(btn => {
+                btn.innerText = "📥 Download PDF";
+                btn.style.backgroundColor = "#28a745";
+                // क्लिक पर डाउनलोड ट्रिगर करें
+                btn.onclick = () => handleSecureAccess(btn.dataset.cat, btn.dataset.sub, null, null, null);
+            });
+        }
+    } catch(e) { console.error("UI Update Error:", e); }
+}
+
+ window.renderNotes = function(arr){
+     console.log("Rendering started for count:", arr.length);
+    const box = document.getElementById("notesList");
+
+    if(arr.length === 0){
+        box.innerHTML = `<div class="empty">No notes found</div>`;
+        return;
+    }
+
+    box.innerHTML = arr.map(x => {
+
+        const category = String(x.category || "").replace(/'/g, "\\'");
+        const subject = String(x.subject || "").replace(/'/g, "\\'");
+        const title = String(x.title || "").replace(/'/g, "\\'");
+        const fileName = String(x.fileName || "").replace(/'/g, "\\'");
+        
+        // Button ID create karna taaki baad mein status update ho sake
+        const btnId = `btn-${safe(x.subject).replace(/\s+/g, '')}`;
+
+        return `
+        <div class="note">
+            <h3>${safe(x.title)}</h3>
+
+            <div class="meta">
+                <span class="tag">📮 ${safe(x.category || "-")}</span>
+                <span class="tag">📖 ${safe(x.subject || "-")}</span>
+            </div>
+
+            <img
+                src="${x.imageURL || ''}"
+                class="preview"
+                onerror="this.style.display='none';"
+            >
+
+            ${
+                x.description
+                ? `<div class="desc">${safe(x.description)}</div>`
+                : ""
+            }
+
+            <button
+                id="${btnId}"
+                data-cat="${x.category}"
+                data-sub="${x.subject}"
+                onclick="handleSecureAccess(
+                    '${category}',
+                    '${subject}',
+                    '${title}',
+                    '${fileName}',
+                    ${Number(x.price || 29)}
+                )"
+                style="
+                    width:100%;
+                    margin-top:15px;
+                    background:#355da9;
+                    color:white;
+                    border:none;
+                    padding:12px;
+                    border-radius:8px;
+                    font-weight:bold;
+                    cursor:pointer;
+                "
+            >
+                Pay & Open (₹${x.price || 29})
+            </button>
+        </div>
+        `;
+    }).join('');
+};
+    
+window.handleSecureAccess = async (category, subject, title, fileName, price) => {
+    const token = await auth.currentUser.getIdToken();
+
+    try {
+        const statusRes = await fetch(`${BACKEND_URL}/payment-status`, {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        const statusData = await statusRes.json().catch(() => ({}));
+        const currentStatus = String(statusData?.status ?? "").trim().toLowerCase();
+
+        if (currentStatus === "pending") {
+            alert("आपका पेमेंट Pending है। कृपया Admin द्वारा Approval का इंतजार करें।");
+            return;
+        }
+
+    } catch (e) {
+        alert("सिस्टम में एरर है, कृपया बाद में कोशिश करें।");
+        return;
+    }
+
+    const secureUrl = `${BACKEND_URL}/get-notes-pdf?year=Notes&post=${encodeURIComponent(category)}&subject=${encodeURIComponent(subject)}`;
+
+    try {
+        const res = await fetch(secureUrl, {
+            headers: {
+                "X-Source-Auth": "RSH-GDS-SECURE-ACCESS",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+
+        if (res.status === 200) {
+        alert("Payment verified! Downloading start...");
+         
+            const blob = await res.blob();
+
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+
+            a.href = url;
+            a.download = `${subject}.pdf`;
+
+            document.body.appendChild(a);
+
+            a.click();
+
+            a.remove();
+
+            window.URL.revokeObjectURL(url);
+
+            return;
+        }
+
+        if (res.status === 403) {
+        window.pendingTxn = {
+                category,
+                subject
+            };
+
+            const p = price || 29;
+
+            const myUpiId = "6268782886@ybl";
+
+            const qrData =
+                `upi://pay?pa=${myUpiId}&pn=NotesStore&am=${p}&cu=INR`;
+
+            const qrUrl =
+                "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
+                encodeURIComponent(qrData);
+
+            document.getElementById("qrImage").src = qrUrl;
+            document.getElementById("upiDisplay").innerText = myUpiId;
+            document.getElementById("amountDisplay").innerText = `Amount: ₹${p}`;
+            document.getElementById("qrBox").style.display = "flex";
+
+            return;
+        }
+
+        alert("Unexpected Status: " + res.status);
+    } catch (err) {
+        alert("PDF download failed. Please try again.");
+    }
+};
+
+
+window.submitPaymentProof = async () => {
+
+    const txnId =
+        document.getElementById("txnIdInput").value.trim();
+
+    const file =
+        document.getElementById("screenshotInput").files[0];
+
+    if (!txnId && !file) {
+
+        alert("Txn ID bharein ya Screenshot upload karein!");
+
+        return;
+    }
+
+    const formData = new FormData();
+
+    formData.append("txnId", txnId);
+
+    formData.append(
+        "email",
+        window.currentUserEmail
+    );
+
+    if (file) {
+        formData.append(
+            "screenshot",
+            file
+        );
+    }
+
+    try {
+
+        const res = await fetch(
+            `${BACKEND_URL}/submit-proof`,
+            {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Authorization":
+                        `Bearer ${await auth.currentUser.getIdToken()}`,
+                    "X-Source-Auth":
+                        "RSH-GDS-SECURE-ACCESS"
+                }
+            }
+        );
+
+        if (res.ok) {
+
+            alert(
+                "Proof submit ho gaya! Admin verify karenge."
+            );
+
+            closeQR();
+
+        } else {
+
+            alert(
+                "Submit karne mein error aaya."
+            );
+        }
+
+    } catch (e) {
+
+        alert("Server error!");
+    }
+};
+
+window.closeQR = function () {
+
+    document.getElementById("qrBox").style.display = "none";
+};
+
+window.autoCheckPayment = async function(txnId) {
+    const token = await auth.currentUser.getIdToken();
+
+    const res = await fetch(
+        `${BACKEND_URL}/payment-status?txnId=${txnId}&email=${window.currentUserEmail}`,
+        {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}` }
+        }
+    );
+
+    const data = await res.json().catch(() => null);
+
+    if (res.ok && data?.status === "COMPLETED") {
+        if (window.pendingTxn) {
+            const { category, subject } = window.pendingTxn;
+            const secureUrl = `${BACKEND_URL}/get-pdf?year=Notes&post=${encodeURIComponent(category)}&subject=${encodeURIComponent(subject)}`;
+
+            const pdfRes = await fetch(secureUrl, {
+                headers: {
+                    'X-Source-Auth': 'RSH-GDS-SECURE-ACCESS',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (pdfRes.status === 200) {
+                const blob = await pdfRes.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `${subject}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            }
+
+            window.pendingTxn = null;
+            setTimeout(() => { window.location.href = "notes.html"; }, 2000);
+        }
+    } else {
+        if (data?.status === "PENDING") {
+            alert("आपका पेमेंट अभी 'Pending' है। कृपया एडमिन द्वारा अप्रूव होने का इंतज़ार करें।");
+        } else if (data?.status === "NOT_FOUND") {
+            alert("ट्रांजैक्शन नहीं मिला। कृपया सही Txn ID का उपयोग करें।");
+        }
+    }
+};
+
+
+window.safe = function(v){
+    return String(v || "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+window.applyFilter = function(){
+
+    const q = document.getElementById("searchInput").value.toLowerCase().trim();
+    const post = document.getElementById("postFilter").value;
+    const sub = document.getElementById("subFilter").value;
+
+    renderNotes(
+        window.allNotes.filter(x =>
+            x.title.toLowerCase().includes(q) &&
+            (post === "ALL" || x.category === post) &&
+            (sub === "ALL" || x.subject === sub)
+        )
+    );
+}
+
+document.getElementById("searchInput").addEventListener("input", applyFilter);
+document.getElementById("postFilter").addEventListener("change", applyFilter);
+document.getElementById("subFilter").addEventListener("change", applyFilter);
+
+const urlParams = new URLSearchParams(window.location.search);
+const txnId = urlParams.get("txnId");
+
+if (txnId) {
+    autoCheckPayment(txnId);
+}
+</script>
+</body>
+</html>

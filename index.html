@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <title>RAMESHWAR SAHU GDS Departmental Exam Study Hub</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#8d151a">
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="manifest" href="manifest.json">
+
+<link rel="icon" href="icon-192.png">
+<link rel="shortcut icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+        body{background:#f4f6fb;color:#222;}
+
+        .hero{
+            background:linear-gradient(135deg,#8d151a,#c62828,#0d47a1);
+            padding:35px 15px;
+            text-align:center;
+            color:#fff;
+        }
+
+        .hero-box{max-width:900px;margin:auto;}
+
+        .logo{
+            width:230px;height:230px;border-radius:50%;
+            object-fit:cover;border:4px solid #fff;
+            box-shadow:0 6px 20px rgba(0,0,0,0.25);
+            margin-bottom:15px;
+        }
+
+        .hero h1{font-size:32px;margin-bottom:10px;font-weight:bold;}
+        .hero p{font-size:17px;margin:6px 0;opacity:0.95;}
+
+        /* Moving Text Styles */
+        .marquee-container{
+            width:100%; overflow:hidden; background:#ffd600; 
+            padding:10px 0; margin:15px 0; border-radius:8px;
+        }
+        .marquee-text{
+            display:inline-block; white-space:nowrap;
+            animation:move-text 10s linear infinite;
+            font-weight:bold; color:#8d151a; font-size:16px;
+        }
+        @keyframes move-text{
+            0%{transform:translateX(100%);}
+            100%{transform:translateX(-100%);}
+        }
+
+        .btn-group{
+            margin-top:25px;
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:center;
+            gap:15px;
+        }
+
+        .btn{
+            padding:14px 22px;
+            border:none;
+            border-radius:10px;
+            text-decoration:none;
+            font-weight:bold;
+            font-size:16px;
+            transition:0.3s;
+            min-width:180px;
+            display:inline-block;
+            text-align:center;
+        }
+
+        .btn:hover{transform:translateY(-3px);}
+        .btn-login{background:#fff;color:#8d151a;}
+        .btn-register{background:#ffd600;color:#000;}
+        .btn-admin{background:#111;color:#fff;}
+
+        .contact{
+            background:#fff;
+            padding:12px;
+            text-align:center;
+            font-size:15px;
+            border-bottom:1px solid #ddd;
+        }
+
+        .contact span{display:inline-block;margin:6px 12px;font-weight:bold;}
+
+        .section{max-width:1000px;margin:auto;padding:30px 15px;}
+
+        .cards{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:18px;margin-top:20px;
+        }
+
+        .card{
+            background:#fff;
+            padding:22px;
+            border-radius:14px;
+            box-shadow:0 6px 18px rgba(0,0,0,0.08);
+            text-align:center;
+            transition:0.3s;
+        }
+
+        .card:hover{transform:translateY(-5px);}
+        .card h3{color:#8d151a;margin-bottom:10px;}
+
+        .disclaimer{
+            background:#fff3f3;
+            border-left:5px solid #8d151a;
+            padding:18px;
+            margin-top:30px;
+            border-radius:8px;
+            line-height:1.7;
+        }
+
+        footer{
+            background:#111;
+            color:#fff;
+            text-align:center;
+            padding:25px 15px;
+            margin-top:40px;
+        }
+
+        .footer-whatsapp{width:42px;margin-top:10px;}
+
+        @media(max-width:768px){
+            .logo{width:180px;height:180px;}
+            .hero h1{font-size:24px;}
+            .hero p{font-size:15px;}
+            .btn{width:100%;max-width:260px;}
+        }
+    </style>
+</head>
+
+<body>
+
+<section class="hero">
+    <div class="hero-box">
+
+        <img src="RSH.png?v=9" class="logo" alt="Logo">
+
+        <h1>RAMESHWAR SAHU GDS DEPARTMENTAL EXAM STUDY HUB</h1>
+
+        <!-- FIXED INSTALL BUTTON -->
+        <button onclick="installApp()" style="padding:12px 18px;background:#fff;border:none;border-radius:8px;font-weight:bold;">
+            📲 Install App
+        </button>
+        <p>GDS Departmental Exam LDCE 2026</p>
+
+        <!-- Moving Text Section -->
+        <div class="marquee-container">
+            <div class="marquee-text">
+                📢 Revised Exam Dates: PA/SA: 28 June 2026 | MTS-PM/MG: 12 July 2026 | Best wishes From: Rameshwar Sahu
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <a href="login.html" class="btn btn-login">Candidate Login</a>
+<a href="register.html" class="btn btn-register">Register</a>
+<a href="admin.html" class="btn btn-admin">Admin Login</a>
+        </div>
+
+    </div>
+</section>
+
+<div class="contact">
+    <span>📞 Contact Us: +91 8963999086</span>
+    <span>🟢 WhatsApp: 8963999086</span>
+    <span>📧 E-mail: gdsdepartmentalstudysupport@gmail.com & rameshwarsahu2014bpmjarwe1694@gmail.com</span>
+</div>
+
+<section class="section">
+    <h2 style="text-align:center;color:#8d151a;">Why Choose Us?</h2>
+
+    <div class="cards">
+        <div class="card"><h3>📘 Updated Notes</h3><p>Latest syllabus based notes.</p></div>
+        <div class="card"><h3>📝 Mock Tests</h3><p>Practice tests with results.</p></div>
+        <div class="card"><h3>📚 PDF Study Material</h3><p>Downloadable content.</p></div>
+        <div class="card"><h3>🚀 Smart Preparation</h3><p>Fast learning platform.</p></div>
+    </div>
+
+    <div class="disclaimer">
+        <h3>⚠️ डिस्क्लेमर (Disclaimer)</h3>
+        <p>यह वेबसाइट केवल शैक्षिक उद्देश्य के लिए है।</p>
+    </div>
+</section>
+
+<footer>
+    <p>Share This Website on WhatsApp</p>
+
+    <a href="https://api.whatsapp.com/send?text=Check%20this%20useful%20website:%20https://rameshwarsahu2014bpmjarwe1694-hue.github.io/gdsnotes/" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" class="footer-whatsapp">
+    </a>
+<footer style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #ddd; font-family: sans-serif;">
+    <div style="margin-bottom: 10px;">
+        <a href="privacy-policy.html" style="text-decoration: none; color: #333; margin: 0 10px; font-size: 14px;">Privacy Policy</a> | 
+        <a href="terms-and-conditions.html" style="text-decoration: none; color: #333; margin: 0 10px; font-size: 14px;">Terms And Conditions</a> | 
+        <a href="refund-policy.html" style="text-decoration: none; color: #333; margin: 0 10px; font-size: 14px;">Refund Policy</a>
+    </div>
+    
+</footer>
+    
+    <p> © 2026 RAMESHWAR SAHU GDS DEPARTMENTAL EXAM STUDY HUB </p>
+
+    
+    <p> OWNER & FOUNDER YOGESHWARI SAHU </p>
+</footer>
+
+<script>
+let deferredPrompt;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
+
+function installApp() {
+    if (!deferredPrompt) {
+        alert("Install option not available yet. Open in Chrome.");
+        return;
+    }
+    deferredPrompt.prompt();
+    deferredPrompt = null;
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('./sw.js');
+      console.log("Service Worker Registered");
+
+      // Har page load par update check
+      reg.update();
+    } catch (err) {
+      console.error("SW registration failed", err);
+    }
+  });
+}
+navigator.serviceWorker.register('./sw.js').then(reg => {
+    reg.update();
+
+    setInterval(() => {
+        reg.update();
+    }, 30000);
+});
+</script>
+</body>
+</html>

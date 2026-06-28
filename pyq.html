@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>PYQ Hub - Official Study</title>
+    <style>
+        :root { --primary: #007bff; --success: #28a745; --warning: #ff9800; --dark: #2c3e50; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { background: #f0f2f5; padding: 15px; color: #333; }
+        .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: var(--dark); margin-bottom: 20px; font-size: 22px; border-bottom: 3px solid var(--primary); padding-bottom: 10px; }
+        .selector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        select, input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 15px; outline: none; }
+        .status-bar { text-align: center; font-size: 14px; font-weight: bold; margin-bottom: 15px; padding: 8px; border-radius: 5px; display: none; }
+        .card { background: #fafafa; border: 1px solid #eee; padding: 15px; border-radius: 12px; margin-top: 15px; }
+        .btn { padding: 13px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: #fff; width: 100%; font-size: 16px; margin-top: 8px; }
+        .btn-pay { background: var(--warning); text-decoration: none; display: block; text-align: center; }
+        .btn-request { background: var(--success); }
+        .btn-open { background: var(--primary); }
+        .btn-start { background: #6f42c1; width: 100%; margin-top: 15px; }
+        .option { display: block; width: 100%; text-align: left; padding: 12px; margin: 8px 0; border: 2px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; }
+        .correct { background: #d4edda !important; border-color: #28a745 !important; font-weight: bold; }
+        .wrong { background: #f8d7da !important; border-color: #dc3545 !important; }
+        .btn-row { display: flex; gap: 10px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Previous Year Questions</h1>
+<button onclick="window.location.href='dashboard.html'" style="width: 100%; padding: 10px; margin-bottom: 15px; cursor: pointer; border-radius: 8px; border: 1px solid #ccc; background: #eee;">
+        ⬅ वापस जाएं (Back)
+</button>
+    
+    <div class="selector-grid">
+        <select id="yearSelect">
+            <option value="">वर्ष / कैटेगरी चुनें</option>
+            <option>PYQ 2020</option><option>PYQ 2021</option><option>PYQ 2022</option>
+            <option>PYQ 2023</option><option>PYQ 2024</option><option>PYQ 2025</option>
+            <option>PYQ 2026</option><option>Model Paper</option><option>Practice Set</option>
+            <option>Mock Test</option>
+        </select>
+        <!-- नया Circle Selector -->
+    <select id="circleSelect">
+        <option value="">सर्कल चुनें</option>
+        <option>All India</option>
+        <option>Andhra Pradesh</option>
+    <option>Assam</option>
+    <option>Bihar</option>
+    <option>Chhattisgarh</option>
+    <option>Delhi</option>
+    <option>Gujarat</option>
+    <option>Haryana</option>
+    <option>Himachal Pradesh</option>
+    <option>Jammu & Kashmir</option>
+    <option>Jharkhand</option>
+    <option>Karnataka</option>
+    <option>Kerala</option>
+    <option>Madhya Pradesh</option>
+    <option>Maharashtra</option>
+    <option>North East</option>
+    <option>Odisha</option>
+    <option>Punjab</option>
+    <option>Rajasthan</option>
+    <option>Tamil Nadu</option>
+    <option>Telangana</option>
+    <option>Uttar Pradesh</option>
+    <option>Uttarakhand</option>
+    <option>West Bengal</option>
+
+    </select>
+        <select id="postSelect">
+            <option value="">पोस्ट चुनें</option>
+            <option>MTS</option><option>POSTMAN</option><option>PA-SA</option>
+        </select>
+    </div>
+
+    <div id="statusBox" class="status-bar"></div>
+
+    <div class="card" id="paymentUI">
+        <h3>🔒 Unlock PDF Section</h3>
+        <p style="font-size:12px; margin-bottom:10px;">PDF एक्सेस करने के लिए नीचे बटन दबाएं।</p>
+        <button class="btn btn-open" id="openPdfBtn">Open PDF</button>
+    </div>
+
+    <button class="btn btn-start" id="startQuizBtn">Start MCQ Practice</button>
+    
+    <div id="quizDisplay" style="display:none; margin-top:20px;"></div>
+    <div id="resultBox" style="display:none; margin-top:20px; text-align:center;" class="card"></div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDjzmo0A4KhOkrqFQdOyCEek6bsPF-UVPQ",
+        authDomain: "gds-departmental-exam-studyhub.firebaseapp.com",
+        projectId: "gds-departmental-exam-studyhub",
+        storageBucket: "gds-departmental-exam-studyhub.appspot.com",
+        messagingSenderId: "759916756080",
+        appId: "1:759916756080:web:7f2c0e66458bd007e888b5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    
+    // YEH RAHA AAPKA RENDER URL
+    const BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
+
+    let allQuestions = [];
+    let currentIdx = 0;
+    let score = 0;
+    let quizHistory = {}; 
+    let currentUserEmail = "";
+
+    // Login logic
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUserEmail = user.email;
+        } else {
+            alert("Security Alert: Please login first!");
+            window.location.href = "login.html"; 
+        }
+    });
+
+    async function fetchQuestions() {
+        const year = document.getElementById("yearSelect").value;
+        const post = document.getElementById("postSelect").value;
+        const status = document.getElementById("statusBox");
+        if (!year || !post) return;
+
+        status.style.display = "block";
+        status.style.background = "#e1f5fe";
+        status.innerHTML = "लोड हो रहा है...";
+
+        try {
+            const q = query(collection(db, "pyqQuestions"), where("category", "==", year), where("post", "==", post));
+            const querySnapshot = await getDocs(q);
+            allQuestions = [];
+            querySnapshot.forEach((doc) => { allQuestions.push({ id: doc.id, ...doc.data() }); });
+
+            if (allQuestions.length > 0) {
+                status.style.background = "#d4edda";
+                status.innerHTML = `✅ ${allQuestions.length} सवाल मिले!`;
+            } else {
+                status.style.background = "#fff3cd";
+                status.innerHTML = "❌ डेटा नहीं मिला।";
+            }
+        } catch (error) { status.innerHTML = "⚠️ Error loading data."; }
+    }
+
+    window.renderQuiz = function() {
+        const quizDisplay = document.getElementById("quizDisplay");
+        const q = allQuestions[currentIdx];
+        const options = q.options || []; 
+        const correct = q.answer;
+
+        quizDisplay.innerHTML = `
+            <div class="card">
+                <span style="color:red; font-weight:bold;">प्रश्न: ${currentIdx + 1} / ${allQuestions.length}</span>
+                <p style="margin:15px 0; font-weight:bold;">${q.question}</p>
+                <div id="optArea">
+                    ${options.map((opt, i) => `
+                        <button class="option" onclick="window.checkAns(this, \`${opt}\`, \`${correct}\`)">
+                            ${String.fromCharCode(65+i)}. ${opt}
+                        </button>
+                    `).join('')}
+                </div>
+                <div class="btn-row">
+                    <button class="btn" style="background:#6c757d; flex:1; ${currentIdx===0?'display:none':''}" onclick="window.nav(-1)">Previous</button>
+                    <button class="btn" 
+    style="background:var(--success); flex:1;" 
+    onclick="window.showFinal()">
+    Submit Result
+</button>
+
+${currentIdx !== allQuestions.length - 1 
+    ? `<button class="btn" style="background:var(--dark); flex:1;" onclick="window.nav(1)">Next</button>` 
+    : ''
+}
+                </div>
+            </div>
+        `;
+
+        if(quizHistory[currentIdx]) {
+            const btns = document.querySelectorAll('.option');
+            btns.forEach(b => {
+                b.disabled = true;
+                if(b.innerText.includes(quizHistory[currentIdx].selected)) b.classList.add(quizHistory[currentIdx].isCorrect ? 'correct' : 'wrong');
+                if(b.innerText.includes(correct)) b.classList.add('correct');
+            });
+        }
+    };
+    
+window.nav = function(step) {
+    const newIdx = currentIdx + step;
+    if (newIdx >= 0 && newIdx < allQuestions.length) {
+        currentIdx = newIdx;
+        window.renderQuiz();
+    }
+};
+
+    
+    window.checkAns = function(btn, selected, correct) {
+
+    const btns = document.querySelectorAll('.option');
+
+    btns.forEach(b => b.disabled = true);
+
+    // Correct option text निकालो
+    let correctText = correct;
+
+    if(correct.length === 1){
+        const index = correct.charCodeAt(0) - 65;
+        correctText = allQuestions[currentIdx].options[index];
+    }
+
+    const isCorrect =
+        selected.trim().toLowerCase() ===
+        correctText.trim().toLowerCase();
+
+    if(isCorrect){
+        btn.classList.add('correct');
+        score++;
+    } else {
+        btn.classList.add('wrong');
+
+        btns.forEach(b => {
+            if(b.innerText.includes(correctText)){
+                b.classList.add('correct');
+            }
+        });
+    }
+
+    quizHistory[currentIdx] = {
+        selected,
+        isCorrect
+    };
+};
+
+    window.showFinal = function() {
+    document.getElementById("quizDisplay").style.display = "none";
+
+    const rb = document.getElementById("resultBox");
+    rb.style.display = "block";
+
+    let reviewHTML = "";
+
+    allQuestions.forEach((q, index) => {
+
+        const history = quizHistory[index];
+        const userAns = history ? history.selected : "Not Answered";
+        const isCorrect = history ? history.isCorrect : false;
+
+        reviewHTML += `
+            <div style="
+                border:1px solid #ddd;
+                border-radius:12px;
+                padding:15px;
+                margin-top:15px;
+                text-align:left;
+                background:#fff;
+                box-shadow:0 3px 10px rgba(0,0,0,0.05);
+            ">
+
+                <div style="
+                    font-weight:bold;
+                    margin-bottom:10px;
+                    color:#2c3e50;
+                ">
+                    Q${index + 1}. ${q.question}
+                </div>
+
+                <div style="
+                    padding:10px;
+                    border-radius:8px;
+                    margin-bottom:8px;
+                    background:${isCorrect ? '#d4edda' : '#f8d7da'};
+                    color:${isCorrect ? '#155724' : '#721c24'};
+                    font-weight:bold;
+                ">
+                    Your Answer: ${userAns}
+                </div>
+
+                <div style="
+                    padding:10px;
+                    border-radius:8px;
+                    background:#d1ecf1;
+                    color:#0c5460;
+                    font-weight:bold;
+                ">
+                    Correct Answer: ${q.answer}
+                </div>
+
+                <div style="
+                    margin-top:10px;
+                    font-weight:bold;
+                    color:${isCorrect ? 'green' : 'red'};
+                ">
+                    ${isCorrect ? '✔ Correct' : '✘ Wrong'}
+                </div>
+
+            </div>
+        `;
+    });
+
+    const wrongCount = allQuestions.length - score;
+
+    rb.innerHTML = `
+        <div style="
+            background:linear-gradient(135deg,#007bff,#6610f2);
+            color:white;
+            padding:25px;
+            border-radius:15px;
+            margin-bottom:20px;
+        ">
+            <h2 style="margin-bottom:15px;">📊 Quiz Result</h2>
+
+            <div style="
+                font-size:42px;
+                font-weight:bold;
+                margin-bottom:10px;
+            ">
+                ${score} / ${allQuestions.length}
+            </div>
+
+            <div style="
+                display:flex;
+                justify-content:space-around;
+                margin-top:20px;
+                flex-wrap:wrap;
+                gap:10px;
+            ">
+                <div style="
+                    background:rgba(255,255,255,0.2);
+                    padding:12px 18px;
+                    border-radius:10px;
+                ">
+                    ✔ Correct: ${score}
+                </div>
+
+                <div style="
+                    background:rgba(255,255,255,0.2);
+                    padding:12px 18px;
+                    border-radius:10px;
+                ">
+                    ✘ Wrong: ${wrongCount}
+                </div>
+            </div>
+        </div>
+
+        <h3 style="
+            margin-bottom:15px;
+            color:#2c3e50;
+        ">
+            Answer Review
+        </h3>
+
+        ${reviewHTML}
+
+        <button class="btn"
+            style="
+                background:var(--primary);
+                width:100%;
+                margin-top:25px;
+            "
+            onclick="location.reload()">
+            Restart Quiz
+        </button>
+    `;
+};
+
+    document.getElementById("openPdfBtn").onclick = async () => {
+    const year = document.getElementById("yearSelect").value;
+    const post = document.getElementById("postSelect").value;
+
+    if (!currentUserEmail) return alert("Pehle login karein!");
+    if (!year || !post) return alert("Pehle Year aur Post select karein!");
+     // 1. तुरंत अलर्ट दिखाएं
+    alert("Downloading shuru ho gayi hai! \n\nKripya 30 se 180 seconds tak wait karein, Server load ki wajah se samay lag sakta hai.");
+    const url = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}`;
+    
+    try {
+        
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: { 'x-source-auth': 'RSH-GDS-SECURE-ACCESS' }
+        });
+
+        // 1. रिस्पॉन्स की जांच करें
+        if (!response.ok) {
+            const errorText = await response.text(); 
+            console.error("Server Error Response:", errorText); // एरर मैसेज लॉग करें
+            throw new Error(`Server error: ${errorText}`);
+        }
+
+        // 2. Blob में बदलने से पहले जांच
+        console.log("Response headers content-type:", response.headers.get("Content-Type"));
+        
+        const blob = await response.blob();
+        console.log("Blob created successfully. Size:", blob.size, "Type:", blob.type);
+
+        if (blob.type !== 'application/pdf') {
+            console.warn("Received blob is not a PDF!");
+            throw new Error("Server ne PDF file nahi bheji, balki kuch aur data bheja hai.");
+        }
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${post}_${year}_PYQ.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        console.log("Download triggered successfully.");
+
+    } catch (err) {
+        console.error("Final Error Catch:", err); // सबसे महत्वपूर्ण लॉग
+        alert("Asli Error: " + err.message);
+    }
+};
+
+document.getElementById("yearSelect").onchange = fetchQuestions;
+document.getElementById("postSelect").onchange = fetchQuestions;
+document.getElementById("startQuizBtn").onclick = () => {
+    console.log("Start Quiz clicked. Questions length:", allQuestions.length);
+    if(allQuestions.length === 0) return alert("Pehle Year aur Post select karke load hone dein!");
+    document.getElementById("paymentUI").style.display = "none";
+    document.getElementById("startQuizBtn").style.display = "none";
+    document.getElementById("quizDisplay").style.display = "block";
+    window.renderQuiz();
+};
+
+/* RIGHT CLICK BLOCK */
+document.addEventListener("contextmenu", function(e) {
+    e.preventDefault();
+});
+
+/* COPY BLOCK */
+document.addEventListener("copy", function(e) {
+    e.preventDefault();
+});
+
+/* CUT BLOCK */
+document.addEventListener("cut", function(e) {
+    e.preventDefault();
+});
+
+/* PASTE BLOCK */
+document.addEventListener("paste", function(e) {
+    e.preventDefault();
+});
+
+/* TEXT SELECT BLOCK */
+document.addEventListener("selectstart", function(e) {
+    e.preventDefault();
+});
+
+/* DRAG BLOCK */
+document.addEventListener("dragstart", function(e) {
+    e.preventDefault();
+});
+
+/* SCREENSHOT SHORTCUT BLOCK */
+document.addEventListener("keydown", function(e) {
+
+    // Print Screen
+if (e.key === "PrintScreen") {
+
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText("");
+    }
+
+    alert("Screenshot Disabled");
+
+    e.preventDefault();
+}
+
+    // Ctrl+Shift+S
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+    }
+
+    // Ctrl+U
+    if (e.ctrlKey && e.key.toLowerCase() === "u") {
+        e.preventDefault();
+    }
+
+    // F12
+    if (e.key === "F12") {
+        e.preventDefault();
+    }
+
+    // Ctrl+Shift+I
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i") {
+        e.preventDefault();
+    }
+
+    // Ctrl+Shift+J
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "j") {
+        e.preventDefault();
+    }
+
+    // Ctrl+S
+    if (e.ctrlKey && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+    }
+
+});
+</script>
+</body>
+</html>
+

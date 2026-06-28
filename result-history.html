@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Result History</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+background:#f4f6f9;
+padding:20px;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+background:#fff;
+padding:20px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+color:#222;
+}
+
+.top-box{
+display:grid;
+grid-template-columns:1fr 220px 180px;
+gap:12px;
+margin-bottom:20px;
+}
+
+input,select{
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+outline:none;
+}
+
+input:focus,select:focus{
+border-color:#007bff;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:12px;
+margin-bottom:20px;
+}
+
+.stat{
+background:#fafafa;
+border:1px solid #ddd;
+padding:15px;
+border-radius:10px;
+text-align:center;
+}
+
+.stat h2{
+font-size:28px;
+color:#007bff;
+margin-bottom:6px;
+}
+
+.table-wrap{
+overflow:auto;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+min-width:850px;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #eee;
+text-align:left;
+font-size:15px;
+}
+
+th{
+background:#007bff;
+color:#fff;
+position:sticky;
+top:0;
+}
+
+tr:hover{
+background:#fafafa;
+}
+
+.badge{
+padding:4px 10px;
+border-radius:20px;
+font-size:12px;
+font-weight:bold;
+background:#eaf2ff;
+color:#0056b3;
+}
+
+.center{
+text-align:center;
+padding:20px;
+color:#666;
+}
+
+.secure{
+text-align:center;
+margin-top:16px;
+font-size:13px;
+font-weight:bold;
+color:green;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>Result History</h1>
+
+<div class="top-box">
+<input type="text" id="searchBox" placeholder="Search by name..." oninput="renderTable()">
+
+<select id="quizFilter" onchange="renderTable()">
+<option value="">All Quiz Types</option>
+<option>Mock Test</option>
+<option>PYQ</option>
+<option>Practice</option>
+</select>
+
+<select id="sortBox" onchange="renderTable()">
+<option value="high">Highest Score</option>
+<option value="latest">Latest First</option>
+<option value="low">Lowest Score</option>
+</select>
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<h2 id="totalResults">0</h2>
+<p>Total Results</p>
+</div>
+
+<div class="stat">
+<h2 id="topScore">0</h2>
+<p>Highest Score</p>
+</div>
+
+<div class="stat">
+<h2 id="avgScore">0</h2>
+<p>Average Score</p>
+</div>
+
+</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>Quiz</th>
+<th>Score</th>
+<th>Total</th>
+<th>%</th>
+<th>Date</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody id="tableBody">
+<tr><td colspan="8" class="center">Loading...</td></tr>
+</tbody>
+</table>
+</div>
+
+
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+getDocs,
+query,
+orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ===== YOUR FIREBASE CONFIG ===== */
+const firebaseConfig = {
+apiKey: "YOUR_API_KEY",
+authDomain: "YOUR_PROJECT.firebaseapp.com",
+projectId: "YOUR_PROJECT_ID",
+storageBucket: "YOUR_PROJECT.appspot.com",
+messagingSenderId: "YOUR_ID",
+appId: "YOUR_APP_ID"
+};
+/* =============================== */
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let allResults = [];
+
+async function loadResults(){
+
+try{
+
+const q = query(collection(db,"results"),orderBy("createdAt","desc"));
+const snap = await getDocs(q);
+
+allResults = [];
+
+snap.forEach(docItem=>{
+allResults.push({
+id: docItem.id,
+...docItem.data()
+});
+});
+
+renderTable();
+
+}catch(error){
+
+document.getElementById("tableBody").innerHTML =
+'<tr><td colspan="8" class="center">Failed to load data</td></tr>';
+
+console.log(error);
+
+}
+
+}
+
+window.renderTable = function(){
+
+let search =
+document.getElementById("searchBox").value.toLowerCase().trim();
+
+let quiz =
+document.getElementById("quizFilter").value;
+
+let sort =
+document.getElementById("sortBox").value;
+
+let data = allResults.filter(item=>{
+
+let name = (item.name || "").toLowerCase();
+let type = item.quiz || "";
+
+let matchName = name.includes(search);
+let matchQuiz = quiz === "" || type === quiz;
+
+return matchName && matchQuiz;
+
+});
+
+if(sort === "high"){
+data.sort((a,b)=>(b.score||0)-(a.score||0));
+}
+
+if(sort === "low"){
+data.sort((a,b)=>(a.score||0)-(b.score||0));
+}
+
+if(sort === "latest"){
+data.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+}
+
+updateStats(data);
+
+let html = "";
+
+if(data.length === 0){
+html = '<tr><td colspan="8" class="center">No result found</td></tr>';
+document.getElementById("tableBody").innerHTML = html;
+return;
+}
+
+data.forEach((item,index)=>{
+
+let score = Number(item.score || 0);
+let total = Number(item.total || 0);
+let percent = total ? ((score/total)*100).toFixed(1) : 0;
+
+html += `
+<tr>
+<td>${index+1}</td>
+<td>${safe(item.name)}</td>
+<td><span class="badge">${safe(item.quiz)}</span></td>
+<td>${score}</td>
+<td>${total}</td>
+<td>${percent}%</td>
+<td>${safe(item.date)}</td>
+<td>${safe(item.time)}</td>
+</tr>
+`;
+
+});
+
+document.getElementById("tableBody").innerHTML = html;
+
+};
+
+function updateStats(data){
+
+document.getElementById("totalResults").innerText = data.length;
+
+let top = 0;
+let sum = 0;
+
+data.forEach(item=>{
+let s = Number(item.score || 0);
+if(s > top) top = s;
+sum += s;
+});
+
+document.getElementById("topScore").innerText = top;
+
+let avg = data.length ? (sum/data.length).toFixed(1) : 0;
+
+document.getElementById("avgScore").innerText = avg;
+
+}
+
+function safe(str){
+if(!str) return "";
+return String(str)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#39;");
+}
+
+loadResults();
+
+</script>
+
+</body>
+</html>

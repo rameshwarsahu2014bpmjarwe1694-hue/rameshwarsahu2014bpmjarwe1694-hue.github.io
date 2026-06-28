@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Candidate Dashboard</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#f5f5f5;}
+.topbar{background:#b30000;color:#fff;padding:15px;text-align:center;font-size:20px;font-weight:bold;}
+.container{max-width:1000px;margin:auto;padding:20px;}
+.cardGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.card{background:#fff;padding:16px;border-radius:14px;text-align:center;text-decoration:none;color:#111;font-weight:bold;box-shadow:0 4px 10px rgba(0,0,0,0.08);transition:0.2s;display:flex;align-items:center;justify-content:center;min-height:70px;}
+.card:hover{transform:translateY(-3px);}
+@media(min-width:768px){.cardGrid{grid-template-columns:repeat(3,1fr);}}
+.headerRow{display:flex;justify-content:space-between;align-items:center;}
+.userBox{display:flex;align-items:center;gap:10px;}
+.userBox img{width:40px;height:40px;border-radius:50%;border:2px solid #fff;object-fit:cover;}
+.logout{margin-top:20px;background:#111;color:#fff;text-align:center;padding:12px;border-radius:10px;cursor:pointer;}
+.welcome{background:#fff;padding:15px;border-radius:12px;margin-bottom:15px;font-weight:bold;}
+</style>
+</head>
+<body><div class="topbar">
+  <div class="headerRow">
+    <div>Candidate Dashboard</div>
+    <div class="userBox">
+      <img id="photo" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" />
+      <span id="nameTop"></span>
+    </div>
+  </div>
+</div><div class="container"><div class="welcome" id="welcome">Loading user...</div><div class="cardGrid">
+  <a class="card" href="syllabus.html">📘 Syllabus (EXAM PATTERN)</a>
+  <a class="card" href="notes.html">📚 COMPLETE BOOK THEORY NOTES</a>
+  <a class="card" href="quiz.html">📝 Mock Test (SUBJECT WISE/CHAPTER WISE)</a>
+  <a class="card" href="pyq.html">📄 PYQ (2020 TO 2025)</a>
+  <a class="card" href="result-history.html">🏆 Results</a>
+  <a class="card" href="profile.html">👤 Profile</a>
+</div><div class="logout" onclick="logoutUser()">🚪 Logout</div></div><script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 🔴 YOUR FIREBASE CONFIG
+const firebaseConfig = {
+        apiKey: "AIzaSyDjzmo0A4KhOkrqFQdOyCEek6bsPF-UVPQ",
+        authDomain: "gds-departmental-exam-studyhub.firebaseapp.com",
+        projectId: "gds-departmental-exam-studyhub",
+        storageBucket: "gds-departmental-exam-studyhub.appspot.com",
+        messagingSenderId: "759916756080",
+        appId: "1:759916756080:web:7f2c0e66458bd007e888b5"
+    };
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ✅ SESSION PERSISTENCE
+await setPersistence(auth, browserLocalPersistence);
+
+// 🔐 AUTH CHECK
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  const snap = await getDoc(doc(db, "candidates", user.uid));
+
+  if (snap.exists()) {
+    const data = snap.data();
+
+    document.getElementById("nameTop").innerText = data.name || "Candidate";
+    document.getElementById("welcome").innerText = `Welcome ${data.name || user.email}`;
+
+    if (data.photo) {
+      document.getElementById("photo").src = data.photo;
+    }
+  } else {
+    document.getElementById("welcome").innerText = "Welcome Candidate";
+  }
+});
+
+// 🚪 LOGOUT
+window.logoutUser = async function () {
+  await signOut(auth);
+  window.location.href = "login.html";
+};
+</script></body>
+</html>

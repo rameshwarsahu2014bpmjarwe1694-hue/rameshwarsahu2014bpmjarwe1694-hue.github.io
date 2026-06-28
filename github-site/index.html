@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>GDS GK 500 | India Post Departmental Exam Quiz</title>
+<meta name="description" content="500+ GK MCQs for GDS / India Post Departmental Exam – bilingual Hindi + English, category-wise practice & exam mode." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="style.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23b8351a'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-family='serif' font-size='56' fill='%23fff8ec' font-weight='900'%3EGK%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+
+<!-- Top bar -->
+<header class="topbar" data-testid="topbar">
+  <div class="brand" data-testid="brand">
+    <span class="logo-mark">GK</span>
+    <div class="brand-text">
+      <strong>GDS&nbsp;GK&nbsp;500</strong>
+      <small>India Post Departmental Exam · बहुभाषी MCQ</small>
+    </div>
+  </div>
+  <nav class="navlinks">
+    <button class="btn-ghost" data-nav="home" data-testid="nav-home"><i class="fa-solid fa-house"></i> Home</button>
+    <button class="btn-ghost" data-nav="categories" data-testid="nav-categories"><i class="fa-solid fa-layer-group"></i> Categories</button>
+    <button class="btn-ghost" data-nav="about" data-testid="nav-about"><i class="fa-solid fa-circle-info"></i> About</button>
+    <button class="btn-ghost lang-toggle" id="langToggle" data-testid="lang-toggle" title="Toggle Hindi/English"><i class="fa-solid fa-language"></i> <span id="langLabel">हिं/EN</span></button>
+  </nav>
+</header>
+
+<!-- ========== HOME ========== -->
+<section id="view-home" class="view active" data-testid="view-home">
+
+  <div class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="dot"></span> 500 Questions · Updated 2026</p>
+      <h1 class="hero-title">
+        <span class="accent">GDS</span> Departmental Exam<br/>
+        <em>General Knowledge</em> — 500 MCQs
+      </h1>
+      <p class="hero-sub">
+        Postal Manual, India Post schemes, IPPB, History, Geography, Polity, Science, Economy aur Current Affairs — ek hi jagah par.
+        Har question ke saath <b>explanation</b> aur <b>हिंदी + English</b> dono.
+      </p>
+
+      <div class="cta-row">
+        <button class="btn btn-primary" id="startPracticeBtn" data-testid="start-practice-btn">
+          <i class="fa-solid fa-play"></i> Start Practice (All 500)
+        </button>
+        <button class="btn btn-outline" id="startExamBtn" data-testid="start-exam-btn">
+          <i class="fa-regular fa-clock"></i> Exam Mode · 50Q · 30min
+        </button>
+        <button class="btn btn-link" id="jumpCatBtn" data-testid="jump-categories-btn">
+          Browse by Category <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+
+      <div class="stats-strip" data-testid="stats-strip">
+        <div><b id="stat-total">500</b><span>Total Q</span></div>
+        <div><b id="stat-cats">8</b><span>Categories</span></div>
+        <div><b>Hi+En</b><span>Bilingual</span></div>
+        <div><b>Free</b><span>Forever</span></div>
+      </div>
+    </div>
+
+    <aside class="hero-card" aria-hidden="true">
+      <div class="stamp">
+        <div class="stamp-inner">
+          <div class="stamp-top">
+            <span>भारत</span><span>INDIA</span>
+          </div>
+          <div class="stamp-mid">GDS</div>
+          <div class="stamp-sub">Departmental<br/>Examination</div>
+          <div class="stamp-bottom">
+            <span>✦</span><span>GK · 500</span><span>✦</span>
+          </div>
+        </div>
+      </div>
+      <ul class="hero-list">
+        <li><i class="fa-solid fa-check"></i> Post Office Manual Vol-V & VI</li>
+        <li><i class="fa-solid fa-check"></i> IPPB / POSB / Saving Schemes</li>
+        <li><i class="fa-solid fa-check"></i> History, Geography, Polity, Science</li>
+        <li><i class="fa-solid fa-check"></i> Current Affairs & Static GK</li>
+      </ul>
+    </aside>
+  </div>
+
+  <!-- Category cards -->
+  <div id="view-categories-anchor"></div>
+  <section class="section">
+    <div class="section-head">
+      <h2>Browse by Category</h2>
+      <p>Choose a topic or attempt the full 500-question set.</p>
+    </div>
+    <div class="cat-grid" id="catGrid" data-testid="cat-grid"></div>
+  </section>
+
+  <!-- About / Features -->
+  <section class="section about-sec">
+    <div class="section-head">
+      <h2>Why this set?</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="ficon ficon-1"><i class="fa-solid fa-envelope-open-text"></i></div>
+        <h3>Postal-focused</h3>
+        <p>150+ questions specifically on India Post, DOP schemes, IPPB, rules & regulations.</p>
+      </div>
+      <div class="feature">
+        <div class="ficon ficon-2"><i class="fa-solid fa-language"></i></div>
+        <h3>हिन्दी + English</h3>
+        <p>Toggle language anytime. Both question & explanation shown in preferred script.</p>
+      </div>
+      <div class="feature">
+        <div class="ficon ficon-3"><i class="fa-regular fa-clock"></i></div>
+        <h3>Exam-mode timer</h3>
+        <p>50 random questions in 30 minutes — simulate real paper pressure before the exam.</p>
+      </div>
+      <div class="feature">
+        <div class="ficon ficon-4"><i class="fa-solid fa-chart-line"></i></div>
+        <h3>Detailed review</h3>
+        <p>Every wrong answer comes with a clear explanation — learn while you attempt.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div>
+      <strong>GDS GK 500</strong> · made for India Post GDS aspirants.
+      Use freely, share freely.
+    </div>
+    <div class="foot-links">
+      <a href="https://www.indiapost.gov.in/" target="_blank" rel="noopener">India Post</a>
+      <a href="https://www.ippbonline.com/" target="_blank" rel="noopener">IPPB</a>
+      <span>© 2026</span>
+    </div>
+  </footer>
+</section>
+
+<!-- ========== QUIZ ========== -->
+<section id="view-quiz" class="view" data-testid="view-quiz">
+
+  <div class="quiz-topbar">
+    <button class="btn-ghost" id="quitBtn" data-testid="quit-btn"><i class="fa-solid fa-arrow-left"></i> Exit</button>
+    <div class="quiz-meta">
+      <span class="chip" id="quizCat" data-testid="quiz-cat">All</span>
+      <span class="chip chip-alt" id="quizMode" data-testid="quiz-mode">Practice</span>
+      <span class="chip chip-dark" id="quizTimer" data-testid="quiz-timer" hidden><i class="fa-regular fa-clock"></i> <b id="timerTxt">30:00</b></span>
+    </div>
+    <div class="quiz-progress" data-testid="quiz-progress">
+      <span id="qProgTxt">1 / 50</span>
+      <div class="bar"><div class="bar-fill" id="qBarFill"></div></div>
+    </div>
+  </div>
+
+  <div class="quiz-body">
+    <article class="qcard" data-testid="qcard">
+      <div class="qhead">
+        <span class="qnum" id="qNumLabel">Q1</span>
+        <span class="qcat" id="qCatLabel">Postal</span>
+      </div>
+      <h2 class="qtext" id="qText" data-testid="q-text">Loading…</h2>
+      <p class="qtext-alt" id="qTextAlt" data-testid="q-text-alt"></p>
+
+      <div class="options" id="optionsBox" data-testid="options-box"></div>
+
+      <div class="explain" id="explainBox" hidden data-testid="explain-box">
+        <div class="explain-head"><i class="fa-solid fa-lightbulb"></i> Explanation</div>
+        <p id="explainTxt"></p>
+      </div>
+
+      <div class="qfoot">
+        <button class="btn btn-ghost2" id="prevBtn" data-testid="prev-btn"><i class="fa-solid fa-chevron-left"></i> Previous</button>
+        <div class="qfoot-spacer"></div>
+        <button class="btn btn-ghost2" id="skipBtn" data-testid="skip-btn">Skip</button>
+        <button class="btn btn-primary" id="nextBtn" data-testid="next-btn">Next <i class="fa-solid fa-chevron-right"></i></button>
+        <button class="btn btn-danger" id="submitBtn" data-testid="submit-btn" hidden>Submit <i class="fa-solid fa-flag-checkered"></i></button>
+      </div>
+    </article>
+
+    <aside class="palette" data-testid="palette">
+      <div class="palette-head">
+        <b>Question Palette</b>
+        <small><span class="leg leg-ok"></span> Correct · <span class="leg leg-bad"></span> Wrong · <span class="leg leg-skip"></span> Skipped</small>
+      </div>
+      <div class="palette-grid" id="paletteGrid"></div>
+      <div class="palette-score" id="paletteScore" data-testid="palette-score">Answered: 0 / 0</div>
+    </aside>
+  </div>
+</section>
+
+<!-- ========== RESULT ========== -->
+<section id="view-result" class="view" data-testid="view-result">
+  <div class="result-wrap">
+    <div class="result-card">
+      <div class="result-badge" id="resultBadge">
+        <i class="fa-solid fa-trophy"></i>
+      </div>
+      <h1 id="resultTitle">Well done!</h1>
+      <p id="resultSub">You attempted the set. Here's your performance.</p>
+
+      <div class="score-grid" data-testid="score-grid">
+        <div class="score-tile tile-a"><b id="scCorrect">0</b><span>Correct</span></div>
+        <div class="score-tile tile-b"><b id="scWrong">0</b><span>Wrong</span></div>
+        <div class="score-tile tile-c"><b id="scSkip">0</b><span>Skipped</span></div>
+        <div class="score-tile tile-d"><b id="scPct">0%</b><span>Score</span></div>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn btn-outline" id="reviewBtn" data-testid="review-btn"><i class="fa-solid fa-eye"></i> Review Answers</button>
+        <button class="btn btn-primary" id="retryBtn" data-testid="retry-btn"><i class="fa-solid fa-rotate-right"></i> Retry</button>
+        <button class="btn btn-ghost2" id="homeBtn" data-testid="home-btn"><i class="fa-solid fa-house"></i> Home</button>
+      </div>
+    </div>
+
+    <div class="review-list" id="reviewList" hidden data-testid="review-list"></div>
+  </div>
+</section>
+
+<script src="questions.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

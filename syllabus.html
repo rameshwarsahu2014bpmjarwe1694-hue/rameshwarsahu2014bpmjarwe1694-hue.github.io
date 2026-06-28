@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Candidate Syllabus</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f6f9;
+padding:20px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+background:#fff;
+padding:20px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+color:#222;
+}
+
+.top-controls{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-bottom:18px;
+}
+
+input,select{
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+outline:none;
+width:100%;
+}
+
+input:focus,
+select:focus{
+border-color:#007bff;
+}
+
+.card{
+background:#fafafa;
+padding:15px;
+border:1px solid #ddd;
+border-radius:10px;
+margin-bottom:12px;
+}
+
+.card h3{
+color:#111;
+margin-bottom:6px;
+}
+
+.category{
+display:inline-block;
+padding:4px 10px;
+background:#007bff;
+color:#fff;
+font-size:12px;
+border-radius:20px;
+margin-bottom:8px;
+}
+
+.small{
+font-size:14px;
+color:#666;
+margin-top:6px;
+line-height:1.5;
+}
+
+.download-btn{
+display:inline-block;
+margin-top:12px;
+padding:10px 14px;
+background:#28a745;
+color:#fff;
+text-decoration:none;
+border-radius:8px;
+font-weight:bold;
+font-size:14px;
+}
+
+.download-btn:hover{
+background:#218838;
+}
+
+.empty{
+text-align:center;
+padding:25px;
+color:#666;
+font-weight:bold;
+}
+
+@media(max-width:700px){
+
+.top-controls{
+grid-template-columns:1fr;
+}
+
+}
+.back-btn {
+    display: inline-block;
+    padding: 10px 15px;
+    background: #444;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<button class="back-btn" onclick="window.goBack()">← Back</button>
+<h1>Candidate Syllabus</h1>
+
+<div class="top-controls">
+
+<select id="categoryFilter">
+
+<option value="All">All Categories</option>
+<option value="MTS">MTS</option>
+<option value="Postman">Postman</option>
+<option value="PA/SA">PA/SA</option>
+
+</select>
+
+<input
+type="text"
+id="searchBox"
+placeholder="Search syllabus..."
+>
+
+</div>
+
+<div id="list">Loading...</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+getDocs,
+query,
+orderBy
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+getAuth,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+/* FIREBASE CONFIG */
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyDjzmo0A4KhOkrqFQdOyCEek6bsPF-UVPQ",
+
+authDomain: "gds-departmental-exam-studyhub.firebaseapp.com",
+
+projectId: "gds-departmental-exam-studyhub",
+
+storageBucket: "gds-departmental-exam-studyhub.appspot.com",
+
+messagingSenderId: "759916756080",
+
+appId: "1:759916756080:web:7f2c0e66458bd007e888b5"
+
+};
+
+/* INIT */
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+const auth = getAuth(app);
+const BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
+  
+/* ELEMENTS */
+
+const list = document.getElementById("list");
+
+const categoryFilter =
+document.getElementById("categoryFilter");
+
+const searchBox =
+document.getElementById("searchBox");
+
+/* DATA */
+
+let allData = [];
+let currentUserEmail = "";
+/* LOGIN CHECK */
+
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+
+currentUserEmail = user.email;
+
+loadData();
+
+}else{
+
+window.location.href = "login.html";
+
+}
+
+});
+  
+/* LOAD DATA */
+
+async function loadData(){
+
+try{
+
+const q = query(
+collection(db,"syllabus"),
+orderBy("createdAt","desc")
+);
+
+const snap = await getDocs(q);
+
+allData = [];
+
+snap.forEach(doc=>{
+
+allData.push({
+id: doc.id,
+...doc.data()
+});
+
+});
+
+renderData();
+
+}catch(error){
+
+console.log(error);
+
+list.innerHTML = `
+<div class="empty">
+Failed to Load Syllabus
+</div>
+`;
+
+}
+
+}
+
+/* RENDER */
+
+function renderData(){
+
+const category = categoryFilter.value;
+
+const search =
+searchBox.value.toLowerCase().trim();
+
+let filtered = allData.filter(item=>{
+
+const categoryMatch =
+category === "All"
+|| item.category === category;
+
+const searchMatch =
+
+(item.title || "")
+.toLowerCase()
+.includes(search)
+
+||
+
+(item.desc || "")
+.toLowerCase()
+.includes(search)
+
+||
+
+(item.fileName || "")
+.toLowerCase()
+.includes(search);
+
+return categoryMatch && searchMatch;
+
+});
+
+if(filtered.length === 0){
+
+list.innerHTML = `
+<div class="empty">
+No syllabus found
+</div>
+`;
+
+return;
+
+}
+
+list.innerHTML = "";
+
+filtered.forEach(item=>{
+
+list.innerHTML += `
+
+<div class="card">
+
+<h3>${safe(item.title)}</h3>
+
+<div class="category">
+${safe(item.category)}
+</div>
+
+<p class="small">
+${safe(item.desc)}
+</p>
+
+<a
+class="download-btn"
+href="./${encodeURI(item.fileName)}"
+target="_blank"
+>
+
+📄 Open PDF
+
+</a>
+
+</div>
+
+`;
+
+});
+
+}
+
+/* EVENTS */
+
+categoryFilter.addEventListener(
+"change",
+renderData
+);
+
+searchBox.addEventListener(
+"input",
+renderData
+);
+
+/* SAFE */
+
+function safe(str){
+
+return str ? str : "";
+
+}
+window.goBack = function() {
+    window.location.href = "dashboard.html";
+};
+</script>
+
+</body>
+</html>

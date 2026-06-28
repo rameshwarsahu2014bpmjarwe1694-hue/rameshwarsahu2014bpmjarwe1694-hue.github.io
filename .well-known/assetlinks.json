@@ -1,0 +1,14 @@
+[
+{
+"relation": [
+"delegate_permission/common.handle_all_urls"
+],
+"target": {
+"namespace": "android_app",
+"package_name": "io.gdsnote.rshtwa",
+"sha256_cert_fingerprints": [
+"B3:98:23:DC:9C:3F:16:89:E0:B2:72:86:BA:3C:AA:F6:85:7F:BA:EC:CE:5D:55:A0:BD:D3:47:62:48:C1:0B:0D"
+]
+}
+}
+]
