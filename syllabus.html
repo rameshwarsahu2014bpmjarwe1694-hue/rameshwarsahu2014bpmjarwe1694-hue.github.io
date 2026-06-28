@@ -389,6 +389,8 @@ window.goBack = function() {
 };
 
 window.openSyllabusPDF = async function(fileName) {
+    
+    alert("Downloading started.\n\nPlease wait 30 to 60 seconds.\nServer load ke karan thoda samay lag sakta hai.");
 
     const url = `${BACKEND_URL}/get-syllabus-pdf?fileName=${encodeURIComponent(fileName)}`;
 
