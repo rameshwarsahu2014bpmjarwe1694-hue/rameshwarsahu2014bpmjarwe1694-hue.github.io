@@ -4,9 +4,9 @@
   "short_name": "GDS Notes",
   "description": "Complete GDS Departmental Exam Notes, Study Material and Mock Tests.",
 
-  "start_url": "/gdsnotes/",
-"scope": "/gdsnotes/",
-  "display": "fullscreen",
+  "start_url": "/",
+"scope": "/",
+  "display": "standalone",
 
   "display_override": [
     "fullscreen",
@@ -15,7 +15,7 @@
   ],
 
   "background_color": "#ffffff",
-  "theme_color": "#8d151a",
+  "theme_color": "#0b66c2",
 
   "orientation": "portrait-primary",
   "lang": "hi",
