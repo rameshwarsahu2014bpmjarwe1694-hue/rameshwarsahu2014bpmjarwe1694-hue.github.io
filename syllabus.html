@@ -349,7 +349,7 @@ ${safe(item.desc)}
 
 <a
 class="download-btn"
-href="./${encodeURI(item.fileName)}"
+onclick="openSyllabusPDF('${item.fileName}')"
 target="_blank"
 >
 
@@ -387,6 +387,26 @@ return str ? str : "";
 window.goBack = function() {
     window.location.href = "dashboard.html";
 };
+
+window.openSyllabusPDF = async function(fileName) {
+
+    const url = `${BACKEND_URL}/get-syllabus-pdf?fileName=${encodeURIComponent(fileName)}`;
+
+    const res = await fetch(url, {
+        headers: { 'x-source-auth': 'RSH-GDS-SECURE-ACCESS' }
+    });
+
+    const blob = await res.blob();
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+
 </script>
 
 </body>
