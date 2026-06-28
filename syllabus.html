@@ -395,7 +395,12 @@ window.openSyllabusPDF = async function(fileName) {
     const res = await fetch(url, {
         headers: { 'x-source-auth': 'RSH-GDS-SECURE-ACCESS' }
     });
-
+    
+    if (!res.ok) {
+    alert("PDF load failed");
+    return;
+    }
+    
     const blob = await res.blob();
 
     const link = document.createElement("a");
