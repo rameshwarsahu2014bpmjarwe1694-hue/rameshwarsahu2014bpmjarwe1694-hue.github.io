@@ -244,13 +244,6 @@ if ('serviceWorker' in navigator) {
     }
   });
 }
-navigator.serviceWorker.register('./sw.js').then(reg => {
-    reg.update();
-
-    setInterval(() => {
-        reg.update();
-    }, 30000);
-});
 </script>
 </body>
 </html>
