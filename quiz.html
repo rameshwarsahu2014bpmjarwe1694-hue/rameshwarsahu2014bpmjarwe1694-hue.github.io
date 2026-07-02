@@ -113,10 +113,9 @@
             const snap = await getDocs(qy);
             questions = [];
             snap.forEach(doc => {
-              questions.push(data);
+              questions.push(doc.data());
             });
-            if (questions.length === 0) { alert("इस सेक्शन में अभी कोई सवाल नहीं हैं।"); return; }
-            document.getElementById("sectionBox").classList.add("hide");
+            if (questions.length === 0) { alert("इस विषय में अभी कोई सवाल नहीं हैं।"); return; }
             document.getElementById("quizBox").classList.remove("hide");
             current = 0; answers = {}; submitted = false; sec = 1800; startTimer(); render();
         } catch (e) { alert("Error: " + e.message); }
