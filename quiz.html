@@ -34,9 +34,6 @@
         .result-box { text-align: center; margin-top: 20px; }
         .score-text { font-size: 35px; color: var(--primary); font-weight: bold; margin: 10px 0; }
         .hide { display: none; }
-        .sections-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .section-sub-card { background: #f8f9fa; border: 1px dashed #ccc; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; font-size: 14px; color: var(--dark); cursor: pointer; }
-        .section-sub-card:hover { background: #e9ecef; border-color: var(--primary); color: var(--primary); }
     </style>
 </head>
 <body>
@@ -116,6 +113,7 @@
               questions.push(doc.data());
             });
             if (questions.length === 0) { alert("इस विषय में अभी कोई सवाल नहीं हैं।"); return; }
+            document.getElementById("subjectBox").classList.add("hide");
             document.getElementById("quizBox").classList.remove("hide");
             current = 0; answers = {}; submitted = false; sec = 1800; startTimer(); render();
         } catch (e) { alert("Error: " + e.message); }
