@@ -50,24 +50,16 @@
     <div id="subjectBox">
         <p style="text-align:center; font-weight:bold; color:#666;">विषय चुनें और टेस्ट शुरू करें:</p>
         <div class="grid">
-            <div class="subject-card" onclick="showSections('POSTAL MANUAL VOLUME 7')">📘 POSTAL MANUAL VOL 7</div>
-            <div class="subject-card" onclick="showSections('GK')">🌍 General Knowledge</div>
-            <div class="subject-card" onclick="showSections('IT MODERNIZATION & APT 2.0')">🌍 IT MODERNIZATION & APT 2.0</div>
-            <div class="subject-card" onclick="showSections('Maths')">➕ Mathematics</div>
-            <div class="subject-card" onclick="showSections('Reasoning')">🧠 Reasoning</div>
-            <div class="subject-card" onclick="showSections('POSTAL MANUAL VOLUME 5')">📘 POSTAL MANUAL VOL 5</div>
-            <div class="subject-card" onclick="showSections('Post Office Guide 1')">📮 PO GUIDE 1</div>
-            <div class="subject-card" onclick="showSections('Post Office Guide 2')">📮 PO GUIDE 2</div>
-            <div class="subject-card" onclick="showSections('POSTAL MANUAL VOLUME 6 PART 3')">📘 VOL 6 PART 3</div>
+            <div class="subject-card" onclick="startQuiz('POSTAL MANUAL VOLUME 7')">📘 POSTAL MANUAL VOL 7</div>
+            <div class="subject-card" onclick="startQuiz('GK')">🌍 General Knowledge</div>
+            <div class="subject-card" onclick=" startQuiz('IT MODERNIZATION & APT 2.0')">🌍 IT MODERNIZATION & APT 2.0</div>
+            <div class="subject-card" onclick="startQuiz('Maths')">➕ Mathematics</div>
+            <div class="subject-card" onclick="startQuiz('Reasoning')">🧠 Reasoning</div>
+            <div class="subject-card" onclick="startQuiz('POSTAL MANUAL VOLUME 5')">📘 POSTAL MANUAL VOL 5</div>
+            <div class="subject-card" onclick="startQuiz('Post Office Guide 1')">📮 PO GUIDE 1</div>
+            <div class="subject-card" onclick="startQuiz('Post Office Guide 2')">📮 PO GUIDE 2</div>
+            <div class="subject-card" onclick="startQuiz('POSTAL MANUAL VOLUME 6 PART 3')">📘 VOL 6 PART 3</div>
         </div>
-    </div>
-    <div id="sectionBox" class="hide card">
-        <h3 id="selectedSubjectTitle" style="text-align:center; color:var(--primary); margin-bottom:5px; font-size:16px;">Subject</h3>
-        <div class="sections-container">
-            <div class="section-sub-card" onclick="selectSection('Section I')">Section I</div>
-            <div class="section-sub-card" onclick="selectSection('Section II')">Section II</div>
-        </div>
-        <button class="btn" style="background:#6c757d; width:100%; margin-top:15px; padding:10px;" onclick="backToSubjects()">← Back to Subjects</button>
     </div>
     <div id="quizBox" class="hide">
         <div class="card">
@@ -98,15 +90,12 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    let user = null, subject = "", selectedSection = "", questions = [], current = 0, answers = {}, submitted = false, sec = 1800, timerInt = null;
+    let user = null, subject = "",questions = [], current = 0, answers = {}, submitted = false, sec = 1800, timerInt = null;
 
     onAuthStateChanged(auth, (u) => { if (u) user = u; else location.href = "login.html"; });
 
         window.goBack = function() {
-        if (!document.getElementById("sectionBox").classList.contains("hide")) {
-            // अगर सेक्शन बॉक्स खुला है, तो सब्जेक्ट लिस्ट पर वापस जाएं
-            backToSubjects();
-        } else if (!document.getElementById("quizBox").classList.contains("hide")) {
+        if (!document.getElementById("quizBox").classList.contains("hide")) {
             // अगर क्विज़ चल रहा है, तो कन्फर्मेशन लेकर मेन डैशबोर्ड पर भेजें
             if (confirm("क्या आप टेस्ट छोड़कर डैशबोर्ड पर जाना चाहते हैं?")) {
                 window.location.href = "dashboard.html"; // यहाँ अपने डैशबोर्ड फाइल का नाम लिखें
@@ -117,23 +106,6 @@
         }
     };
 
-    window.showSections = function(sub) {
-        subject = sub;
-        document.getElementById("selectedSubjectTitle").innerText = "📚 " + sub;
-        document.getElementById("subjectBox").classList.add("hide");
-        document.getElementById("sectionBox").classList.remove("hide");
-    };
-
-    window.backToSubjects = function() {
-        document.getElementById("sectionBox").classList.add("hide");
-        document.getElementById("subjectBox").classList.remove("hide");
-    };
-
-    window.selectSection = function(secName) {
-        selectedSection = secName;
-        startQuiz(subject);
-    };
-
     window.startQuiz = async function(sub) {
         subject = sub;
         try {
@@ -141,9 +113,7 @@
             const snap = await getDocs(qy);
             questions = [];
             snap.forEach(doc => {
-                let data = doc.data();
-                let qSec = data.section || "Section I"; 
-                if (qSec === selectedSection) questions.push(data);
+              questions.push(data);
             });
             if (questions.length === 0) { alert("इस सेक्शन में अभी कोई सवाल नहीं हैं।"); return; }
             document.getElementById("sectionBox").classList.add("hide");
