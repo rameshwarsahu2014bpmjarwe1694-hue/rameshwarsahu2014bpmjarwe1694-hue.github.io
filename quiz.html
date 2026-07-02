@@ -87,7 +87,7 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    let user = null, subject = "",questions = [], current = 0, answers = {}, submitted = false, sec = 1800, timerInt = null;
+    let user = null, subject = "", questions = [], current = 0, answers = {}, submitted = false, sec = 0, timerInt = null;
 
     onAuthStateChanged(auth, (u) => { if (u) user = u; else location.href = "login.html"; });
 
@@ -114,9 +114,11 @@
               questions.push(doc.data());
             });
             if (questions.length === 0) { alert("इस विषय में अभी कोई सवाल नहीं हैं।"); return; }
+            // 1 Question = 45 Seconds
+            sec = questions.length * 45;
             document.getElementById("subjectBox").classList.add("hide");
             document.getElementById("quizBox").classList.remove("hide");
-            current = 0; answers = {}; submitted = false; sec = 1800; startTimer(); render();
+            current = 0; answers = {}; submitted = false; startTimer(); render();
         } catch (e) { alert("Error: " + e.message); }
     };
 
