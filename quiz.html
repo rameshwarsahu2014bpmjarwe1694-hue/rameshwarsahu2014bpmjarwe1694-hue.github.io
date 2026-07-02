@@ -114,8 +114,8 @@
               questions.push(doc.data());
             });
             if (questions.length === 0) { alert("इस विषय में अभी कोई सवाल नहीं हैं।"); return; }
-            // 1 Question = 45 Seconds
-            sec = questions.length * 45;
+            // 1 Question = 25 Seconds
+            sec = questions.length * 25;
             document.getElementById("subjectBox").classList.add("hide");
             document.getElementById("quizBox").classList.remove("hide");
             current = 0; answers = {}; submitted = false; startTimer(); render();
