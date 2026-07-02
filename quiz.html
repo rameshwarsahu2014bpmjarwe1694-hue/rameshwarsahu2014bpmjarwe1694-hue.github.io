@@ -42,7 +42,7 @@
         <button class="btn-back" onclick="goBack()">⬅ Back</button>
         <div class="timer-box" id="timer">30:00</div>
     </div>
-    <h1>Mock Test Hub</h1>
+    <h1 id="testTitle">Mock Test Hub</h1>
     <div id="statusBox" class="status-bar hide"></div>
     <div id="subjectBox">
         <p style="text-align:center; font-weight:bold; color:#666;">विषय चुनें और टेस्ट शुरू करें:</p>
@@ -105,6 +105,7 @@
 
     window.startQuiz = async function(sub) {
         subject = sub;
+        document.getElementById("testTitle").innerText = sub;
         try {
             const qy = query(collection(db, "quizQuestions"), where("subject", "==", sub));
             const snap = await getDocs(qy);
