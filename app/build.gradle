@@ -56,7 +56,7 @@ def twaManifest = [
 
 android {
     compileSdkVersion 36
-    namespace "io.gdsnotes.rshtwa"
+    namespace "io.gdsnote.rshtwa"
     defaultConfig {
         applicationId "io.gdsnotes.rshtwa"
         minSdkVersion 23
