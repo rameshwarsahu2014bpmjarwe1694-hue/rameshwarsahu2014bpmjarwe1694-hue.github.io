@@ -133,10 +133,22 @@
     function startTimer() { clearInterval(timerInt); timerInt = setInterval(() => { sec--; let m = Math.floor(sec/60), s = sec%60; document.getElementById("timer").innerText = String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0"); if(sec <= 0) { clearInterval(timerInt); submitQuiz(); } }, 1000); }
 
         window.render = function() {
-        let q = questions[current];
-        alert(JSON.stringify(questions[0]));
-        alert("Question = " + q.question + "\nOptions = " + q.options.length);
-        alert(document.getElementById("question") + " | " + document.getElementById("options"));
+    let q = questions[current];
+
+    if (!q) {
+        alert("Question object not found");
+        return;
+    }
+
+    if (!q.options) {
+        alert("Options field missing:\n" + JSON.stringify(q));
+        return;
+    }
+
+    if (!Array.isArray(q.options)) {
+        alert("Options is not array:\n" + JSON.stringify(q));
+        return;
+    }
         document.getElementById("progress").innerText = `प्रश्न: ${current + 1} / ${questions.length}`;
         document.getElementById("question").innerText = q.question;
         let html = "";
