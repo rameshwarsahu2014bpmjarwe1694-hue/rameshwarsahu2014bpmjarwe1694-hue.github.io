@@ -386,7 +386,14 @@ window.nav = function(step) {
      // 1. तुरंत अलर्ट दिखाएं
     alert("Downloading shuru ho gayi hai! \n\nKripya 30 se 180 seconds tak wait karein, Server load ki wajah se samay lag sakta hai.");
     const url = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}`;
-    
+    // Android App Download
+if (window.AndroidBridge) {
+    window.AndroidBridge.download(
+        url,
+        `${post}_${year}_PYQ.pdf`
+    );
+    return;
+} 
     try {
         
         const response = await fetch(url, {
