@@ -228,7 +228,18 @@ window.handleSecureAccess = async (category, subject, title, fileName, price) =>
     }
 
     const secureUrl = `${BACKEND_URL}/get-notes-pdf?year=Notes&post=${encodeURIComponent(category)}&subject=${encodeURIComponent(subject)}`;
+    // Android App
+    if (window.AndroidBridge) {
 
+         alert("Payment verified! Downloading start...");
+
+         window.AndroidBridge.download(
+               secureUrl,
+              `${subject}.pdf`
+         );
+
+         return;
+      }
     try {
         const res = await fetch(secureUrl, {
             headers: {
@@ -240,16 +251,6 @@ window.handleSecureAccess = async (category, subject, title, fileName, price) =>
 
         if (res.status === 200) {
         alert("Payment verified! Downloading start...");
-         // Android App
-        if (window.AndroidBridge) {
-
-            window.AndroidBridge.download(
-               secureUrl,
-              `${subject}.pdf`
-          );
-
-          return;
-     }
             const blob = await res.blob();
 
             const url = window.URL.createObjectURL(blob);
