@@ -114,8 +114,10 @@
         try {
             const qy = query(collection(db, "quizQuestions"), where("subject", "==", sub));
             const snap = await getDocs(qy);
+            alert("Questions found: " + snap.size);
             questions = [];
             snap.forEach(doc => {
+            console.log(doc.data());
               questions.push(doc.data());
             });
             if (questions.length === 0) { alert("इस विषय में अभी कोई सवाल नहीं हैं।"); return; }
