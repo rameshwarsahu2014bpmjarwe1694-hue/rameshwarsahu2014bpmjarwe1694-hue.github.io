@@ -402,7 +402,16 @@ window.openSyllabusPDF = async function(fileName) {
     alert("PDF load failed");
     return;
     }
-    
+    // Android App
+     if (window.AndroidBridge) {
+
+       window.AndroidBridge.download(
+           url,
+          fileName
+     );
+
+     return;
+    }
     const blob = await res.blob();
 
     const link = document.createElement("a");
