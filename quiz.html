@@ -136,6 +136,7 @@
         let q = questions[current];
         alert(JSON.stringify(questions[0]));
         alert("Question = " + q.question + "\nOptions = " + q.options.length);
+        alert(document.getElementById("question") + " | " + document.getElementById("options"));
         document.getElementById("progress").innerText = `प्रश्न: ${current + 1} / ${questions.length}`;
         document.getElementById("question").innerText = q.question;
         let html = "";
