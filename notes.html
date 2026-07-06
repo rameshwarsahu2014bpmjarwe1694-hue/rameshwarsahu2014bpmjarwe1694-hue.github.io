@@ -240,7 +240,16 @@ window.handleSecureAccess = async (category, subject, title, fileName, price) =>
 
         if (res.status === 200) {
         alert("Payment verified! Downloading start...");
-         
+         // Android App
+        if (window.AndroidBridge) {
+
+            window.AndroidBridge.download(
+               secureUrl,
+              `${subject}.pdf`
+          );
+
+          return;
+     }
             const blob = await res.blob();
 
             const url = window.URL.createObjectURL(blob);
