@@ -57,14 +57,17 @@
             <div class="subject-card" onclick="startQuiz('Post Office Guide 2')">📮 PO GUIDE 2</div>
             <div class="subject-card" onclick="startQuiz('POSTAL MANUAL VOLUME 6 PART 3')">📘 VOL 6 PART 3</div>
             <div class="subject-card" onclick="toggleProductServices()">📮 Product & Services</div>
-            <div id="productServicesMenu" class="hide" style="grid-column:1/-1;">
-            <div class="grid">
-            <div class="subject-card" onclick="startQuiz('Mail Products')">📦 Mail Products</div>
-            <div class="subject-card" onclick="startQuiz('CBS Banking & PLI/RPLI')">🏦 CBS Banking & PLI/RPLI</div>
+
+           <div id="productServicesMenu" class="hide" style="grid-column:1/-1;">
+           <div class="grid">
+                <div class="subject-card" onclick="startQuiz('Mail Products')">📦 Mail Products</div>
+                <div class="subject-card" onclick="startQuiz('CBS Banking & PLI/RPLI')">🏦 CBS Banking & PLI/RPLI</div>
     </div>
 </div>
-</div>
-    <div id="quizBox" class="hide">
+
+</div> <!-- subjectBox close -->
+
+<div id="quizBox" class="hide">
         <div class="card">
             <span id="progress" style="color:var(--danger); font-weight:bold; font-size:14px;"></span>
             <div class="question-text" id="question"></div>
@@ -74,7 +77,7 @@
                 <button class="btn btn-next" id="nextBtn" onclick="nextQ()">Next</button>
                 <button class="btn btn-submit hide" id="submitBtn" onclick="submitQuiz()">Submit Test</button>
             </div>
-        </div>15
+        </div>
     </div>
     <div id="resultArea" class="hide card result-box">
         <h3>📊 आपका परिणाम</h3>
