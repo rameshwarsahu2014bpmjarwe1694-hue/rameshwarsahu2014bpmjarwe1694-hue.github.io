@@ -56,6 +56,18 @@
         
         .ai-msg { background: #f1f3f4; color: #2c3e50; align-self: flex-start; border-bottom-left-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         
+        /* ⚖️ LEGAL DISCLAIMER BOX STYLE */
+        .legal-disclaimer {
+            font-size: 11px;
+            color: #7f8c8d;
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+
         /* Loading Animation */
         .loading-dots { display: flex; gap: 4px; justify-content: center; align-items: center; height: 20px; }
         .dot { width: 8px; height: 8px; background: #90a4ae; border-radius: 50%; animation: blink 1.4s infinite both; }
@@ -63,12 +75,15 @@
         .dot:nth-child(3) { animation-delay: .4s; }
         @keyframes blink { 0% { opacity: .2; } 20% { opacity: 1; } 100% { opacity: .2; } }
 
-        .input-area { display: flex; padding: 12px; border-top: 1px solid #eee; background: #fff; border-radius: 0 0 15px 15px; }
+        .input-area { display: flex; flex-direction: column; padding: 12px; border-top: 1px solid #eee; background: #fff; border-radius: 0 0 15px 15px; }
+        .input-row { display: flex; width: 100%; }
         input { flex: 1; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; outline: none; font-size: 15px; transition: border-color 0.3s; }
         input:focus { border-color: var(--primary); }
         
         button.send-btn { background: var(--primary); color: white; border: none; padding: 0 20px; margin-left: 8px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; }
         button.send-btn:hover { background: #0056b3; }
+        
+        .footer-note { text-align: center; font-size: 10px; color: #aaa; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -80,24 +95,24 @@
     </div>
     
     <div class="chat-box" id="chatBox">
-        <!-- डिफ़ॉल्ट संदेश जो फायरबेस लोड होने तक दिखेगा -->
         <div class="message ai-msg" id="defaultWelcome">
             लोड हो रहा है... कृपया प्रतीक्षा करें...⏳
         </div>
     </div>
     
     <div class="input-area">
-        <input type="text" id="userInput" placeholder="अपना सवाल यहाँ पूछें...">
-        <button class="send-btn" id="sendBtn">पूछें</button>
+        <div class="input-row">
+            <input type="text" id="userInput" placeholder="अपना सवाल यहाँ पूछें...">
+            <button class="send-btn" id="sendBtn">पूछें</button>
+        </div>
+        <div class="footer-note">AI महत्वपूर्ण नियमों या डेटा को गलत पेश कर सकता है। कृपया विभागीय गाइड से पुष्टि करें।</div>
     </div>
 </div>
 
 <script type="module">
-    // आपके PYQ कोड से ली गई वर्किंग फायरबेस लाइब्रेरीज़
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    // आपका ओरिजिनल फायरबेस कॉन्फ़िगरेशन
     const firebaseConfig = {
         apiKey: "AIzaSyDjzmo0A4KhOkrqFQdOyCEek6bsPF-UVPQ",
         authDomain: "gds-departmental-exam-studyhub.firebaseapp.com",
@@ -116,7 +131,6 @@
     const userInput = document.getElementById('userInput');
     const sendBtn = document.getElementById('sendBtn');
 
-    // समय के हिसाब से ग्रीटिंग और इमोजी तय करना
     function getGreeting() {
         const hour = new Date().getHours();
         if (hour < 12) return "Good Morning 🌅";
@@ -124,7 +138,6 @@
         return "Good Evening 🌆";
     }
 
-    // मैसेज जोड़ने का फंक्शन
     function appendMessage(text, className, isHTML = false) {
         const msgDiv = document.createElement('div');
         msgDiv.className = `message ${className}`;
@@ -137,12 +150,12 @@
         chatBox.scrollTop = chatBox.scrollHeight; 
     }
 
-    // लॉगिन यूजर का नाम फ़ेच करके स्वागत संदेश सेट करना
     onAuthStateChanged(auth, (user) => {
         if (user) {
             let userName = user.displayName || user.email.split('@')[0];
             const greetingText = getGreeting();
             
+            // स्वागत संदेश में लीगल डिस्क्लेमर बॉक्स को जोड़ा गया है
             const welcomeHTML = `
                 <b>Hi / Hello, ${greetingText}!</b> 👋<br>
                 <b>${userName}</b>, मैं <b>RAMESHWAR SAHU AI STUDY HUB</b> का ऑफिशियल असिस्टेंट हूँ। 🤖<br><br>
@@ -153,9 +166,13 @@
                     <li>जीके (GK) और रीजनिंग के प्रश्न 🧠</li>
                 </ul>
                 <br>
-                अपना सवाल नीचे बॉक्स में टाइप करें, मैं तुरंत आपकी मदद करूँगा! ✨`;
+                अपना सवाल नीचे बॉक्स में टाइप करें, मैं तुरंत आपकी मदद करूँगा! ✨
+                
+                <div class="legal-disclaimer">
+                    ⚖️ <b>अस्वीकरण (Disclaimer):</b> यह एक ऑटोमेटेड AI मॉडल है जिसका उद्देश्य केवल शैक्षिक सहायता प्रदान करना है। यह आधिकारिक भारतीय डाक विभाग का टूल नहीं है। परीक्षा में किसी भी नियम या डेटा की सटीकता के लिए कृपया आधिकारिक पोस्टल मैनुअल/गाइड से अवश्य मिलान करें। किसी भी अनजाने त्रुटि के लिए यह ऐप उत्तरदायी नहीं होगा।
+                </div>`;
 
-            chatBox.innerHTML = ''; // लोड हो रहा है टेक्स्ट हटाए
+            chatBox.innerHTML = ''; 
             appendMessage(welcomeHTML, 'ai-msg', true);
         } else {
             alert("Security Alert: Please login first!");
@@ -163,7 +180,6 @@
         }
     });
 
-    // सवाल पूछने का मुख्य फंक्शन
     async function askQuestion() {
         const query = userInput.value.trim();
         if (!query) return;
@@ -198,7 +214,7 @@
 
                 appendMessage(formattedAnswer, 'ai-msg', true);
             } else {
-                appendMessage('क्षма करें, मैं आपके सवाल का जवाब प्रोसेस नहीं कर पाया। कृपया फिर से प्रयास करें। 🔄', 'ai-msg');
+                appendMessage('क्षमा करें, मैं आपके सवाल का जवाब प्रोसेस नहीं कर पाया। कृपया फिर से प्रयास करें। 🔄', 'ai-msg');
             }
         } catch (error) {
             loadingMsgElement.remove();
@@ -210,7 +226,7 @@
     sendBtn.onclick = askQuestion;
     userInput.onkeypress = (e) => { if (e.key === 'Enter') askQuestion(); };
 
-    /* सुरक्षा नियम (Right Click, Copy-Paste ब्लॉक आपके PYQ कोड से लिया गया) */
+    /* सुरक्षा नियम */
     document.addEventListener("contextmenu", e => e.preventDefault());
     document.addEventListener("copy", e => e.preventDefault());
     document.addEventListener("cut", e => e.preventDefault());
