@@ -9,64 +9,90 @@
     <title>RAMESHWAR SAHU AI STUDY HUB</title>
     <style>
         :root { 
-            --primary: #007bff; 
-            --dark: #2c3e50; 
-            --bg: #f0f2f5; 
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-        body { background: var(--bg); padding: 10px; color: #333; }
-        
-        .chat-container { 
-            max-width: 550px; 
-            margin: auto; 
-            background: #fff; 
-            border-radius: 15px; 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
-            display: flex; 
-            flex-direction: column; 
-            height: 92vh; 
-        }
-        
-        .chat-header { 
-            background: linear-gradient(135deg, var(--primary), #6f42c1); 
-            color: white; 
-            padding: 15px; 
-            font-size: 16px; 
-            font-weight: bold; 
-            border-radius: 15px 15px 0 0; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px;
-        }
-        .back-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        
-        .chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        
-        .message { padding: 12px 16px; border-radius: 12px; max-width: 85%; font-size: 15px; line-height: 1.5; word-wrap: break-word; }
-        
-        .user-msg { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-        
-        .ai-msg { background: #f1f3f4; color: #2c3e50; align-self: flex-start; border-bottom-left-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        
-        /* ⚖️ LEGAL DISCLAIMER BOX STYLE */
-        .legal-disclaimer {
-            font-size: 11px;
-            color: #7f8c8d;
-            background: #fff3cd;
-            border: 1px solid #ffeeba;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 10px;
-            line-height: 1.4;
-        }
+    --primary: #007bff; 
+    --dark: #2c3e50; 
+    --bg: #f0f2f5; 
+}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+body { background: var(--bg); padding: 10px; color: #333; }
+
+.chat-container { 
+    max-width: 550px; 
+    margin: auto; 
+    background: #fff; 
+    border-radius: 15px; 
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
+    display: flex; 
+    flex-direction: column; 
+    height: 92vh; 
+    overflow: hidden; /* 🛠️ हेडर और इनपुट को कंटेनर से बाहर जाने से रोकेगा */
+}
+
+/* 🛠️ हेडर को टॉप पर फिक्स और लॉक रखने के लिए */
+.chat-header { 
+    background: linear-gradient(135deg, var(--primary), #6f42c1); 
+    color: white; 
+    padding: 15px; 
+    font-size: 16px; 
+    font-weight: bold; 
+    border-radius: 15px 15px 0 0; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 10; /* 🛠️ ताकि टेक्स्ट हेडर के ऊपर ओवरलैप न करे */
+    width: 100%;
+}
+
+/* 🛠️ बैक बटन का सुंदर और फिक्स लुक */
+.back-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    min-width: 60px; /* 🛠️ बटन को एक फिक्स चौड़ाई देने के लिए */
+}
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+/* 🛠️ चैट बॉक्स में पैडिंग एडजस्टमेंट ताकि टेक्स्ट नीचे से शुरू हो */
+.chat-box { 
+    flex: 1; 
+    padding: 20px 15px 15px 15px; 
+    overflow-y: auto; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+}
+
+.message { padding: 12px 16px; border-radius: 12px; max-width: 85%; font-size: 15px; line-height: 1.5; word-wrap: break-word; }
+
+.user-msg { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+
+.ai-msg { background: #f1f3f4; color: #2c3e50; align-self: flex-start; border-bottom-left-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+
+/* ⚖️ LEGAL DISCLAIMER BOX STYLE */
+.legal-disclaimer {
+    font-size: 11px;
+    color: #7f8c8d;
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    line-height: 1.4;
+}
+
 
         /* Loading Animation */
         .loading-dots { display: flex; gap: 4px; justify-content: center; align-items: center; height: 20px; }
