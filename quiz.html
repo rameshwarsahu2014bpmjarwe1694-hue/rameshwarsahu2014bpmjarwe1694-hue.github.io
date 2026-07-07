@@ -42,43 +42,47 @@
         <button class="btn-back" onclick="goBack()">⬅ Back</button>
         <div class="timer-box" id="timer">30:00</div>
     </div>
-    <h1 id="testTitle">Mock Test Hub</h1>
-    <div id="statusBox" class="status-bar hide"></div>
-    <div id="subjectBox">
-        <p style="text-align:center; font-weight:bold; color:#666;">विषय चुनें और टेस्ट शुरू करें:</p>
-        <div class="grid">
-            <div class="subject-card" onclick="startQuiz('POSTAL MANUAL VOLUME 7')">📘 POSTAL MANUAL VOL 7</div>
-            <div class="subject-card" onclick="startQuiz('GK')">🌍 General Knowledge</div>
-            <div class="subject-card" onclick=" startQuiz('IT MODERNIZATION & APT 2.0')">🌍 IT MODERNIZATION & APT 2.0</div>
-            <div class="subject-card" onclick="startQuiz('Maths')">➕ Mathematics</div>
-            <div class="subject-card" onclick="startQuiz('Reasoning')">🧠 Reasoning</div>
-            <div class="subject-card" onclick="startQuiz('POSTAL MANUAL VOLUME 5')">📘 POSTAL MANUAL VOL 5</div>
-            <div class="subject-card" onclick="startQuiz('Post Office Guide 1')">📮 PO GUIDE 1</div>
-            <div class="subject-card" onclick="startQuiz('Post Office Guide 2')">📮 PO GUIDE 2</div>
-            <div class="subject-card" onclick="startQuiz('POSTAL MANUAL VOLUME 6 PART 3')">📘 VOL 6 PART 3</div>
-            <div class="subject-card" onclick="toggleProductServices()">📮 Product & Services</div>
+<h1 id="testTitle">Mock Test Hub</h1>
+<div id="statusBox" class="status-bar hide"></div>
 
-           <div id="productServicesMenu" class="hide" style="grid-column:1/-1;">
-           <div class="grid">
+<div id="subjectBox">
+    <p style="text-align:center; font-weight:bold; color:#666;">विषय चुनें और टेस्ट शुरू करें:</p>
+    <div class="grid">
+        <div class="subject-card" onclick="startQuiz('POSTAL MANUAL VOLUME 7')">📘 POSTAL MANUAL VOL 7</div>
+        <div class="subject-card" onclick="startQuiz('GK')">🌍 General Knowledge</div>
+        <div class="subject-card" onclick="startQuiz('IT MODERNIZATION & APT 2.0')">🌍 IT MODERNIZATION & APT 2.0</div>
+        <div class="subject-card" onclick="startQuiz('Maths')">➕ Mathematics</div>
+        <div class="subject-card" onclick="startQuiz('Reasoning')">🧠 Reasoning</div>
+        <div class="subject-card" onclick="startQuiz('POSTAL MANUAL VOLUME 5')">📘 POSTAL MANUAL VOL 5</div>
+        <div class="subject-card" onclick="startQuiz('Post Office Guide 1')">📮 PO GUIDE 1</div>
+        <div class="subject-card" onclick="startQuiz('Post Office Guide 2')">📮 PO GUIDE 2</div>
+        <div class="subject-card" onclick="startQuiz('POSTAL MANUAL VOLUME 6 PART 3')">📘 VOL 6 PART 3</div>
+        <div class="subject-card" onclick="toggleProductServices()">📮 Product & Services</div>
+
+        <!-- Product Services Menu Inside Grid -->
+        <div id="productServicesMenu" class="hide" style="grid-column:1/-1;">
+            <div class="grid">
                 <div class="subject-card" onclick="startQuiz('Mail Products')">📦 Mail Products</div>
                 <div class="subject-card" onclick="startQuiz('CBS Banking & PLI/RPLI')">🏦 CBS Banking & PLI/RPLI</div>
-    </div>
-</div>
-
-</div> <!-- subjectBox close -->
-
-<div id="quizBox" class="hide">
-        <div class="card">
-            <span id="progress" style="color:var(--danger); font-weight:bold; font-size:14px;"></span>
-            <div class="question-text" id="question"></div>
-            <div id="options"></div>
-            <div class="btn-row">
-                <button class="btn btn-prev" onclick="prevQ()">Previous</button>
-                <button class="btn btn-next" id="nextBtn" onclick="nextQ()">Next</button>
-                <button class="btn btn-submit hide" id="submitBtn" onclick="submitQuiz()">Submit Test</button>
             </div>
         </div>
+    </div> <!-- यहाँ मुख्य ग्रिड (grid) बंद हुआ -->
+</div> <!-- यहाँ subjectBox बंद हुआ -->
+
+<!-- Quiz Box -->
+<div id="quizBox" class="hide">
+    <div class="card">
+        <span id="progress" style="color:var(--danger); font-weight:bold; font-size:14px;"></span>
+        <div class="question-text" id="question"></div>
+        <div id="options"></div>
+        <div class="btn-row">
+            <button class="btn btn-prev" onclick="prevQ()">Previous</button>
+            <button class="btn btn-next" id="nextBtn" onclick="nextQ()">Next</button>
+            <button class="btn btn-submit hide" id="submitBtn" onclick="submitQuiz()">Submit Test</button>
+        </div>
     </div>
+</div>
+    
     <div id="resultArea" class="hide card result-box">
         <h3>📊 आपका परिणाम</h3>
         <div class="score-text" id="resultScore"></div>
