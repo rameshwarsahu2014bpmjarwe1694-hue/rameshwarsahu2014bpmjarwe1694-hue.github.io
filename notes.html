@@ -206,12 +206,16 @@ async function updateUIBasedOnPayment() {
 };
     
 window.handleSecureAccess = async (category, subject, title, fileName, price) => {
+
     const token = await auth.currentUser.getIdToken();
 
     try {
+
         const statusRes = await fetch(`${BACKEND_URL}/payment-status`, {
             method: "POST",
-            headers: { "Authorization": `Bearer ${token}` }
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
         });
 
         const statusData = await statusRes.json().catch(() => ({}));
@@ -223,20 +227,147 @@ window.handleSecureAccess = async (category, subject, title, fileName, price) =>
         }
 
     } catch (e) {
+
         alert("सिस्टम में एरर है, कृपया बाद में कोशिश करें।");
         return;
+
     }
 
-    const secureUrl = `${BACKEND_URL}/get-notes-pdf?year=Notes&post=${encodeURIComponent(category)}&subject=${encodeURIComponent(subject)}`;
-    
-    
+    const secureUrl =
+        `${BACKEND_URL}/get-notes-pdf?year=Notes&post=${encodeURIComponent(category)}&subject=${encodeURIComponent(subject)}`;
 
-            
+    // Android App
+    if (window.AndroidBridge) {
+
+        try {
+
+            const checkRes = await fetch(secureUrl, {
+                headers: {
+                    "X-Source-Auth": "RSH-GDS-SECURE-ACCESS",
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (checkRes.status === 200) {
+
+                alert("Payment verified! Downloading start...");
+
+                window.AndroidBridge.download(
+                    secureUrl,
+                    `${subject}.pdf`,
+                    token
+                );
+
+                return;
+
+            }
+
+            if (checkRes.status === 403) {
+
+                window.pendingTxn = {
+                    category,
+                    subject
+                };
+
+                const p = price || 29;
+                const myUpiId = "6268782886@ybl";
+
+                const qrData =
+                    `upi://pay?pa=${myUpiId}&pn=NotesStore&am=${p}&cu=INR`;
+
+                const qrUrl =
+                    "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
+                    encodeURIComponent(qrData);
+
+                document.getElementById("qrImage").src = qrUrl;
+                document.getElementById("upiDisplay").innerText = myUpiId;
+                document.getElementById("amountDisplay").innerText = `Amount: ₹${p}`;
+                document.getElementById("qrBox").style.display = "flex";
+
+                return;
+            }
+
+            alert("Unexpected Status : " + checkRes.status);
+            return;
+
+        } catch (e) {
+
+            alert("Server Error");
+            return;
+
+        }
+
+    }
+
+    // Website
+    try {
+
+        const res = await fetch(secureUrl, {
+            headers: {
+                "X-Source-Auth": "RSH-GDS-SECURE-ACCESS",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (res.status === 200) {
+
+            alert("Payment verified! Downloading start...");
+
+            const blob = await res.blob();
+
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+
+            a.href = url;
+            a.download = `${subject}.pdf`;
+
+            document.body.appendChild(a);
+
+            a.click();
+
+            a.remove();
+
+            window.URL.revokeObjectURL(url);
+
+            return;
+
+        }
+
+        if (res.status === 403) {
+
+            window.pendingTxn = {
+                category,
+                subject
+            };
+
+            const p = price || 29;
+            const myUpiId = "6268782886@ybl";
+
+            const qrData =
+                `upi://pay?pa=${myUpiId}&pn=NotesStore&am=${p}&cu=INR`;
+
+            const qrUrl =
+                "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
+                encodeURIComponent(qrData);
+
+            document.getElementById("qrImage").src = qrUrl;
+            document.getElementById("upiDisplay").innerText = myUpiId;
+            document.getElementById("amountDisplay").innerText = `Amount: ₹${p}`;
+            document.getElementById("qrBox").style.display = "flex";
+
+            return;
+
+        }
 
         alert("Unexpected Status: " + res.status);
+
     } catch (err) {
+
         alert("PDF download failed. Please try again.");
+
     }
+
 };
 
 
