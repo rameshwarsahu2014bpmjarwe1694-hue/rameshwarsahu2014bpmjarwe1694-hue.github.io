@@ -370,75 +370,10 @@ window.handleSecureAccess = async (category, subject, title, fileName, price) =>
 
 };
 
-
 window.submitPaymentProof = async () => {
 
     const txnId =
-        // Android App
-if (window.AndroidBridge) {
-
-    const token = await auth.currentUser.getIdToken();
-
-    try {
-
-        const checkRes = await fetch(secureUrl, {
-            headers: {
-                "X-Source-Auth": "RSH-GDS-SECURE-ACCESS",
-                "Authorization": `Bearer ${token}`
-            }
-        });
-
-        // Payment verified
-        if (checkRes.status === 200) {
-
-            alert("Payment verified! Downloading start...");
-
-            window.AndroidBridge.download(
-                secureUrl,
-                `${subject}.pdf`,
-                token
-            );
-
-            return;
-        }
-
-        // Payment required
-        if (checkRes.status === 403) {
-
-            window.pendingTxn = {
-                category,
-                subject
-            };
-
-            const p = price || 29;
-            const myUpiId = "6268782886@ybl";
-
-            const qrData =
-                `upi://pay?pa=${myUpiId}&pn=NotesStore&am=${p}&cu=INR`;
-
-            const qrUrl =
-                "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
-                encodeURIComponent(qrData);
-
-            document.getElementById("qrImage").src = qrUrl;
-            document.getElementById("upiDisplay").innerText = myUpiId;
-            document.getElementById("amountDisplay").innerText = `Amount: ₹${p}`;
-            document.getElementById("qrBox").style.display = "flex";
-
-            return;
-        }
-
-        alert("Unexpected Status : " + checkRes.status);
-
-    } catch (e) {
-
-        alert("Server Error");
-
-    }
-
-    return;
-}
-    document.getElementById("txnIdInput").value.trim();
+        document.getElementById("txnIdInput").value.trim();
 
     const file =
         document.getElementById("screenshotInput").files[0];
