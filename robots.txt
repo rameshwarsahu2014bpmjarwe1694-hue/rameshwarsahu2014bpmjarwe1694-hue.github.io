@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://gdsnotes.in/sitemap.xml
+Sitemap: https://rsh.gdsnotes.in/sitemap.xml
