@@ -2,54 +2,81 @@
 
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-<url>
-<loc>https://rsh.gdsnotes.in/</loc>
-<priority>1.0</priority>
-</url>
+  <url>
+    <loc>https://rsh.gdsnotes.in/</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
 
-<url>
-<loc>https://rsh.gdsnotes.in/dashboard.html</loc>
-<priority>0.9</priority>
-</url>
+  <url>
+    <loc>https://rsh.gdsnotes.in/dashboard.html</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
 
-<url>
-<loc>https://rsh.gdsnotes.in/notes.html</loc>
-<priority>0.9</priority>
-</url>
+  <url>
+    <loc>https://rsh.gdsnotes.in/notes.html</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
 
-<url>
-<loc>https://rsh.gdsnotes.in/quiz.html</loc>
-<priority>0.9</priority>
-</url>
+  <url>
+    <loc>https://rsh.gdsnotes.in/quiz.html</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
 
-<url>
-<loc>https://rsh.gdsnotes.in/pyq.html</loc>
-<priority>0.9</priority>
-</url>
+  <url>
+    <loc>https://rsh.gdsnotes.in/pyq.html</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
 
-<url>
-<loc>https://rsh.gdsnotes.in/syllabus.html</loc>
-<priority>0.9</priority>
-</url>
+  <url>
+    <loc>https://rsh.gdsnotes.in/syllabus.html</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
 
-<url>
-<loc>https://rsh.gdsnotes.in/login.html</loc>
-</url>
+  <url>
+    <loc>https://rsh.gdsnotes.in/login.html</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
 
-<url>
-<loc>https://rsh.gdsnotes.in/register.html</loc>
-</url>
+  <url>
+    <loc>https://rsh.gdsnotes.in/register.html</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
 
-<url>
-<loc>https://rsh.gdsnotes.in/privacy-policy.html</loc>
-</url>
+  <url>
+    <loc>https://rsh.gdsnotes.in/privacy-policy.html</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
 
-<url>
-<loc>https://rsh.gdsnotes.in/terms-and-conditions.html</loc>
-</url>
+  <url>
+    <loc>https://rsh.gdsnotes.in/terms-and-conditions.html</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
 
-<url>
-<loc>https://rsh.gdsnotes.in/refund-policy.html</loc>
-</url>
+  <url>
+    <loc>https://rsh.gdsnotes.in/refund-policy.html</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
 
 </urlset>
