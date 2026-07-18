@@ -185,10 +185,68 @@
   }
 }
     </script>
+    <script>
+
+// ---------- PWA → Native Migration ----------
+const isPWA =
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true;
+
+if (isPWA) {
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        document.getElementById("migrationScreen").style.display = "flex";
+
+        document.getElementById("primaryButton").onclick = function () {
+            window.location.href = "https://rsh.gdsnotes.in/app-release.apk";
+        };
+
+        document.getElementById("secondaryButton").onclick = function () {
+            alert(
+                "1. APK Download करें\n\n" +
+                "2. Install करें\n\n" +
+                "3. पुराने PWA की जगह Native Android App का उपयोग करें।"
+            );
+        };
+
+    });
+
+}
+
+// ---------- End Migration ----------
+
+    </script>
 </head>
 
 <body>
+<div id="migrationScreen" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#ffffff;z-index:999999;justify-content:center;align-items:center;text-align:center;padding:20px;">
 
+    <div style="max-width:420px;">
+
+        <img src="icon-192.png" width="100" height="100" alt="App Icon">
+
+        <h2 id="migrationTitle">🚀 Native Android App</h2>
+
+        <p id="migrationMessage">
+            Better Performance<br>
+            Auto Updates<br>
+            More Features
+        </p>
+
+        <button id="primaryButton"
+                style="width:100%;padding:14px;margin-top:15px;background:#8d151a;color:#fff;border:none;border-radius:8px;font-size:16px;">
+            📥 Download Native App
+        </button>
+
+        <button id="secondaryButton"
+                style="width:100%;padding:14px;margin-top:10px;background:#444;color:#fff;border:none;border-radius:8px;font-size:16px;">
+            📖 Install Guide
+        </button>
+
+    </div>
+
+</div>
 <section class="hero">
     <div class="hero-box">
 
@@ -253,20 +311,8 @@
 </footer>
 
 <script>
-let deferredPrompt;
-
-window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-});
-
 function installApp() {
-    if (!deferredPrompt) {
-        alert("Install option not available yet. Open in Chrome.");
-        return;
-    }
-    deferredPrompt.prompt();
-    deferredPrompt = null;
+    window.location.href = "https://rsh.gdsnotes.in/app-release.apk";
 }
 
 if ('serviceWorker' in navigator) {
