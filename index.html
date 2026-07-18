@@ -150,6 +150,51 @@
             .btn{width:100%;max-width:260px;}
         }
     </style>
+    <script>
+
+// ---------- PWA → Native Migration ----------
+const isPWA =
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true;
+
+if (isPWA) {
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        document.getElementById("migrationScreen").style.display = "flex";
+
+        document.getElementById("migrationTitle").innerHTML =
+            "🚀 Native Android App";
+
+        document.getElementById("migrationMessage").innerHTML =
+            "Better Performance<br>Auto Updates<br>More Features";
+
+        document.getElementById("primaryButton").innerHTML =
+            "📥 Download Native App";
+
+        document.getElementById("secondaryButton").innerHTML =
+            "📖 Install Guide";
+
+        document.getElementById("primaryButton").onclick = function () {
+            window.location.href =
+                "https://rsh.gdsnotes.in/app-release.apk";
+        };
+
+        document.getElementById("secondaryButton").onclick = function () {
+            alert(
+                "1. APK Download करें\n\n" +
+                "2. Install करें\n\n" +
+                "3. फिर इसी App का उपयोग करें।"
+            );
+        };
+
+    });
+
+}
+
+// ---------- End Migration ----------
+
+    </script>
     <script type="application/ld+json">
 {
   "@context":"https://schema.org",
@@ -187,7 +232,27 @@
 </head>
 
 <body>
+<div id="migrationScreen" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#ffffff;z-index:999999;justify-content:center;align-items:center;text-align:center;padding:20px;">
 
+    <div style="max-width:420px;">
+
+        <img src="icon-192.png" width="100" height="100">
+
+        <h2 id="migrationTitle">RSH GDS Notes</h2>
+
+        <p id="migrationMessage"></p>
+
+        <button id="primaryButton"
+                style="width:100%;padding:14px;margin-top:15px;background:#8d151a;color:#fff;border:none;border-radius:8px;font-size:16px;">
+        </button>
+
+        <button id="secondaryButton"
+                style="width:100%;padding:14px;margin-top:10px;background:#444;color:#fff;border:none;border-radius:8px;font-size:16px;">
+        </button>
+
+    </div>
+
+</div>
 <section class="hero">
     <div class="hero-box">
 
