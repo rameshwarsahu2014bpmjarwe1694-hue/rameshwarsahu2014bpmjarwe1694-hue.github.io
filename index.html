@@ -8,27 +8,26 @@
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="description" content="Prepare for GDS Departmental Exam with updated Notes, PYQ, Mock Tests, PDF Study Material and online practice by Rameshwar Sahu GDS Departmental Exam Study Hub.">
     <meta property="og:type" content="website">
-<meta property="og:title" content="RAMESHWAR SAHU GDS Departmental Exam Study Hub">
-<meta property="og:description" content="Updated Notes, PYQ, Mock Tests and PDF Study Material for GDS Departmental Exam.">
-<meta property="og:url" content="https://rsh.gdsnotes.in/">
-<meta property="og:image" content="https://rsh.gdsnotes.in/icon-512.png">
-<meta property="og:site_name" content="RAMESHWAR SAHU GDS Departmental Exam Study Hub">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="RAMESHWAR SAHU GDS Departmental Exam Study Hub">
-<meta name="twitter:description" content="Updated Notes, PYQ, Mock Tests and PDF Study Material for GDS Departmental Exam.">
-<meta name="twitter:image" content="https://rsh.gdsnotes.in/icon-512.png">
+    <meta property="og:title" content="RAMESHWAR SAHU GDS Departmental Exam Study Hub">
+    <meta property="og:description" content="Updated Notes, PYQ, Mock Tests and PDF Study Material for GDS Departmental Exam.">
+    <meta property="og:url" content="https://rsh.gdsnotes.in/">
+    <meta property="og:image" content="https://rsh.gdsnotes.in/icon-512.png">
+    <meta property="og:site_name" content="RAMESHWAR SAHU GDS Departmental Exam Study Hub">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="RAMESHWAR SAHU GDS Departmental Exam Study Hub">
+    <meta name="twitter:description" content="Updated Notes, PYQ, Mock Tests and PDF Study Material for GDS Departmental Exam.">
+    <meta name="twitter:image" content="https://rsh.gdsnotes.in/icon-512.png">
     <meta name="theme-color" content="#8d151a">
 
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <link rel="manifest" href="manifest.json">
-<link rel="canonical" href="https://rsh.gdsnotes.in/">
-<link rel="icon" href="icon-192.png">
-<link rel="shortcut icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+    <link rel="canonical" href="https://rsh.gdsnotes.in/">
+    <link rel="icon" href="icon-192.png">
+    <link rel="shortcut icon" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
 
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
@@ -68,12 +67,17 @@
             100%{transform:translateX(-100%);}
         }
 
-        .btn-group{
-            margin-top:25px;
-            display:flex;
-            flex-wrap:wrap;
-            justify-content:center;
-            gap:15px;
+        /* डिफॉल्ट रूप से छिपे रहेंगे ताकि मिस-फ्लैश न हो */
+        .btn-group {
+            margin-top: 25px;
+            display: none; 
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        #installBtn {
+            display: none;
         }
 
         .btn{
@@ -152,118 +156,100 @@
     </style>
     
     <script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"SoftwareApplication",
-  "name":"RAMESHWAR SAHU GDS Departmental Exam Study Hub",
-  "applicationCategory":"EducationalApplication",
-  "operatingSystem":"Android",
-  "url":"https://rsh.gdsnotes.in/",
-  "downloadUrl":"https://rsh.gdsnotes.in/",
-  "image":"https://rsh.gdsnotes.in/icon-512.png",
-  "author":{
-    "@type":"Person",
-    "name":"Rameshwar Sahu"
-  },
-  "publisher":{
-    "@type":"Organization",
-    "name":"RAMESHWAR SAHU GDS Departmental Exam Study Hub"
-  },
-  "description":"GDS Departmental Exam preparation app with Notes, PYQ, Mock Tests and Study Material."
-}
+    {
+      "@context":"https://schema.org",
+      "@type":"SoftwareApplication",
+      "name":"RAMESHWAR SAHU GDS Departmental Exam Study Hub",
+      "applicationCategory":"EducationalApplication",
+      "operatingSystem":"Android",
+      "url":"https://rsh.gdsnotes.in/",
+      "downloadUrl":"https://rsh.gdsnotes.in/app-release.apk",
+      "image":"https://rsh.gdsnotes.in/icon-512.png",
+      "author":{
+        "@type":"Person",
+        "name":"Rameshwar Sahu"
+      },
+      "publisher":{
+        "@type":"Organization",
+        "name":"RAMESHWAR SAHU GDS Departmental Exam Study Hub"
+      },
+      "description":"GDS Departmental Exam preparation app with Notes, PYQ, Mock Tests and Study Material."
+    }
     </script>
     <script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"WebSite",
-  "name":"RAMESHWAR SAHU GDS Departmental Exam Study Hub",
-  "url":"https://rsh.gdsnotes.in/",
-  "inLanguage":"hi-IN",
-  "publisher":{
-    "@type":"Organization",
-    "name":"RAMESHWAR SAHU GDS Departmental Exam Study Hub"
-  }
-}
+    {
+      "@context":"https://schema.org",
+      "@type":"WebSite",
+      "name":"RAMESHWAR SAHU GDS Departmental Exam Study Hub",
+      "url":"https://rsh.gdsnotes.in/",
+      "inLanguage":"hi-IN",
+      "publisher":{
+        "@type":"Organization",
+        "name":"RAMESHWAR SAHU GDS Departmental Exam Study Hub"
+      }
+    }
     </script>
     <script>
+    // ---------- PWA → Native Migration ----------
+    const isPWA =
+        window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone === true;
 
-// ---------- PWA → Native Migration ----------
-const isPWA =
-    window.matchMedia("(display-mode: standalone)").matches ||
-    window.navigator.standalone === true;
+    if (isPWA) {
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("migrationScreen").style.display = "flex";
 
-if (isPWA) {
+            document.getElementById("primaryButton").onclick = function () {
+                window.location.href = "https://rsh.gdsnotes.in/app-release.apk";
+            };
 
-    document.addEventListener("DOMContentLoaded", () => {
-
-        document.getElementById("migrationScreen").style.display = "flex";
-
-        document.getElementById("primaryButton").onclick = function () {
-            window.location.href = "https://rsh.gdsnotes.in/app-release.apk";
-        };
-
-        document.getElementById("secondaryButton").onclick = function () {
-            alert(
-                "1. APK Download करें\n\n" +
-                "2. Install करें\n\n" +
-                "3. पुराने PWA की जगह Native Android App का उपयोग करें।"
-            );
-        };
-
-    });
-
-}
-
-// ---------- End Migration ----------
-
+            document.getElementById("secondaryButton").onclick = function () {
+                alert(
+                    "1. APK Download करें\n\n" +
+                    "2. Install करें\n\n" +
+                    "3. पुराने PWA की जगह Native Android App का उपयोग करें।"
+                );
+            };
+        });
+    }
     </script>
 </head>
 
 <body>
+
 <div id="migrationScreen" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#ffffff;z-index:999999;justify-content:center;align-items:center;text-align:center;padding:20px;">
-
     <div style="max-width:420px;">
-
         <img src="icon-192.png" width="100" height="100" alt="App Icon">
-
         <h2 id="migrationTitle">🚀 Native Android App</h2>
-
         <p id="migrationMessage">
             Better Performance<br>
             Auto Updates<br>
             More Features
         </p>
-
-        <button id="primaryButton"
-                style="width:100%;padding:14px;margin-top:15px;background:#8d151a;color:#fff;border:none;border-radius:8px;font-size:16px;">
+        <button id="primaryButton" style="width:100%;padding:14px;margin-top:15px;background:#8d151a;color:#fff;border:none;border-radius:8px;font-size:16px;">
             📥 Download Native App
         </button>
-
-        <button id="secondaryButton"
-                style="width:100%;padding:14px;margin-top:10px;background:#444;color:#fff;border:none;border-radius:8px;font-size:16px;">
+        <button id="secondaryButton" style="width:100%;padding:14px;margin-top:10px;background:#444;color:#fff;border:none;border-radius:8px;font-size:16px;">
             📖 Install Guide
         </button>
-
     </div>
-
 </div>
+
 <section class="hero">
     <div class="hero-box">
-
         <img src="RSH.png?v=9" class="logo" alt="Logo">
-
         <h1>RAMESHWAR SAHU GDS DEPARTMENTAL EXAM STUDY HUB</h1>
 
-        <!-- FIXED INSTALL BUTTON -->
-        <button onclick="installApp()" style="padding:12px 18px;background:#fff;border:none;border-radius:8px;font-weight:bold;">
-            📲 Install App
-        </button>
+        <div id="actionArea">
+            <button id="installBtn" onclick="installApp()" style="padding:12px 18px;background:#ffd600;color:#000;border:none;border-radius:8px;font-weight:bold;font-size:16px;cursor:pointer;">
+                📲 Install / Download Android App
+            </button>
 
-        <div class="btn-group">
-            <a href="login.html" class="btn btn-login">Candidate Login</a>
-<a href="register.html" class="btn btn-register">Register</a>
+            <div class="btn-group" id="loginRegisterGroup">
+                <a href="login.html" class="btn btn-login">Candidate Login</a>
+                <a href="register.html" class="btn btn-register">Register</a>
+            </div>
         </div>
-
     </div>
 </section>
 
@@ -292,21 +278,19 @@ if (isPWA) {
 <footer>
     <p>Share This Website on WhatsApp</p>
 
-    <a href="https://api.whatsapp.com/send?text=Check%20this%20useful%20website:%20https://rameshwarsahu2014bpmjarwe1694-hue.github.io/" target="_blank">
+    <a href="https://api.whatsapp.com/send?text=Check%20this%20useful%20website:%20https://rsh.gdsnotes.in/" target="_blank">
         <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" class="footer-whatsapp">
     </a>
-<div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #ddd; font-family: sans-serif;">
-    <div style="margin-bottom: 10px;">
-        <a href="privacy-policy.html" style="text-decoration: none; color: #333; margin: 0 10px; font-size: 14px;">Privacy Policy</a> | 
-        <a href="terms-and-conditions.html" style="text-decoration: none; color: #333; margin: 0 10px; font-size: 14px;">Terms And Conditions</a> | 
-        <a href="refund-policy.html" style="text-decoration: none; color: #333; margin: 0 10px; font-size: 14px;">Refund Policy</a>
+
+    <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #ddd; font-family: sans-serif; margin-top:15px;">
+        <div style="margin-bottom: 10px;">
+            <a href="privacy-policy.html" style="text-decoration: none; color: #333; margin: 0 10px; font-size: 14px;">Privacy Policy</a> | 
+            <a href="terms-and-conditions.html" style="text-decoration: none; color: #333; margin: 0 10px; font-size: 14px;">Terms And Conditions</a> | 
+            <a href="refund-policy.html" style="text-decoration: none; color: #333; margin: 0 10px; font-size: 14px;">Refund Policy</a>
+        </div>
     </div>
     
-</div>
-    
     <p> © 2026 RAMESHWAR SAHU GDS DEPARTMENTAL EXAM STUDY HUB </p>
-
-    
     <p> OWNER & FOUNDER YOGESHWARI SAHU </p>
 </footer>
 
@@ -315,19 +299,54 @@ function installApp() {
     window.location.href = "https://rsh.gdsnotes.in/app-release.apk";
 }
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
-    try {
-      const reg = await navigator.serviceWorker.register('./sw.js');
-      console.log("Service Worker Registered");
+let checkAttempts = 0;
+const maxAttempts = 30; // 3 सेकंड तक लगातार चेक करेगा
 
-      // Har page load par update check
-      reg.update();
-    } catch (err) {
-      console.error("SW registration failed", err);
+function detectEnvironment() {
+    const loginGroup = document.getElementById("loginRegisterGroup");
+    const installBtn = document.getElementById("installBtn");
+
+    if (!loginGroup || !installBtn) return;
+
+    // 1. Check for AndroidBridge (Java Interface Injection)
+    const isAndroidBridge = typeof window.AndroidBridge !== "undefined";
+
+    // 2. Check User Agent for WebView signatures
+    const ua = navigator.userAgent || "";
+    const isWebViewUA = ua.includes("wv") || ua.includes("AndroidApp") || ua.includes("Version/") && ua.includes("Chrome/");
+
+    // 3. App Detection
+    if (isAndroidBridge) {
+        // ऐप में है -> Show Login/Register, Hide Download
+        loginGroup.style.display = "flex";
+        installBtn.style.display = "none";
+        return true; 
+    } else if (isWebViewUA && checkAttempts > 5) {
+        // अगर UserAgent से WebView लग रहा है तो 500ms बाद लॉगिन शो करो
+        loginGroup.style.display = "flex";
+        installBtn.style.display = "none";
+        return true;
     }
-  });
+
+    checkAttempts++;
+
+    // अगर 3 सेकंड बाद भी App/Bridge नहीं मिलता, तो ब्राउज़र घोषित कर डाउनलोड दिखाओ
+    if (checkAttempts >= maxAttempts) {
+        loginGroup.style.display = "none";
+        installBtn.style.display = "inline-block";
+        return true;
+    }
+
+    return false;
 }
+
+// बार-बार चेक करने का लूप (जब तक ब्रिज लोड न हो जाए)
+const timer = setInterval(() => {
+    if (detectEnvironment()) {
+        clearInterval(timer);
+    }
+}, 100);
 </script>
 </body>
 </html>
+
