@@ -22,7 +22,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
+    
+    <link rel="manifest" href="manifest.json">
     <link rel="canonical" href="https://rsh.gdsnotes.in/">
     <link rel="icon" href="icon-192.png">
     <link rel="shortcut icon" href="icon-192.png">
@@ -346,6 +347,21 @@ const timer = setInterval(() => {
         clearInterval(timer);
     }
 }, 100);
+// Service Worker Registration
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", async () => {
+        try {
+            const reg = await navigator.serviceWorker.register("./sw.js");
+            console.log("Service Worker Registered");
+
+            // Check for updates every load
+            reg.update();
+        } catch (err) {
+            console.error("Service Worker registration failed:", err);
+        }
+    });
+}
+
 </script>
 </body>
 </html>
