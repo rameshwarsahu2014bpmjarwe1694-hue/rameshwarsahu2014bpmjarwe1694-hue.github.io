@@ -289,11 +289,13 @@ window.handleSecureAccess = async (category, subject, title, fileName, price) =>
                     subject
                 };
 
-                const p = price || 29;
+                window.currentPrice = price || 29; // 👈 Step 1a: Price Set kiya
+
+                const p = window.currentPrice;
                 const myUpiId = "6268782886@ybl";
 
                 const qrData =
-                    `upi://pay?pa=${myUpiId}&pn=NotesStore&am=${p}&cu=INR`;
+                    `upi://pay?pa=${myUpiId}&pn=RAMESHWAR%20SAHU%20STUDY%20HUB&am=${p}&cu=INR&tn=GDS%20Notes%20PDF`;
 
                 const qrUrl =
                     "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
@@ -304,19 +306,11 @@ window.handleSecureAccess = async (category, subject, title, fileName, price) =>
                 document.getElementById("amountDisplay").innerText = `Amount: ₹${p}`;
                 document.getElementById("qrBox").style.display = "flex";
 
+                // 🚀 Step 1b: Auto UPI Launch Trigger kiya
+                triggerAutoUPI();
+
                 return;
             }
-
-            alert("Unexpected Status : " + checkRes.status);
-            return;
-
-        } catch (e) {
-
-            alert("Server Error");
-            return;
-
-        }
-
     }
 
     // Website
@@ -354,18 +348,20 @@ window.handleSecureAccess = async (category, subject, title, fileName, price) =>
 
         }
 
-        if (res.status === 403) {
+       if (res.status === 403) {
 
             window.pendingTxn = {
                 category,
                 subject
             };
 
-            const p = price || 29;
+            window.currentPrice = price || 29; // 👈 Step 2a: Price Set किया
+
+            const p = window.currentPrice;
             const myUpiId = "6268782886@ybl";
 
             const qrData =
-                `upi://pay?pa=${myUpiId}&pn=NotesStore&am=${p}&cu=INR`;
+                `upi://pay?pa=${myUpiId}&pn=RAMESHWAR%20SAHU%20STUDY%20HUB&am=${p}&cu=INR&tn=GDS%20Notes%20PDF`;
 
             const qrUrl =
                 "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
@@ -376,9 +372,13 @@ window.handleSecureAccess = async (category, subject, title, fileName, price) =>
             document.getElementById("amountDisplay").innerText = `Amount: ₹${p}`;
             document.getElementById("qrBox").style.display = "flex";
 
+            // 🚀 Step 2b: Browser के लिए Auto UPI Trigger किया
+            triggerAutoUPI();
+
             return;
 
         }
+
 
         alert("Unexpected Status: " + res.status);
 
