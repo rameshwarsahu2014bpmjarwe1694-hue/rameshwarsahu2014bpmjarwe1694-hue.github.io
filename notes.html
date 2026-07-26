@@ -35,6 +35,13 @@
         <h3>Payment Required</h3>
         <h4 id="amountDisplay" style="margin: 10px 0;">Amount: ₹29</h4>
         
+        <!-- 🚀 Direct Auto UPI Launch Button -->
+        <button id="autoUpiBtn" onclick="triggerAutoUPI()" style="width:100%; padding:12px; background:#ffd600; color:#000; border:none; border-radius:8px; font-weight:bold; font-size:15px; margin:10px 0; cursor:pointer;">
+            🚀 Pay via Any UPI App (GPay / PhonePe / Paytm)
+        </button>
+
+        <p style="font-size:12px; color:#666; margin-bottom:8px;">या क्यूआर कोड स्कैन करके भुगतान करें:</p>
+
         <img id="qrImage" src="" style="width:200px; height:200px; margin: 10px auto; display: block;" />
         
         <div style="background:#f0f0f0; padding:10px; border-radius:5px; margin:10px 0; font-weight:bold;">
@@ -52,6 +59,7 @@
         <button onclick="closeQR()" style="margin-top:15px; background:red; color:white; border:none; padding:8px 20px; border-radius:5px;">Close</button>
     </div>
 </div>
+
 
     
 <div class="container">
