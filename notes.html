@@ -212,7 +212,19 @@ async function updateUIBasedOnPayment() {
         `;
     }).join('');
 };
-    
+ window.triggerAutoUPI = function() {
+    const p = window.currentPrice || 29;
+    const myUpiId = "6268782886@ybl";
+    const appName = "RAMESHWAR SAHU STUDY HUB";
+    const note = "GDS Notes PDF";
+
+    // Standard UPI Intent URL
+    const upiUrl = `upi://pay?pa=${encodeURIComponent(myUpiId)}&pn=${encodeURIComponent(appName)}&am=${p}&cu=INR&tn=${encodeURIComponent(note)}`;
+
+    // WebView / Native App में UPI Apps लॉन्च करेगा
+    window.location.href = upiUrl;
+};
+ 
 window.handleSecureAccess = async (category, subject, title, fileName, price) => {
 
     const token = await auth.currentUser.getIdToken();
