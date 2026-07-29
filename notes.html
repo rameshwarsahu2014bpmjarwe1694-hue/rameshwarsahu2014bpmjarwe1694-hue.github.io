@@ -224,43 +224,11 @@ async function updateUIBasedOnPayment() {
     // WebView / Native App में UPI Apps लॉन्च करेगा
     window.location.href = upiUrl;
 };
- 
-window.handleSecureAccess = async (category, subject, title, fileName, price) => {
-
-    const token = await auth.currentUser.getIdToken();
-
-    try {
-
-        const statusRes = await fetch(`${BACKEND_URL}/payment-status`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-
-        const statusData = await statusRes.json().catch(() => ({}));
-        const currentStatus = String(statusData?.status ?? "").trim().toLowerCase();
-
-        if (currentStatus === "pending") {
-            alert("आपका पेमेंट Pending है। कृपया Admin द्वारा Approval का इंतजार करें।");
-            return;
-        }
-
-    } catch (e) {
-
-        alert("सिस्टम में एरर है, कृपया बाद में कोशिश करें।");
-        return;
-
-    }
-
-    const secureUrl =
-        `${BACKEND_URL}/get-notes-pdf?year=Notes&post=${encodeURIComponent(category)}&subject=${encodeURIComponent(subject)}`;
-
-    // Android App
-    if (window.AndroidBridge) {
+     window.handleSecureAccess = async (category, subject, title, fileName, price) => {
+        const token = await auth.currentUser.getIdToken();
+        const secureUrl = `${BACKEND_URL}/get-notes-pdf?year=Notes&post=${encodeURIComponent(category)}&subject=${encodeURIComponent(subject)}`;
 
         try {
-
             const checkRes = await fetch(secureUrl, {
                 headers: {
                     "X-Source-Auth": "RSH-GDS-SECURE-ACCESS",
@@ -269,126 +237,36 @@ window.handleSecureAccess = async (category, subject, title, fileName, price) =>
             });
 
             if (checkRes.status === 200) {
-
-                alert("Payment verified! Downloading start...");
-
-                window.AndroidBridge.download(
-                    secureUrl,
-                    `${subject}.pdf`,
-                    token
-                );
-
+                alert("Payment verified! File Manager opening for download...");
+                // Direct Navigation to Trigger Android SAF File Picker
+                window.location.href = secureUrl;
                 return;
-
             }
 
             if (checkRes.status === 403) {
-
-                window.pendingTxn = {
-                    category,
-                    subject
-                };
-
-                window.currentPrice = price || 29; // 👈 Step 1a: Price Set kiya
+                window.pendingTxn = { category, subject };
+                window.currentPrice = price || 29;
 
                 const p = window.currentPrice;
                 const myUpiId = "6268782886@ybl";
-
-                const qrData =
-                    `upi://pay?pa=${myUpiId}&pn=RAMESHWAR%20SAHU%20STUDY%20HUB&am=${p}&cu=INR&tn=GDS%20Notes%20PDF`;
-
-                const qrUrl =
-                    "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
-                    encodeURIComponent(qrData);
+                const qrData = `upi://pay?pa=${myUpiId}&pn=RAMESHWAR%20SAHU%20STUDY%20HUB&am=${p}&cu=INR&tn=GDS%20Notes%20PDF`;
+                const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(qrData);
 
                 document.getElementById("qrImage").src = qrUrl;
                 document.getElementById("upiDisplay").innerText = myUpiId;
                 document.getElementById("amountDisplay").innerText = `Amount: ₹${p}`;
                 document.getElementById("qrBox").style.display = "flex";
 
-                // 🚀 Step 1b: Auto UPI Launch Trigger kiya
                 triggerAutoUPI();
-
                 return;
             }
-    }
 
-    // Website
-    try {
-
-        const res = await fetch(secureUrl, {
-            headers: {
-                "X-Source-Auth": "RSH-GDS-SECURE-ACCESS",
-                "Authorization": `Bearer ${token}`
-            }
-        });
-
-        if (res.status === 200) {
-
-            alert("Payment verified! Downloading start...");
-
-            const blob = await res.blob();
-
-            const url = window.URL.createObjectURL(blob);
-
-            const a = document.createElement("a");
-
-            a.href = url;
-            a.download = `${subject}.pdf`;
-
-            document.body.appendChild(a);
-
-            a.click();
-
-            a.remove();
-
-            window.URL.revokeObjectURL(url);
-
-            return;
-
+            alert("Status Code: " + checkRes.status);
+        } catch (err) {
+            alert("Connection error! Please try again.");
         }
+    };
 
-       if (res.status === 403) {
-
-            window.pendingTxn = {
-                category,
-                subject
-            };
-
-            window.currentPrice = price || 29; // 👈 Step 2a: Price Set किया
-
-            const p = window.currentPrice;
-            const myUpiId = "6268782886@ybl";
-
-            const qrData =
-                `upi://pay?pa=${myUpiId}&pn=RAMESHWAR%20SAHU%20STUDY%20HUB&am=${p}&cu=INR&tn=GDS%20Notes%20PDF`;
-
-            const qrUrl =
-                "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
-                encodeURIComponent(qrData);
-
-            document.getElementById("qrImage").src = qrUrl;
-            document.getElementById("upiDisplay").innerText = myUpiId;
-            document.getElementById("amountDisplay").innerText = `Amount: ₹${p}`;
-            document.getElementById("qrBox").style.display = "flex";
-
-            // 🚀 Step 2b: Browser के लिए Auto UPI Trigger किया
-            triggerAutoUPI();
-
-            return;
-
-        }
-
-
-        alert("Unexpected Status: " + res.status);
-
-    } catch (err) {
-
-        alert("PDF download failed. Please try again.");
-
-    }
-
-};
 
 window.submitPaymentProof = async () => {
 
