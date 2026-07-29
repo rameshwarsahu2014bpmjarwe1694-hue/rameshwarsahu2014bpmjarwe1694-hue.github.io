@@ -393,39 +393,6 @@ window.nav = function(step) {
     window.location.href = url;
 };
 
-
-        // 1. रिस्पॉन्स की जांच करें
-        if (!response.ok) {
-            const errorText = await response.text(); 
-            console.error("Server Error Response:", errorText); // एरर मैसेज लॉग करें
-            throw new Error(`Server error: ${errorText}`);
-        }
-
-        // 2. Blob में बदलने से पहले जांच
-        console.log("Response headers content-type:", response.headers.get("Content-Type"));
-        
-        const blob = await response.blob();
-        console.log("Blob created successfully. Size:", blob.size, "Type:", blob.type);
-
-        if (blob.type !== 'application/pdf') {
-            console.warn("Received blob is not a PDF!");
-            throw new Error("Server ne PDF file nahi bheji, balki kuch aur data bheja hai.");
-        }
-
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `${post}_${year}_PYQ.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        console.log("Download triggered successfully.");
-
-    } catch (err) {
-        console.error("Final Error Catch:", err); // सबसे महत्वपूर्ण लॉग
-        alert("Asli Error: " + err.message);
-    }
-};
-
 document.getElementById("yearSelect").onchange = fetchQuestions;
 document.getElementById("postSelect").onchange = fetchQuestions;
 document.getElementById("startQuizBtn").onclick = () => {
