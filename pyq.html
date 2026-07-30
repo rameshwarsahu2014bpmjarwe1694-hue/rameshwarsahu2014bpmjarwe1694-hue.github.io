@@ -376,8 +376,7 @@ window.nav = function(step) {
         </button>
     `;
 };
-
-    document.getElementById("openPdfBtn").onclick = async () => {
+document.getElementById("openPdfBtn").onclick = async () => {
     const year = document.getElementById("yearSelect").value;
     const circle = document.getElementById("circleSelect").value || "All India";
     const post = document.getElementById("postSelect").value;
@@ -385,11 +384,17 @@ window.nav = function(step) {
     if (!currentUserEmail) return alert("Pehle login karein!");
     if (!year || !post) return alert("Pehle Year aur Post select karein!");
 
-    alert("Downloading shuru ho gayi hai!\n\nKripya wait karein, PDF verify hone par File Manager khul jayega.");
+    alert("Downloading shuru ho gayi hai!\n\nKripya location select karke save karein.");
 
     try {
         const token = await auth.currentUser.getIdToken();
         const url = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}&circle=${encodeURIComponent(circle)}`;
+
+        // Sahi File Name format
+        const cleanYear = year.replace(/\s+/g, '_');
+        const cleanPost = post.replace(/\s+/g, '_');
+        const cleanCircle = circle.replace(/\s+/g, '_');
+        const fileName = `${cleanPost}_${cleanYear}_${cleanCircle}.pdf`;
 
         const res = await fetch(url, {
             headers: {
@@ -398,13 +403,7 @@ window.nav = function(step) {
             }
         });
 
-                if (res.ok) {
-            // Dropdowns se Clean Custom File Name generate karein
-            const cleanYear = year.replace(/\s+/g, '_');
-            const cleanPost = post.replace(/\s+/g, '_');
-            const cleanCircle = circle.replace(/\s+/g, '_');
-            const fileName = `${cleanPost}_${cleanYear}_${cleanCircle}.pdf`;
-
+        if (res.ok) {
             const blob = await res.blob();
             const pdfBlob = new Blob([blob], { type: 'application/pdf' });
             const blobUrl = window.URL.createObjectURL(pdfBlob);
@@ -412,8 +411,10 @@ window.nav = function(step) {
             const a = document.createElement("a");
             a.style.display = "none";
             a.href = blobUrl;
-            a.setAttribute("download", fileName);
+            
+            // 🔥 Dono attributes set karna zaroori hai
             a.download = fileName;
+            a.setAttribute("download", fileName);
 
             document.body.appendChild(a);
             a.click();
@@ -430,7 +431,7 @@ window.nav = function(step) {
     }
 };
 
-
+   
 document.getElementById("yearSelect").onchange = fetchQuestions;
 document.getElementById("postSelect").onchange = fetchQuestions;
 document.getElementById("startQuizBtn").onclick = () => {
