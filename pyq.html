@@ -390,13 +390,11 @@ document.getElementById("openPdfBtn").onclick = async () => {
         const token = await auth.currentUser.getIdToken();
         const url = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}&circle=${encodeURIComponent(circle)}`;
 
-        // Sahi Dynamic File Name Format
         const cleanYear = year.replace(/\s+/g, '_');
         const cleanPost = post.replace(/\s+/g, '_');
         const cleanCircle = circle.replace(/\s+/g, '_');
         const fileName = `${cleanPost}_${cleanYear}_${cleanCircle}.pdf`;
 
-        // Secure Request with Custom Headers
         const res = await fetch(url, {
             headers: {
                 "X-Source-Auth": "RSH-GDS-SECURE-ACCESS",
@@ -407,17 +405,15 @@ document.getElementById("openPdfBtn").onclick = async () => {
         if (res.ok) {
             const blob = await res.blob();
             
-            // 🚀 Convert Blob to Base64 (UUID Blob Links Bypass for Android WebView)
+            // 🚀 Convert Blob to Base64 Data URL (Avoids UUID blob links in Android WebView)
             const reader = new FileReader();
             reader.readAsDataURL(blob);
             reader.onloadend = () => {
                 const base64Data = reader.result;
-
                 const a = document.createElement("a");
                 a.style.display = "none";
                 a.href = base64Data;
                 a.download = fileName;
-                a.setAttribute("download", fileName);
 
                 document.body.appendChild(a);
                 a.click();
