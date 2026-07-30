@@ -379,6 +379,7 @@ window.nav = function(step) {
 
     document.getElementById("openPdfBtn").onclick = async () => {
     const year = document.getElementById("yearSelect").value;
+    const circle = document.getElementById("circleSelect").value || "All India";
     const post = document.getElementById("postSelect").value;
 
     if (!currentUserEmail) return alert("Pehle login karein!");
@@ -388,7 +389,7 @@ window.nav = function(step) {
 
     try {
         const token = await auth.currentUser.getIdToken();
-        const url = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}`;
+        const url = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}&circle=${encodeURIComponent(circle)}`;
 
         const res = await fetch(url, {
             headers: {
@@ -398,12 +399,34 @@ window.nav = function(step) {
         });
 
         if (res.ok) {
+            // 🚀 1. Backend Header se actual file name extract karein
+            let fileName = "";
+            const disposition = res.headers.get("Content-Disposition");
+            if (disposition && disposition.includes("filename=")) {
+                fileName = disposition
+                    .split("filename=")[1]
+                    .replace(/["']/g, "")
+                    .trim();
+            }
+
+            // Agar Header me file name nahi milta toh default original format Fallback
+            if (!fileName) {
+                const cleanYear = year.replace(/\s+/g, '_');
+                const cleanPost = post.replace(/\s+/g, '_');
+                const cleanCircle = circle.replace(/\s+/g, '_');
+                fileName = `${cleanPost}_${cleanYear}_${cleanCircle}.pdf`;
+            }
+
             const blob = await res.blob();
-            const blobUrl = window.URL.createObjectURL(blob);
+            const pdfBlob = new Blob([blob], { type: 'application/pdf' });
+            const blobUrl = window.URL.createObjectURL(pdfBlob);
+
             const a = document.createElement("a");
             a.style.display = "none";
             a.href = blobUrl;
-            a.download = `${post}_${year}_PYQ.pdf`;
+            a.setAttribute("download", fileName);
+            a.download = fileName;
+
             document.body.appendChild(a);
             a.click();
 
@@ -418,6 +441,7 @@ window.nav = function(step) {
         alert("Download Failed: " + err.message);
     }
 };
+
 
 document.getElementById("yearSelect").onchange = fetchQuestions;
 document.getElementById("postSelect").onchange = fetchQuestions;
