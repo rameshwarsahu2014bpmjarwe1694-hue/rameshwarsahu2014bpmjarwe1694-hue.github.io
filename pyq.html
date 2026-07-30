@@ -398,24 +398,12 @@ window.nav = function(step) {
             }
         });
 
-        if (res.ok) {
-            // 🚀 1. Backend Header se actual file name extract karein
-            let fileName = "";
-            const disposition = res.headers.get("Content-Disposition");
-            if (disposition && disposition.includes("filename=")) {
-                fileName = disposition
-                    .split("filename=")[1]
-                    .replace(/["']/g, "")
-                    .trim();
-            }
-
-            // Agar Header me file name nahi milta toh default original format Fallback
-            if (!fileName) {
-                const cleanYear = year.replace(/\s+/g, '_');
-                const cleanPost = post.replace(/\s+/g, '_');
-                const cleanCircle = circle.replace(/\s+/g, '_');
-                fileName = `${cleanPost}_${cleanYear}_${cleanCircle}.pdf`;
-            }
+                if (res.ok) {
+            // Dropdowns se Clean Custom File Name generate karein
+            const cleanYear = year.replace(/\s+/g, '_');
+            const cleanPost = post.replace(/\s+/g, '_');
+            const cleanCircle = circle.replace(/\s+/g, '_');
+            const fileName = `${cleanPost}_${cleanYear}_${cleanCircle}.pdf`;
 
             const blob = await res.blob();
             const pdfBlob = new Blob([blob], { type: 'application/pdf' });
@@ -434,6 +422,7 @@ window.nav = function(step) {
                 document.body.removeChild(a);
                 window.URL.revokeObjectURL(blobUrl);
             }, 1000);
+        }
         } else {
             alert("Download Error: Server status " + res.status);
         }
