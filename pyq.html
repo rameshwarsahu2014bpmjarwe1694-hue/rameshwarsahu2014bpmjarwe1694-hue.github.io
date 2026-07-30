@@ -390,6 +390,7 @@ document.getElementById("openPdfBtn").onclick = async () => {
         const token = await auth.currentUser.getIdToken();
         const url = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}&circle=${encodeURIComponent(circle)}`;
 
+        // Dynamic Clean File Name
         const cleanYear = year.replace(/\s+/g, '_');
         const cleanPost = post.replace(/\s+/g, '_');
         const cleanCircle = circle.replace(/\s+/g, '_');
@@ -404,24 +405,26 @@ document.getElementById("openPdfBtn").onclick = async () => {
 
         if (res.ok) {
             const blob = await res.blob();
+            // Secure Blob Object Creation
+            const pdfBlob = new Blob([blob], { type: 'application/pdf' });
+            const blobUrl = window.URL.createObjectURL(pdfBlob);
+
+            const a = document.createElement("a");
+            a.style.display = "none";
+            a.href = blobUrl;
             
-            // 🚀 Convert Blob to Base64 Data URL (Avoids UUID blob links in Android WebView)
-            const reader = new FileReader();
-            reader.readAsDataURL(blob);
-            reader.onloadend = () => {
-                const base64Data = reader.result;
-                const a = document.createElement("a");
-                a.style.display = "none";
-                a.href = base64Data;
-                a.download = fileName;
+            // Exact Filename Attributes
+            a.download = fileName;
+            a.setAttribute("download", fileName);
 
-                document.body.appendChild(a);
-                a.click();
+            document.body.appendChild(a);
+            a.click();
 
-                setTimeout(() => {
-                    document.body.removeChild(a);
-                }, 1000);
-            };
+            // Safe cleanup
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(blobUrl);
+            }, 1000);
         } else {
             alert("Download Error: Server status " + res.status);
         }
@@ -429,6 +432,7 @@ document.getElementById("openPdfBtn").onclick = async () => {
         alert("Download Failed: " + err.message);
     }
 };
+
 
 
    
