@@ -405,24 +405,7 @@ document.getElementById("openPdfBtn").onclick = async () => {
 
         if (res.ok) {
             const blob = await res.blob();
-            const pdfBlob = new Blob([blob], { type: 'application/pdf' });
-            const blobUrl = window.URL.createObjectURL(pdfBlob);
-
-            const a = document.createElement("a");
-            a.style.display = "none";
-            a.href = blobUrl;
-            
-            // File Name attribute set
-            a.download = fileName;
-            a.setAttribute("download", fileName);
-
-            document.body.appendChild(a);
-            a.click();
-
-            setTimeout(() => {
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(blobUrl);
-            }, 1000);
+            window.location.href = url;
         } else {
             alert("Download Error: Server status " + res.status);
         }
