@@ -381,25 +381,13 @@ document.getElementById("openPdfBtn").onclick = async () => {
     const circle = document.getElementById("circleSelect").value || "All India";
     const post = document.getElementById("postSelect").value;
 
-    if (!currentUserEmail) {
-        alert("Pehle login karein!");
-        return;
-    }
-
-    if (!year || !post) {
-        alert("Pehle Year aur Post select karein!");
-        return;
-    }
+    if (!currentUserEmail) { alert("Pehle login karein!"); return; }
+    if (!year || !post) { alert("Pehle Year aur Post select karein!"); return; }
 
     try {
         const token = await auth.currentUser.getIdToken();
 
-        const url =
-            `${BACKEND_URL}/get-pyq-pdf` +
-            `?email=${encodeURIComponent(currentUserEmail)}` +
-            `&year=${encodeURIComponent(year)}` +
-            `&post=${encodeURIComponent(post)}` +
-            `&circle=${encodeURIComponent(circle)}`;
+        const url = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}&circle=${encodeURIComponent(circle)}`;
 
         const res = await fetch(url, {
             headers: {
@@ -408,37 +396,40 @@ document.getElementById("openPdfBtn").onclick = async () => {
             }
         });
 
-        if (!res.ok) {
-            throw new Error("Server Error: " + res.status);
-        }
+        if (!res.ok) throw new Error("Server Error: " + res.status);
 
-        // Server se original filename lo
-        let fileName = "download.pdf";
+        // 🚀 SERVER SE EXACT FILENAME EXTRACT KAREIN
+        let exactFileName = "Document.pdf";
         const contentDisposition = res.headers.get("Content-Disposition");
 
         if (contentDisposition) {
-            const match = contentDisposition.match(/filename="?([^"]+)"?/i);
+            const match = contentDisposition.match(/filename=["']?([^"';\n]+)["']?/i);
             if (match && match[1]) {
-                fileName = match[1];
+                exactFileName = match[1].trim(); // Exact Real Name (eg: PYQ_2023_MTS.pdf)
             }
         }
 
         const blob = await res.blob();
 
+        // Blob URL ke bajaye anchor tag par EXACT FILENAME forcefully attribute set karein
         const downloadLink = document.createElement("a");
-        downloadLink.href = URL.createObjectURL(blob);
-        downloadLink.download = fileName;   // Server ka exact filename
+        const blobUrl = URL.createObjectURL(blob);
+        
+        downloadLink.href = blobUrl;
+        downloadLink.download = exactFileName; // 🔥 YAHAN REAL NAME PASS HOGA
+        
         document.body.appendChild(downloadLink);
         downloadLink.click();
         downloadLink.remove();
 
-        URL.revokeObjectURL(downloadLink.href);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
 
     } catch (err) {
         alert("Download Failed!\n\n" + err.message);
         console.error(err);
     }
 };
+
 document.getElementById("yearSelect").onchange = fetchQuestions;
 document.getElementById("postSelect").onchange = fetchQuestions;
 document.getElementById("startQuizBtn").onclick = () => {
