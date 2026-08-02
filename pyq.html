@@ -395,17 +395,34 @@ document.getElementById("openPdfBtn").onclick = async () => {
     try {
         const token = await auth.currentUser.getIdToken();
 
-        // Direct Render Backend URL (Bina Blob ke)
-        const url = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}&circle=${encodeURIComponent(circle)}&token=${encodeURIComponent(token)}`;
+        // 1. Direct HTTPS Backend URL (Bina kisi Blob ke)
+        const pdfUrl = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}&circle=${encodeURIComponent(circle)}&token=${encodeURIComponent(token)}`;
 
-        // Direct Download Trigger (WebView ke Native Downloader ko signal bhejne ke liye)
-        window.location.href = url;
+        // 2. Secret Header aur Token ke saath Direct Request
+        const res = await fetch(pdfUrl, {
+            headers: {
+                "X-Source-Auth": "RSH-GDS-SECURE-ACCESS"
+            }
+        });
+
+        if (!res.ok) {
+            throw new Error("Server Error: " + res.status);
+        }
+
+        // 3. Response sahi aane par URL ko direct trigger karein (Bina Blob banaye)
+        const a = document.createElement("a");
+        a.href = pdfUrl; 
+        a.download = "Document.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
 
     } catch (err) {
         alert("Download Failed!\n\n" + err.message);
         console.error(err);
     }
 };
+
 document.getElementById("yearSelect").onchange = fetchQuestions;
 document.getElementById("postSelect").onchange = fetchQuestions;
 document.getElementById("startQuizBtn").onclick = () => {
