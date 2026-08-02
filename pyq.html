@@ -376,7 +376,6 @@ window.nav = function(step) {
         </button>
     `;
 };
-
 document.getElementById("openPdfBtn").onclick = async () => {
 
     const year = document.getElementById("yearSelect").value;
@@ -394,56 +393,19 @@ document.getElementById("openPdfBtn").onclick = async () => {
     }
 
     try {
-
         const token = await auth.currentUser.getIdToken();
 
-        const url =
-            `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}&circle=${encodeURIComponent(circle)}&token=${encodeURIComponent(token)}`;
+        // Direct Render Backend URL (Bina Blob ke)
+        const url = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}&circle=${encodeURIComponent(circle)}&token=${encodeURIComponent(token)}`;
 
-        const res = await fetch(url, {
-            headers: {
-                "X-Source-Auth": "RSH-GDS-SECURE-ACCESS"
-            }
-        });
-
-        if (!res.ok) {
-            throw new Error("Server Error: " + res.status);
-        }
-
-        let exactFileName = "Document.pdf";
-
-        const contentDisposition = res.headers.get("Content-Disposition");
-
-        if (contentDisposition) {
-            const match = contentDisposition.match(/filename=["']?([^"';\n]+)["']?/i);
-            if (match && match[1]) {
-                exactFileName = match[1].trim();
-            }
-        }
-
-        const blob = await res.blob();
-
-        const blobUrl = URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = blobUrl;
-        a.download = exactFileName;
-
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+        // Direct Download Trigger (WebView ke Native Downloader ko signal bhejne ke liye)
+        window.location.href = url;
 
     } catch (err) {
-
         alert("Download Failed!\n\n" + err.message);
         console.error(err);
-
     }
-
 };
-    
 document.getElementById("yearSelect").onchange = fetchQuestions;
 document.getElementById("postSelect").onchange = fetchQuestions;
 document.getElementById("startQuizBtn").onclick = () => {
