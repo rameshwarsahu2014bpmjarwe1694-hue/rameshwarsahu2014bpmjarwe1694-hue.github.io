@@ -400,7 +400,40 @@ document.getElementById("openPdfBtn").onclick = async () => {
         const url =
             `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}&circle=${encodeURIComponent(circle)}&token=${encodeURIComponent(token)}`;
 
-        window.location.href = url;
+        const res = await fetch(url, {
+            headers: {
+                "X-Source-Auth": "RSH-GDS-SECURE-ACCESS"
+            }
+        });
+
+        if (!res.ok) {
+            throw new Error("Server Error: " + res.status);
+        }
+
+        let exactFileName = "Document.pdf";
+
+        const contentDisposition = res.headers.get("Content-Disposition");
+
+        if (contentDisposition) {
+            const match = contentDisposition.match(/filename=["']?([^"';\n]+)["']?/i);
+            if (match && match[1]) {
+                exactFileName = match[1].trim();
+            }
+        }
+
+        const blob = await res.blob();
+
+        const blobUrl = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = exactFileName;
+
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
 
     } catch (err) {
 
