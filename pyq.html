@@ -378,35 +378,41 @@ window.nav = function(step) {
 };
 
 document.getElementById("openPdfBtn").onclick = async () => {
-
+    // 1. User Inputs aur Token check karna
     const year = document.getElementById("yearSelect").value;
     const circle = document.getElementById("circleSelect").value || "All India";
     const post = document.getElementById("postSelect").value;
+    const token = await auth.currentUser.getIdToken();
 
-    if (!currentUserEmail) {
-        alert("Pehle login karein!");
-        return;
-    }
+    // 2. URL create karna
+    const pdfUrl = `${BACKEND_URL}/get-pyq-pdf?...`;
 
-    if (!year || !post) {
-        alert("Pehle Year aur Post select karein!");
-        return;
-    }
+    // 3. Background me Fetch Request bhejna (X-Source-Auth Header ke sath)
+    const res = await fetch(pdfUrl, {
+        headers: {
+            "X-Source-Auth": "RSH-GDS-SECURE-ACCESS"
+        }
+    });
 
-    try {
-        const token = await auth.currentUser.getIdToken();
+    // 4. Server Response se Blob (Binary Data) praapt karna
+    const blob = await res.blob();
 
-        // Direct Backend URL - Android DownloadManager ise pakad lega
-        const pdfUrl = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}&circle=${encodeURIComponent(circle)}&token=${encodeURIComponent(token)}`;
+    // 5. Browser ke memory me temporary Blob URL banana
+    const blobUrl = window.URL.createObjectURL(blob);
 
-        // Direct Location Redirect for Native DownloadManager
-        window.location.href = pdfUrl;
+    // 6. Invisible <a> tag create karke automated click karwana
+    const link = document.createElement('a');
+    link.style.display = 'none';
+    link.href = blobUrl;
+    link.setAttribute('download', exactFileName);
+    document.body.appendChild(link);
+    link.click(); // Standard Web Download Trigger
+    document.body.removeChild(link);
 
-    } catch (err) {
-        alert("Download Failed!\n\n" + err.message);
-        console.error(err);
-    }
+    // 7. Temporary URL revoke/clean karna
+    setTimeout(() => window.URL.revokeObjectURL(blobUrl), 50000);
 };
+
 
 document.getElementById("yearSelect").onchange = fetchQuestions;
 document.getElementById("postSelect").onchange = fetchQuestions;
