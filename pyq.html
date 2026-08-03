@@ -377,47 +377,56 @@ window.nav = function(step) {
     `;
 };
 
+
 document.getElementById("openPdfBtn").onclick = async () => {
+    console.log("🚀 [PYQ LOG] Open PDF Button clicked!");
 
     const year = document.getElementById("yearSelect").value;
     const circle = document.getElementById("circleSelect").value || "All India";
     const post = document.getElementById("postSelect").value;
 
+    console.log(`📋 [PYQ LOG] Selected Options - Year: ${year}, Circle: ${circle}, Post: ${post}`);
+
     if (!currentUserEmail) {
+        console.error("❌ [PYQ LOG] Error: currentUserEmail is missing/null.");
         alert("Pehle login karein!");
         return;
     }
 
     if (!year || !post) {
+        console.warn("⚠️ [PYQ LOG] Warning: Year or Post not selected.");
         alert("Pehle Year aur Post select karein!");
         return;
     }
 
     try {
+        console.log("🔑 [PYQ LOG] Fetching Firebase ID Token...");
         const token = await auth.currentUser.getIdToken();
+        console.log("✅ [PYQ LOG] Token fetched successfully:", token ? token.substring(0, 15) + "..." : "EMPTY");
 
         // 1. Direct Backend Download URL
         const pdfUrl = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}&circle=${encodeURIComponent(circle)}&token=${encodeURIComponent(token)}`;
+        console.log("🌐 [PYQ LOG] Generated Backend URL:", pdfUrl);
 
-        // 2. Hidden Iframe create karke download trigger karna (Bina Page Redirect ke)
+        // 2. Hidden Iframe create karke download trigger karna
         let downloadIframe = document.getElementById("hiddenDownloadIframe");
         if (!downloadIframe) {
+            console.log("🛠️ [PYQ LOG] Creating hiddenDownloadIframe element...");
             downloadIframe = document.createElement("iframe");
             downloadIframe.id = "hiddenDownloadIframe";
             downloadIframe.style.display = "none";
             document.body.appendChild(downloadIframe);
         }
-        
-        // Iframe me URL load hote hi Android WebView setDownloadListener ise pakad lega
+
+        console.log("📥 [PYQ LOG] Triggering download via iframe.src...");
         downloadIframe.src = pdfUrl;
+        console.log("✅ [PYQ LOG] Download request dispatched successfully!");
 
     } catch (err) {
+        console.error("❌ [PYQ LOG] Download Failed with error:", err);
         alert("Download Failed!\n\n" + err.message);
-        console.error(err);
     }
 };
-
-
 
 document.getElementById("yearSelect").onchange = fetchQuestions;
 document.getElementById("postSelect").onchange = fetchQuestions;
