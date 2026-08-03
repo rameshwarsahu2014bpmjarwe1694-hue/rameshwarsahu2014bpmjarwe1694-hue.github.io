@@ -379,52 +379,51 @@ window.nav = function(step) {
 
 
 document.getElementById("openPdfBtn").onclick = async () => {
-    console.log("🚀 [PYQ LOG] Open PDF Button clicked!");
-
     const year = document.getElementById("yearSelect").value;
-    const circle = document.getElementById("circleSelect").value || "All India";
     const post = document.getElementById("postSelect").value;
 
-    console.log(`📋 [PYQ LOG] Selected Options - Year: ${year}, Circle: ${circle}, Post: ${post}`);
-
-    if (!currentUserEmail) {
-        console.error("❌ [PYQ LOG] Error: currentUserEmail is missing/null.");
-        alert("Pehle login karein!");
-        return;
-    }
-
-    if (!year || !post) {
-        console.warn("⚠️ [PYQ LOG] Warning: Year or Post not selected.");
-        alert("Pehle Year aur Post select karein!");
-        return;
-    }
-
+    if (!currentUserEmail) return alert("Pehle login karein!");
+    if (!year || !post) return alert("Pehle Year aur Post select karein!");
+     // 1. तुरंत अलर्ट दिखाएं
+    alert("Downloading shuru ho gayi hai! \n\nKripya 30 se 180 seconds tak wait karein, Server load ki wajah se samay lag sakta hai.");
+    const url = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}`;
+    
     try {
-        console.log("🔑 [PYQ LOG] Fetching Firebase ID Token...");
-        const token = await auth.currentUser.getIdToken();
-        console.log("✅ [PYQ LOG] Token fetched successfully:", token ? token.substring(0, 15) + "..." : "EMPTY");
+        
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: { 'x-source-auth': 'RSH-GDS-SECURE-ACCESS' }
+        });
 
-        // 1. Direct Backend Download URL
-        const pdfUrl = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}&circle=${encodeURIComponent(circle)}&token=${encodeURIComponent(token)}`;
-        console.log("🌐 [PYQ LOG] Generated Backend URL:", pdfUrl);
-
-        // 2. Hidden Iframe create karke download trigger karna
-        let downloadIframe = document.getElementById("hiddenDownloadIframe");
-        if (!downloadIframe) {
-            console.log("🛠️ [PYQ LOG] Creating hiddenDownloadIframe element...");
-            downloadIframe = document.createElement("iframe");
-            downloadIframe.id = "hiddenDownloadIframe";
-            downloadIframe.style.display = "none";
-            document.body.appendChild(downloadIframe);
+        // 1. रिस्पॉन्स की जांच करें
+        if (!response.ok) {
+            const errorText = await response.text(); 
+            console.error("Server Error Response:", errorText); // एरर मैसेज लॉग करें
+            throw new Error(`Server error: ${errorText}`);
         }
 
-        console.log("📥 [PYQ LOG] Triggering download via iframe.src...");
-        downloadIframe.src = pdfUrl;
-        console.log("✅ [PYQ LOG] Download request dispatched successfully!");
+        // 2. Blob में बदलने से पहले जांच
+        console.log("Response headers content-type:", response.headers.get("Content-Type"));
+        
+        const blob = await response.blob();
+        console.log("Blob created successfully. Size:", blob.size, "Type:", blob.type);
+
+        if (blob.type !== 'application/pdf') {
+            console.warn("Received blob is not a PDF!");
+            throw new Error("Server ne PDF file nahi bheji, balki kuch aur data bheja hai.");
+        }
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${post}_${year}_PYQ.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        console.log("Download triggered successfully.");
 
     } catch (err) {
-        console.error("❌ [PYQ LOG] Download Failed with error:", err);
-        alert("Download Failed!\n\n" + err.message);
+        console.error("Final Error Catch:", err); // सबसे महत्वपूर्ण लॉग
+        alert("Asli Error: " + err.message);
     }
 };
 
