@@ -393,7 +393,17 @@ document.getElementById("openPdfBtn").onclick = async () => {
 
     const url =
         `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}`;
-
+         if (window.AndroidBridge) {
+    AndroidBridge.download(
+        "https://rsh.gdsnotes.in/version.json",
+        "test.txt",
+        ""
+    );
+    return;
+} else {
+    alert("AndroidBridge not found");
+    return;
+         }
     try {
 
         // Sirf Android App me Native Downloader use hoga
