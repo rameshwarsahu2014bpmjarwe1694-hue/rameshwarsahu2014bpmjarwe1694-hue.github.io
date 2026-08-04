@@ -393,17 +393,19 @@ document.getElementById("openPdfBtn").onclick = async () => {
 
     const url =
         `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}`;
-         if (window.AndroidBridge) {
+         if (window.AndroidBridge &&
+    typeof AndroidBridge.download === "function") {
+
     AndroidBridge.download(
-        "https://rsh.gdsnotes.in/version.json",
-        "test.txt",
+        url,
+        `${post}_${year}_PYQ.pdf`,
         ""
     );
+
     return;
-} else {
-    alert("AndroidBridge not found");
-    return;
-         }
+}
+
+alert("Download sirf Android App me available hai.");
     try {
 
         // Sirf Android App me Native Downloader use hoga
