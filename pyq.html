@@ -379,52 +379,46 @@ window.nav = function(step) {
 
 
 document.getElementById("openPdfBtn").onclick = async () => {
+
     const year = document.getElementById("yearSelect").value;
     const post = document.getElementById("postSelect").value;
 
-    if (!currentUserEmail) return alert("Pehle login karein!");
-    if (!year || !post) return alert("Pehle Year aur Post select karein!");
-     // 1. तुरंत अलर्ट दिखाएं
-    alert("Downloading shuru ho gayi hai! \n\nKripya 30 se 180 seconds tak wait karein, Server load ki wajah se samay lag sakta hai.");
-    const url = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}`;
-    
+    if (!currentUserEmail)
+        return alert("Pehle login karein!");
+
+    if (!year || !post)
+        return alert("Pehle Year aur Post select karein!");
+
+    alert("Downloading shuru ho gayi hai!\n\nKripya 30 se 180 seconds tak wait karein.");
+
+    const url =
+        `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}`;
+
     try {
-        
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: { 'x-source-auth': 'RSH-GDS-SECURE-ACCESS' }
-        });
 
-        // 1. रिस्पॉन्स की जांच करें
-        if (!response.ok) {
-            const errorText = await response.text(); 
-            console.error("Server Error Response:", errorText); // एरर मैसेज लॉग करें
-            throw new Error(`Server error: ${errorText}`);
+        // Sirf Android App me Native Downloader use hoga
+        if (window.AndroidBridge &&
+            typeof AndroidBridge.download === "function") {
+
+            AndroidBridge.download(
+                url,
+                `${post}_${year}_PYQ.pdf`,
+                ""
+            );
+
+            return;
         }
 
-        // 2. Blob में बदलने से पहले जांच
-        console.log("Response headers content-type:", response.headers.get("Content-Type"));
-        
-        const blob = await response.blob();
-        console.log("Blob created successfully. Size:", blob.size, "Type:", blob.type);
-
-        if (blob.type !== 'application/pdf') {
-            console.warn("Received blob is not a PDF!");
-            throw new Error("Server ne PDF file nahi bheji, balki kuch aur data bheja hai.");
-        }
-
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `${post}_${year}_PYQ.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        console.log("Download triggered successfully.");
+        // Browser me download block
+        alert("Download sirf Android App me available hai.");
 
     } catch (err) {
-        console.error("Final Error Catch:", err); // सबसे महत्वपूर्ण लॉग
-        alert("Asli Error: " + err.message);
+
+        console.error(err);
+        alert(err.message);
+
     }
+
 };
 
 document.getElementById("yearSelect").onchange = fetchQuestions;
