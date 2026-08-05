@@ -1,6 +1,7 @@
-{
+  {
   "versionCode": 5,
   "versionName": "1.4",
-  "apkUrl": "https://rsh.gdsnotes.in/app-release.apk",
+  "apkUrl": "https://rsh.gdsnotes.in/app-release.apk?v=5"
+}
   "message": "New update available. Download latest version."
 }
