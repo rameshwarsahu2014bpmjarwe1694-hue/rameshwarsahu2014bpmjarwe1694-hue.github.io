@@ -226,61 +226,76 @@ async function updateUIBasedOnPayment() {
 };
 
 window.handleSecureAccess = async (category, subject, title, fileName, price) => {
-        const token = await auth.currentUser.getIdToken();
-        const secureUrl = `${BACKEND_URL}/get-notes-pdf?year=Notes&post=${encodeURIComponent(category)}&subject=${encodeURIComponent(subject)}`;
-
-        try {
-            const checkRes = await fetch(secureUrl, {
-                headers: {
-                    "X-Source-Auth": "RSH-GDS-SECURE-ACCESS",
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-
-            if (checkRes.status === 200) {
-                alert("Payment verified! File Manager opening for download...");
-                
-                // 🚀 App ke andar hi Blob banakar SAF File Picker trigger karega
-                const blob = await checkRes.blob();
-                const blobUrl = window.URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.style.display = "none";
-                a.href = blobUrl;
-                a.download = `${subject}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-
-                setTimeout(() => {
-                    document.body.removeChild(a);
-                    window.URL.revokeObjectURL(blobUrl);
-                }, 1000);
-                return;
-            }
-
-            if (checkRes.status === 403) {
-                window.pendingTxn = { category, subject };
-                window.currentPrice = price || 29;
-
-                const p = window.currentPrice;
-                const myUpiId = "6268782886@ybl";
-                const qrData = `upi://pay?pa=${myUpiId}&pn=RAMESHWAR%20SAHU%20STUDY%20HUB&am=${p}&cu=INR&tn=GDS%20Notes%20PDF`;
-                const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(qrData);
-
-                document.getElementById("qrImage").src = qrUrl;
-                document.getElementById("upiDisplay").innerText = myUpiId;
-                document.getElementById("amountDisplay").innerText = `Amount: ₹${p}`;
-                document.getElementById("qrBox").style.display = "flex";
-
-                triggerAutoUPI();
-                return;
-            }
-
-            alert("Status Code: " + checkRes.status);
-        } catch (err) {
-            alert("Connection error! Please try again.");
+    try {
+        if (!auth.currentUser) {
+            alert("Security Alert: Pehle login karein!");
+            window.location.href = "login.html";
+            return;
         }
-    };
 
+        const token = await auth.currentUser.getIdToken();
+        const secureUrl = `${BACKEND_URL}/get-notes-pdf?post=${encodeURIComponent(category)}&subject=${encodeURIComponent(subject)}`;
+
+        const checkRes = await fetch(secureUrl, {
+            method: "GET",
+            headers: {
+                "X-Source-Auth": "RSH-GDS-SECURE-ACCESS",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        // Agar user paid hai aur server allow kar raha hai
+        if (checkRes.status === 200) {
+            const outName = `${category}_${subject}_Notes.pdf`.replace(/[\/\\]/g, '_');
+
+            // 🚀 Android Bridge Native Downloader Trigger
+            if (window.AndroidBridge && typeof AndroidBridge.download === "function") {
+                AndroidBridge.download(secureUrl, outName, token);
+                return;
+            }
+
+            // Web / Fallback Download Trigger
+            const blob = await checkRes.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.style.display = "none";
+            a.href = blobUrl;
+            a.download = outName;
+            document.body.appendChild(a);
+            a.click();
+
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(blobUrl);
+            }, 1000);
+            return;
+        }
+
+        // Agar Payment Pending / Unpaid hai
+        if (checkRes.status === 403) {
+            window.pendingTxn = { category, subject };
+            window.currentPrice = price || 29;
+
+            const p = window.currentPrice;
+            const myUpiId = "6268782886@ybl";
+            const qrData = `upi://pay?pa=${myUpiId}&pn=RAMESHWAR%20SAHU%20STUDY%20HUB&am=${p}&cu=INR&tn=GDS%20Notes%20PDF`;
+            const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(qrData);
+
+            document.getElementById("qrImage").src = qrUrl;
+            document.getElementById("upiDisplay").innerText = myUpiId;
+            document.getElementById("amountDisplay").innerText = `Amount: ₹${p}`;
+            document.getElementById("qrBox").style.display = "flex";
+
+            triggerAutoUPI();
+            return;
+        }
+
+        alert("Access error (Code: " + checkRes.status + ")");
+    } catch (err) {
+        alert("Connection error! Please try again.");
+    }
+};
+    
 
 
 window.submitPaymentProof = async () => {
