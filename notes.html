@@ -244,17 +244,18 @@ window.handleSecureAccess = async (category, subject, title, fileName, price) =>
             }
         });
 
-        // Agar user paid hai aur server allow kar raha hai
+        // 1. Payment verified hone par download start hoga
         if (checkRes.status === 200) {
+            alert("Payment Verified! Downloading started...");
             const outName = `${category}_${subject}_Notes.pdf`.replace(/[\/\\]/g, '_');
 
-            // 🚀 Android Bridge Native Downloader Trigger
+            // 🚀 Android Bridge Trigger (PYQ format)
             if (window.AndroidBridge && typeof AndroidBridge.download === "function") {
                 AndroidBridge.download(secureUrl, outName, token);
                 return;
             }
 
-            // Web / Fallback Download Trigger
+            // Web Browser Blob Fallback
             const blob = await checkRes.blob();
             const blobUrl = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
@@ -271,7 +272,7 @@ window.handleSecureAccess = async (category, subject, title, fileName, price) =>
             return;
         }
 
-        // Agar Payment Pending / Unpaid hai
+        // 2. Agar payment complete nahi hai toh payment modal kholein
         if (checkRes.status === 403) {
             window.pendingTxn = { category, subject };
             window.currentPrice = price || 29;
@@ -290,13 +291,11 @@ window.handleSecureAccess = async (category, subject, title, fileName, price) =>
             return;
         }
 
-        alert("Access error (Code: " + checkRes.status + ")");
+        alert(`Access Error (Code: ${checkRes.status})`);
     } catch (err) {
         alert("Connection error! Please try again.");
     }
 };
-    
-
 
 window.submitPaymentProof = async () => {
 
