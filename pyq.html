@@ -391,47 +391,45 @@ document.getElementById("openPdfBtn").onclick = async () => {
 
     alert("Downloading shuru ho gayi hai!\n\nKripya 30 se 180 seconds tak wait karein.");
 
-    const url =
-        `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}`;
-         if (window.AndroidBridge &&
-    typeof AndroidBridge.download === "function") {
+        try {
+        const idToken = await auth.currentUser.getIdToken();
 
-    AndroidBridge.download(
-        url,
-        `${post}_${year}_PYQ.pdf`,
-        ""
-    );
+        // 1. Dynamic 5-minute access token fetch karein
+        const tokenRes = await fetch(`${BACKEND_URL}/get-download-token`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${idToken}`
+            },
+            body: JSON.stringify({ fileType: "pyq", identifier: year })
+        });
 
-    return;
-}
+        const tokenData = await tokenRes.json();
+        if (!tokenRes.ok || !tokenData.token) {
+            return alert("Download authorization fail ho gaya. Kripya dobara login karein.");
+        }
 
-alert("Download sirf Android App me available hai.");
-    try {
+        // 2. Token ke sath URL banayein
+        const url = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}&token=${encodeURIComponent(tokenData.token)}`;
 
-        // Sirf Android App me Native Downloader use hoga
-        if (window.AndroidBridge &&
-            typeof AndroidBridge.download === "function") {
-
+        // 3. Sirf Android App Bridge me trigger karein (Browser redirect block)
+        if (window.AndroidBridge && typeof AndroidBridge.download === "function") {
+            alert("Downloading shuru ho gayi hai!\n\nKripya 30 se 180 seconds tak wait karein.");
             AndroidBridge.download(
                 url,
                 `${post}_${year}_PYQ.pdf`,
                 ""
             );
-
             return;
         }
 
-        // Browser me download block
         alert("Download sirf Android App me available hai.");
 
     } catch (err) {
-
         console.error(err);
-        alert(err.message);
-
+        alert("Error: " + err.message);
     }
 
-};
 
 document.getElementById("yearSelect").onchange = fetchQuestions;
 document.getElementById("postSelect").onchange = fetchQuestions;
