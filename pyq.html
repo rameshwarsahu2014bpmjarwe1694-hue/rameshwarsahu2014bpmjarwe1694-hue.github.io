@@ -157,6 +157,7 @@
     }
 
     window.renderQuiz = function() {
+        window.renderQuiz = function() {
         const quizDisplay = document.getElementById("quizDisplay");
         const q = allQuestions[currentIdx];
         const options = q.options || []; 
@@ -165,39 +166,38 @@
         quizDisplay.innerHTML = `
             <div class="card">
                 <span style="color:red; font-weight:bold;">प्रश्न: ${currentIdx + 1} / ${allQuestions.length}</span>
-                <p style="margin:15px 0; font-weight:bold;">${q.question}</p>
-                <div id="optArea">
-                    ${options.map((opt, i) => `
-                        <button class="option" onclick="window.checkAns(this, \`${opt}\`, \`${correct}\`)">
-                            ${String.fromCharCode(65+i)}. ${opt}
-                        </button>
-                    `).join('')}
-                </div>
+                <p style="margin:15px 0; font-weight:bold;" id="quizQText"></p>
+                <div id="optArea"></div>
                 <div class="btn-row">
                     <button class="btn" style="background:#6c757d; flex:1; ${currentIdx===0?'display:none':''}" onclick="window.nav(-1)">Previous</button>
-                    <button class="btn" 
-    style="background:var(--success); flex:1;" 
-    onclick="window.showFinal()">
-    Submit Result
-</button>
-
-${currentIdx !== allQuestions.length - 1 
-    ? `<button class="btn" style="background:var(--dark); flex:1;" onclick="window.nav(1)">Next</button>` 
-    : ''
-}
+                    <button class="btn" style="background:var(--success); flex:1;" onclick="window.showFinal()">Submit Result</button>
+                    ${currentIdx !== allQuestions.length - 1 ? `<button class="btn" style="background:var(--dark); flex:1;" onclick="window.nav(1)">Next</button>` : ''}
                 </div>
             </div>
         `;
 
-        if(quizHistory[currentIdx]) {
+        // Safe Text Injection (Prevents XSS)
+        document.getElementById("quizQText").innerText = q.question;
+        const optArea = document.getElementById("optArea");
+
+        options.forEach((opt, i) => {
+            const btn = document.createElement("button");
+            btn.className = "option";
+            btn.innerText = `${String.fromCharCode(65 + i)}. ${opt}`;
+            btn.onclick = () => window.checkAns(btn, opt, correct);
+            optArea.appendChild(btn);
+        });
+
+        if (quizHistory[currentIdx]) {
             const btns = document.querySelectorAll('.option');
             btns.forEach(b => {
                 b.disabled = true;
-                if(b.innerText.includes(quizHistory[currentIdx].selected)) b.classList.add(quizHistory[currentIdx].isCorrect ? 'correct' : 'wrong');
-                if(b.innerText.includes(correct)) b.classList.add('correct');
+                if (b.innerText.includes(quizHistory[currentIdx].selected)) b.classList.add(quizHistory[currentIdx].isCorrect ? 'correct' : 'wrong');
+                if (b.innerText.includes(correct)) b.classList.add('correct');
             });
         }
     };
+
     
 window.nav = function(step) {
     const newIdx = currentIdx + step;
@@ -388,7 +388,9 @@ document.getElementById("openPdfBtn").onclick = async () => {
 
     if (!year || !post)
         return alert("Pehle Year aur Post select karein!");
-
+             const btn = document.getElementById("openPdfBtn");
+        btn.disabled = true;
+        btn.innerText = "Generating Access Token...";
     alert("Downloading shuru ho gayi hai!\n\nKripya 30 se 180 seconds tak wait karein.");
 
         try {
@@ -406,6 +408,8 @@ document.getElementById("openPdfBtn").onclick = async () => {
 
         const tokenData = await tokenRes.json();
         if (!tokenRes.ok || !tokenData.token) {
+                        btn.disabled = false;
+            btn.innerText = "Open PDF";
             return alert("Download authorization fail ho gaya. Kripya dobara login karein.");
         }
 
@@ -416,7 +420,8 @@ document.getElementById("openPdfBtn").onclick = async () => {
         if (window.AndroidBridge && typeof AndroidBridge.download === "function") {
             alert("Downloading shuru ho gayi hai!\n\nKripya 30 se 180 seconds tak wait karein.");
             AndroidBridge.download(
-                url,
+                setTimeout(() => { btn.disabled = false; btn.innerText = "Open PDF"; }, 3000);
+                  url,
                 `${post}_${year}_PYQ.pdf`,
                 ""
             );
@@ -424,10 +429,14 @@ document.getElementById("openPdfBtn").onclick = async () => {
         }
 
         alert("Download sirf Android App me available hai.");
-
+                    btn.disabled = false;
+            btn.innerText = "Open PDF";
+            
     } catch (err) {
         console.error(err);
         alert("Error: " + err.message);
+                    btn.disabled = false;
+            btn.innerText = "Open PDF";
     }
     };
 document.getElementById("yearSelect").onchange = fetchQuestions;
