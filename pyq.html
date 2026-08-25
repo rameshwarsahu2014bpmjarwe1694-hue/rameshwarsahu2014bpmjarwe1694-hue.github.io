@@ -156,7 +156,6 @@
         } catch (error) { status.innerHTML = "⚠️ Error loading data."; }
     }
 
-    window.renderQuiz = function() {
         window.renderQuiz = function() {
         const quizDisplay = document.getElementById("quizDisplay");
         const q = allQuestions[currentIdx];
@@ -417,14 +416,17 @@ document.getElementById("openPdfBtn").onclick = async () => {
         const url = `${BACKEND_URL}/get-pyq-pdf?email=${encodeURIComponent(currentUserEmail)}&year=${encodeURIComponent(year)}&post=${encodeURIComponent(post)}&token=${encodeURIComponent(tokenData.token)}`;
 
         // 3. Sirf Android App Bridge me trigger karein (Browser redirect block)
-        if (window.AndroidBridge && typeof AndroidBridge.download === "function") {
+                if (window.AndroidBridge && typeof AndroidBridge.download === "function") {
             alert("Downloading shuru ho gayi hai!\n\nKripya 30 se 180 seconds tak wait karein.");
             AndroidBridge.download(
-                setTimeout(() => { btn.disabled = false; btn.innerText = "Open PDF"; }, 3000);
-                  url,
+                url,
                 `${post}_${year}_PYQ.pdf`,
                 ""
             );
+            setTimeout(() => { 
+                btn.disabled = false; 
+                btn.innerText = "Open PDF"; 
+            }, 3000);
             return;
         }
 
