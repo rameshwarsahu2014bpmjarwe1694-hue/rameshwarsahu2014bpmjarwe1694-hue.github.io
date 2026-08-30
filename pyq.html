@@ -97,22 +97,20 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        // YEH RAHA AAPKA RENDER URL
+    const BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
+    
+    // Backend se Firebase Web Config load karein
+    const configRes = await fetch(`${BACKEND_URL}/firebase-config`);
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyDjzmo0A4KhOkrqFQdOyCEek6bsPF-UVPQ",
-        authDomain: "gds-departmental-exam-studyhub.firebaseapp.com",
-        projectId: "gds-departmental-exam-studyhub",
-        storageBucket: "gds-departmental-exam-studyhub.appspot.com",
-        messagingSenderId: "759916756080",
-        appId: "1:759916756080:web:7f2c0e66458bd007e888b5"
-    };
+    if (!configRes.ok) {
+        throw new Error("Firebase config load failed");
+    }
+    const firebaseConfig = await configRes.json();
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    
-    // YEH RAHA AAPKA RENDER URL
-    const BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
 
     let allQuestions = [];
     let currentIdx = 0;
