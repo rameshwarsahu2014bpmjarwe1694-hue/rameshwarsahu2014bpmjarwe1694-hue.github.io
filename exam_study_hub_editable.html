@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rameshwar Sahu GDS Departmental Exam Study Hub</title>
+    <style>
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background-color: #f7f9fc;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 800px;
+            background: #ffffff;
+            border: 3px solid #1a5276;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 25px;
+            box-sizing: border-box;
+        }
+        /* Header Section */
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        .logo-circle {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #0d47a1;
+            border: 4px solid #ffcc00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .header-title-text {
+            text-align: center;
+            padding: 0 10px;
+        }
+        .header-title-text h1 {
+            color: #0d47a1;
+            margin: 0;
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
+        .header-title-text h2 {
+            color: #d32f2f;
+            margin: 5px 0;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .tagline {
+            background: #0d47a1;
+            color: #ffcc00;
+            padding: 4px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .post-box {
+            text-align: center;
+            background: #d32f2f;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        /* Main Heading Banner */
+        .main-banner {
+            background: #ffeb3b;
+            color: #0d47a1;
+            text-align: center;
+            padding: 12px;
+            font-size: 26px;
+            font-weight: bold;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            border: 2px dashed #0d47a1;
+        }
+        /* Grid Layout for Questions */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        .card {
+            border: 2px solid #90caf9;
+            border-radius: 8px;
+            background: #ffffff;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+        .card-header {
+            background: #e3f2fd;
+            color: #0d47a1;
+            padding: 8px 12px;
+            font-weight: bold;
+            font-size: 15px;
+            border-bottom: 2px solid #90caf9;
+        }
+        .question-box {
+            padding: 15px;
+            text-align: center;
+            background: #fafafa;
+            border-bottom: 1px dashed #cfd8dc;
+        }
+        .options-box {
+            padding: 15px;
+            text-align: center;
+            background: #ffffff;
+        }
+        .box-title {
+            font-size: 12px;
+            color: #78909c;
+            margin-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .svg-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        /* Solution/Explanation Box */
+        .solution-box {
+            background: #fffde7;
+            border-top: 2px solid #fff59d;
+            padding: 12px;
+            font-size: 13.5px;
+            color: #37474f;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+        .solution-tag {
+            background: #ffeb3b;
+            color: #c62828;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 5px;
+            display: inline-block;
+        }
+        /* Footer Banner */
+        .footer-banner {
+            background: #0d47a1;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 30px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    
+/* ===== Editable Upload / Admin Controls ===== */
+.editor-toolbar{
+    display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+    margin:0 0 18px; padding:12px; background:#eef6ff;
+    border:2px solid #90caf9; border-radius:10px;
+}
+.editor-toolbar button,.upload-label{
+    border:1px solid #1976d2; background:#fff; color:#0d47a1;
+    padding:7px 11px; border-radius:6px; cursor:pointer; font-weight:700;
+    font-size:12px; display:inline-flex; align-items:center; gap:5px;
+}
+.editor-toolbar button:hover,.upload-label:hover{background:#e3f2fd}
+.editor-toolbar input[type=file]{display:none}
+.editor-hint{font-size:12px;color:#546e7a;margin-left:auto}
+.upload-preview{
+    max-width:100%; max-height:150px; display:block; margin:8px auto;
+    border:1px solid #b0bec5; border-radius:6px; object-fit:contain;
+}
+.editable-text{
+    outline:1px dashed transparent; border-radius:4px; cursor:text;
+}
+.editable-text:hover{outline-color:#90caf9; background:#f7fbff}
+.editable-text:focus{outline:2px solid #42a5f5; background:#fff}
+.question-tools{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:6px;
+    margin:0 0 8px;
+}
+.question-tools button,.question-tools label{
+    font-size:11px; padding:5px 8px; border:1px solid #90caf9;
+    border-radius:5px; background:#fff; color:#1565c0; cursor:pointer;
+    font-weight:700;
+}
+.question-tools input[type=file]{display:none}
+.question-image-slot{
+    min-height:20px; display:flex; justify-content:center; align-items:center;
+    flex-direction:column; width:100%;
+}
+.question-image-slot img{max-width:100%; max-height:220px; object-fit:contain}
+.remove-upload{border-color:#ef9a9a!important;color:#c62828!important}
+.logo-upload-wrap{
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+}
+.logo-upload-wrap .logo-circle img{
+    width:100%; height:100%; border-radius:50%; object-fit:cover;
+}
+.save-status{font-size:12px;color:#2e7d32;font-weight:700}
+@media print{
+    .editor-toolbar,.question-tools{display:none!important}
+    .editable-text{outline:none!important}
+}
+
+</style>
+
+<style>
+@page { size: A4 portrait; margin: 0; }
+@media print {
+  body{padding:0!important;margin:0!important;background:#fff!important;}
+  .editor-toolbar,#headerImageSlot,.question-tools,.upload-label{display:none!important;}
+  .container{width:190mm!important; height:285mm!important; min-height:0!important; margin:0 auto!important; padding:6mm!important; border-width:1.5px!important; border-radius:3px!important; box-shadow:none!important;}
+  .header-table{margin-bottom:6px!important;}
+  .logo-circle{width:58px!important;height:58px!important;border-width:3px!important;font-size:9px!important;}
+  .header-title-text h1{font-size:22px!important;}
+  .header-title-text h2{font-size:15px!important;margin:2px 0!important;}
+  .tagline{font-size:9px!important;padding:2px 8px!important;margin-top:2px!important;}
+  .post-box{font-size:9px!important;padding:5px!important;}
+  .main-banner{font-size:18px!important;padding:7px!important;margin-bottom:9px!important;border-width:1px!important;}
+  .grid-container{gap:7px!important;grid-template-columns:1fr 1fr!important;}
+  .card{border-width:1px!important;border-radius:4px!important;box-shadow:none!important;}
+  .card-header{padding:4px 7px!important;font-size:10px!important;border-bottom-width:1px!important;}
+  .question-box,.options-box{padding:5px!important;}
+  .box-title{font-size:8px!important;margin-bottom:3px!important;}
+  .svg-container{padding:3px!important;border-width:1px!important;}
+  .svg-container svg{width:245px!important;height:55px!important;max-width:100%!important;}
+  .solution-box{padding:5px!important;font-size:8px!important;line-height:1.25!important;border-top-width:1px!important;}
+  .solution-tag{padding:1px 4px!important;margin-right:3px!important;}
+  .footer-banner{padding:4px!important;font-size:7px!important;margin-top:4px!important;}
+  .card[style*="grid-column"]{grid-column:span 2!important;}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="editor-toolbar" id="editorToolbar">
+    <strong style="color:#0d47a1;">✏️ Edit Mode</strong>
+    <label class="upload-label">🖼️ Header/Poster Image
+        <input type="file" accept="image/*" onchange="loadHeaderImage(event)">
+    </label>
+    <button type="button" onclick="toggleEdit()">✍️ Text Edit ON/OFF</button>
+    <button type="button" onclick="savePage()">💾 Save in Browser</button>
+    <button type="button" onclick="clearSavedPage()">↩ Reset Saved Edits</button>
+    <button type="button" onclick="window.print()">🖨️ Print</button>
+    <span class="save-status" id="saveStatus"></span>
+    <span class="editor-hint">Question box में 🖼️ से picture और ✏️ से text edit करें</span>
+</div>
+<div id="headerImageSlot" class="question-image-slot" style="display:none;margin-bottom:15px;"></div>
+    <!-- Header Template -->
+    <table class="header-table">
+        <tr>
+            <td width="15%">
+                <div class="logo-upload-wrap">
+                    <div class="logo-circle" id="logoCircle">
+                        <span id="logoFallback">RAMESHWAR<br>SAHU<br><span style="color:#ffcc00;">RSH</span></span>
+                        <img id="logoImage" alt="Logo" style="display:none;">
+                    </div>
+                    <label class="upload-label" title="Logo upload">
+                        📷 Logo Upload
+                        <input type="file" accept="image/*" onchange="loadLogo(event)">
+                    </label>
+                </div>
+            </td>
+            <td width="70%" class="header-title-text">
+                <h1 class="editable-text" contenteditable="true">Rameshwar Sahu</h1>
+                <h2 class="editable-text" contenteditable="true">GDS Departmental Exam Study Hub</h2>
+                <div class="tagline editable-text" contenteditable="true">★ सही तैयारी, सफलता हमारी ★</div>
+            </td>
+            <td width="15%">
+                <div class="post-box">
+                    भारतीय डाक<br>India Post
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Main Banner -->
+    <div class="main-banner editable-text" contenteditable="true">
+        🌟 सादृश्यता (Analogy) - 100% सटीक हल प्रश्न पत्र 🌟
+    </div>
+
+    <!-- Questions Grid -->
+    <div class="grid-container">
+        
+        <!-- Question 1 -->
+        <div class="card">
+            <div class="card-header">उदाहरण 1</div>
+            <div class="question-box">
+                <div class="box-title">प्रश्न आकृतियाँ</div>
+                    <div class="question-tools">
+                        <label>🖼️ Picture Upload
+                            <input type="file" accept="image/*" onchange="loadQuestionImage(event,this)">
+                        </label>
+                        <button type="button" onclick="addQuestionText(this)">✏️ Add/Edit Text</button>
+                        <button type="button" class="remove-upload" onclick="removeQuestionImage(this)">✕ Remove Picture</button>
+                    </div>
+                    <div class="question-image-slot"></div>
+                <div class="svg-container">
+                    <!-- SVG Q1 -->
+                    <svg width="320" height="70" viewBox="0 0 320 70">
+                        <!-- Box A: Triangle -->
+                        <rect x="5" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polygon points="30,15 15,45 45,45" fill="none" stroke="black" stroke-width="1.5"/>
+                        <text x="30" y="65" font-size="12" text-anchor="middle" font-weight="bold">A</text>
+                        <text x="65" y="35" font-size="18" font-weight="bold">:</text>
+                        
+                        <!-- Box B: Square -->
+                        <rect x="80" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <rect x="92" y="17" width="26" height="26" fill="none" stroke="black" stroke-width="1.5"/>
+                        <text x="105" y="65" font-size="12" text-anchor="middle" font-weight="bold">B</text>
+                        <text x="140" y="35" font-size="18" font-weight="bold">::</text>
+                        
+                        <!-- Box C: Double Triangle -->
+                        <rect x="160" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polygon points="175,20 165,45 185,45" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polygon points="195,20 185,45 205,45" fill="none" stroke="black" stroke-width="1.5"/>
+                        <text x="185" y="65" font-size="12" text-anchor="middle" font-weight="bold">C</text>
+                        <text x="220" y="35" font-size="18" font-weight="bold">:</text>
+                        
+                        <!-- Box D: Question mark -->
+                        <rect x="245" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <text x="270" y="38" font-size="28" font-weight="bold" text-anchor="middle">?</text>
+                        <text x="270" y="65" font-size="12" text-anchor="middle" font-weight="bold">D</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="options-box">
+                <div class="box-title">उत्तर आकृतियाँ</div>
+                    <div class="question-tools">
+                        <label>🖼️ Picture Upload
+                            <input type="file" accept="image/*" onchange="loadQuestionImage(event,this)">
+                        </label>
+                        <button type="button" onclick="addQuestionText(this)">✏️ Add/Edit Text</button>
+                        <button type="button" class="remove-upload" onclick="removeQuestionImage(this)">✕ Remove Picture</button>
+                    </div>
+                    <div class="question-image-slot"></div>
+                <div class="svg-container">
+                    <svg width="320" height="70" viewBox="0 0 320 70">
+                        <!-- Option a (Correct) -->
+                        <rect x="5" y="5" width="50" height="50" fill="none" stroke="#2e7d32" stroke-width="2" rx="4"/>
+                        <rect x="12" y="15" width="16" height="16" fill="none" stroke="black" stroke-width="1.5"/>
+                        <rect x="32" y="15" width="16" height="16" fill="none" stroke="black" stroke-width="1.5"/>
+                        <text x="30" y="65" font-size="12" text-anchor="middle" font-weight="bold" fill="#2e7d32">(a) ✓</text>
+                        
+                        <!-- Option b -->
+                        <rect x="85" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polygon points="110,12 95,25 95,45 125,45 125,25" fill="none" stroke="black" stroke-width="1.5"/>
+                        <text x="110" y="65" font-size="12" text-anchor="middle" font-weight="bold">(b)</text>
+                        
+                        <!-- Option c -->
+                        <rect x="165" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <rect x="175,15" width="30" height="30" fill="none" stroke="black" stroke-width="1.5"/>
+                        <line x1="175" y1="15" x2="205" y2="45" stroke="black" stroke-width="1.5"/>
+                        <text x="190" y="65" font-size="12" text-anchor="middle" font-weight="bold">(c)</text>
+                        
+                        <!-- Option d -->
+                        <rect x="245" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polygon points="255,15 285,15 275,45 245,45" fill="none" stroke="black" stroke-width="1.5"/>
+                        <text x="270" y="65" font-size="12" text-anchor="middle" font-weight="bold">(d)</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="solution-box editable-text" contenteditable="true"><span class="solution-tag">हल (a)</span> जिस प्रकार पहले पद में एक 3-भुजा वाली आकृति (त्रिभुज) बदलकर 4-भुजा वाली आकृति (वर्ग) बनती है, उसी प्रकार दो त्रिभुज बदलकर दो वर्ग में परिवर्तित हो जाएँगे।
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="card">
+            <div class="card-header">उदाहरण 2</div>
+            <div class="question-box">
+                <div class="box-title">प्रश्न आकृतियाँ</div>
+                    <div class="question-tools">
+                        <label>🖼️ Picture Upload
+                            <input type="file" accept="image/*" onchange="loadQuestionImage(event,this)">
+                        </label>
+                        <button type="button" onclick="addQuestionText(this)">✏️ Add/Edit Text</button>
+                        <button type="button" class="remove-upload" onclick="removeQuestionImage(this)">✕ Remove Picture</button>
+                    </div>
+                    <div class="question-image-slot"></div>
+                <div class="svg-container">
+                    <svg width="320" height="70" viewBox="0 0 320 70">
+                        <rect x="5" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polyline points="15,15 30,45 45,15" fill="none" stroke="black" stroke-width="2"/>
+                        <text x="30" y="65" font-size="12" text-anchor="middle" font-weight="bold">A</text>
+                        <text x="65" y="35" font-size="18" font-weight="bold">:</text>
+                        
+                        <rect x="80" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polyline points="90,15 100,45 105,20 110,45 120,15" fill="none" stroke="black" stroke-width="2"/>
+                        <text x="105" y="65" font-size="12" text-anchor="middle" font-weight="bold">B</text>
+                        <text x="140" y="35" font-size="18" font-weight="bold">::</text>
+                        
+                        <rect x="160" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polyline points="170,45 185,15 200,45" fill="none" stroke="black" stroke-width="2"/>
+                        <text x="185" y="65" font-size="12" text-anchor="middle" font-weight="bold">C</text>
+                        <text x="220" y="35" font-size="18" font-weight="bold">:</text>
+                        
+                        <rect x="245" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <text x="270" y="38" font-size="28" font-weight="bold" text-anchor="middle">?</text>
+                        <text x="270" y="65" font-size="12" text-anchor="middle" font-weight="bold">D</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="options-box">
+                <div class="box-title">उत्तर आकृतियाँ</div>
+                    <div class="question-tools">
+                        <label>🖼️ Picture Upload
+                            <input type="file" accept="image/*" onchange="loadQuestionImage(event,this)">
+                        </label>
+                        <button type="button" onclick="addQuestionText(this)">✏️ Add/Edit Text</button>
+                        <button type="button" class="remove-upload" onclick="removeQuestionImage(this)">✕ Remove Picture</button>
+                    </div>
+                    <div class="question-image-slot"></div>
+                <div class="svg-container">
+                    <svg width="320" height="70" viewBox="0 0 320 70">
+                        <!-- Option a (Correct) -->
+                        <rect x="5" y="5" width="50" height="50" fill="none" stroke="#2e7d32" stroke-width="2" rx="4"/>
+                        <polyline points="15,45 22,15 30,35 38,15 45,45" fill="none" stroke="black" stroke-width="2"/>
+                        <text x="30" y="65" font-size="12" text-anchor="middle" font-weight="bold" fill="#2e7d32">(a) ✓</text>
+                        
+                        <!-- Option b -->
+                        <rect x="85" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polyline points="95,15 102,45 110,20 118,45 125,15" fill="none" stroke="black" stroke-width="2"/>
+                        <text x="110" y="65" font-size="12" text-anchor="middle" font-weight="bold">(b)</text>
+                        
+                        <!-- Option c -->
+                        <rect x="165" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polyline points="175,45 175,15 195,45 195,15" fill="none" stroke="black" stroke-width="2"/>
+                        <text x="190" y="65" font-size="12" text-anchor="middle" font-weight="bold">(c)</text>
+                        
+                        <!-- Option d -->
+                        <rect x="245" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polyline points="255,45 255,15 275,15 275,45" fill="none" stroke="black" stroke-width="2"/>
+                        <text x="270" y="65" font-size="12" text-anchor="middle" font-weight="bold">(d)</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="solution-box editable-text" contenteditable="true"><span class="solution-tag">हल (a)</span> जिस प्रकार 'V' का विस्तार करके 'W' बनाया गया है, ठीक उसी प्रकार विपरीत दिशा वाली आकृति '^' का विस्तार करने पर 'M' आकृति प्राप्त होगी।
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="card">
+            <div class="card-header">उदाहरण 3</div>
+            <div class="question-box">
+                <div class="box-title">प्रश्न आकृतियाँ</div>
+                    <div class="question-tools">
+                        <label>🖼️ Picture Upload
+                            <input type="file" accept="image/*" onchange="loadQuestionImage(event,this)">
+                        </label>
+                        <button type="button" onclick="addQuestionText(this)">✏️ Add/Edit Text</button>
+                        <button type="button" class="remove-upload" onclick="removeQuestionImage(this)">✕ Remove Picture</button>
+                    </div>
+                    <div class="question-image-slot"></div>
+                <div class="svg-container">
+                    <svg width="320" height="70" viewBox="0 0 320 70">
+                        <rect x="5" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polygon points="30,12 12,45 48,45" fill="none" stroke="black" stroke-width="1.2"/>
+                        <circle cx="30" cy="33" r="10" fill="none" stroke="black" stroke-width="1.2"/>
+                        <circle cx="30" cy="33" r="2" fill="black"/>
+                        <text x="30" y="65" font-size="12" text-anchor="middle" font-weight="bold">A</text>
+                        <text x="65" y="35" font-size="18" font-weight="bold">:</text>
+                        
+                        <rect x="80" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polygon points="105,12 87,45 123,45" fill="none" stroke="black" stroke-width="1.2"/>
+                        <circle cx="105" cy="33" r="10" fill="none" stroke="black" stroke-width="1.2"/>
+                        <text x="105" y="65" font-size="12" text-anchor="middle" font-weight="bold">B</text>
+                        <text x="140" y="35" font-size="18" font-weight="bold">::</text>
+                        
+                        <rect x="160" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polygon points="185,12 167,45 203,45" fill="none" stroke="black" stroke-width="1.2"/>
+                        <rect x="177" y="25" width="16" height="16" fill="none" stroke="black" stroke-width="1.2"/>
+                        <circle cx="185" cy="33" r="2" fill="black"/>
+                        <text x="185" y="65" font-size="12" text-anchor="middle" font-weight="bold">C</text>
+                        <text x="220" y="35" font-size="18" font-weight="bold">:</text>
+                        
+                        <rect x="245" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <text x="270" y="38" font-size="28" font-weight="bold" text-anchor="middle">?</text>
+                        <text x="270" y="65" font-size="12" text-anchor="middle" font-weight="bold">D</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="options-box">
+                <div class="box-title">उत्तर आकृतियाँ</div>
+                    <div class="question-tools">
+                        <label>🖼️ Picture Upload
+                            <input type="file" accept="image/*" onchange="loadQuestionImage(event,this)">
+                        </label>
+                        <button type="button" onclick="addQuestionText(this)">✏️ Add/Edit Text</button>
+                        <button type="button" class="remove-upload" onclick="removeQuestionImage(this)">✕ Remove Picture</button>
+                    </div>
+                    <div class="question-image-slot"></div>
+                <div class="svg-container">
+                    <svg width="320" height="70" viewBox="0 0 320 70">
+                        <!-- Option a (Correct) -->
+                        <rect x="5" y="5" width="50" height="50" fill="none" stroke="#2e7d32" stroke-width="2" rx="4"/>
+                        <polygon points="30,12 12,45 48,45" fill="none" stroke="black" stroke-width="1.2"/>
+                        <rect x="22" y="25" width="16" height="16" fill="none" stroke="black" stroke-width="1.2"/>
+                        <text x="30" y="65" font-size="12" text-anchor="middle" font-weight="bold" fill="#2e7d32">(a) ✓</text>
+                        
+                        <!-- Option b -->
+                        <rect x="85" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <rect x="100" y="20" width="20" height="20" fill="none" stroke="black" stroke-width="1.2"/>
+                        <circle cx="110" cy="30" r="2" fill="black"/>
+                        <text x="110" y="65" font-size="12" text-anchor="middle" font-weight="bold">(b)</text>
+                        
+                        <!-- Option c -->
+                        <rect x="165" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polygon points="190,12 172,45 208,45" fill="none" stroke="black" stroke-width="1.2"/>
+                        <circle cx="190" cy="33" r="6" fill="none" stroke="black" stroke-width="1.2"/>
+                        <text x="190" y="65" font-size="12" text-anchor="middle" font-weight="bold">(c)</text>
+                        
+                        <!-- Option d -->
+                        <rect x="245" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polygon points="270,12 252,45 288,45" fill="none" stroke="black" stroke-width="1.2"/>
+                        <polygon points="270,22 260,40 280,40" fill="none" stroke="black" stroke-width="1.2"/>
+                        <text x="270" y="65" font-size="12" text-anchor="middle" font-weight="bold">(d)</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="solution-box editable-text" contenteditable="true"><span class="solution-tag">हल (a)</span> इस पैटर्न में आकृति के ठीक केंद्र में स्थित मुख्य बिंदु (Black Dot) गायब हो जाता है। अतः बिंदु हटने पर त्रिभुज में केवल वर्ग बचेगा।
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="card">
+            <div class="card-header">उदाहरण 4</div>
+            <div class="question-box">
+                <div class="box-title">प्रश्न आकृतियाँ</div>
+                    <div class="question-tools">
+                        <label>🖼️ Picture Upload
+                            <input type="file" accept="image/*" onchange="loadQuestionImage(event,this)">
+                        </label>
+                        <button type="button" onclick="addQuestionText(this)">✏️ Add/Edit Text</button>
+                        <button type="button" class="remove-upload" onclick="removeQuestionImage(this)">✕ Remove Picture</button>
+                    </div>
+                    <div class="question-image-slot"></div>
+                <div class="svg-container">
+                    <svg width="320" height="70" viewBox="0 0 320 70">
+                        <rect x="5" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <circle cx="15" cy="15" r="4" fill="none" stroke="black"/>
+                        <circle cx="40" cy="40" r="4" fill="none" stroke="black"/>
+                        <text x="30" y="65" font-size="12" text-anchor="middle" font-weight="bold">A</text>
+                        <text x="65" y="35" font-size="18" font-weight="bold">:</text>
+                        
+                        <rect x="80" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <circle cx="105" cy="25" r="5" fill="black"/>
+                        <text x="105" y="65" font-size="12" text-anchor="middle" font-weight="bold">B</text>
+                        <text x="140" y="35" font-size="18" font-weight="bold">::</text>
+                        
+                        <rect x="160" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <text x="185" y="38" font-size="28" font-weight="bold" text-anchor="middle">?</text>
+                        <text x="185" y="65" font-size="12" text-anchor="middle" font-weight="bold">C</text>
+                        <text x="220" y="35" font-size="18" font-weight="bold">:</text>
+                        
+                        <rect x="245" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <circle cx="270" cy="25" r="5" fill="none" stroke="black"/>
+                        <text x="270" y="65" font-size="12" text-anchor="middle" font-weight="bold">D</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="options-box">
+                <div class="box-title">उत्तर आकृतियाँ</div>
+                    <div class="question-tools">
+                        <label>🖼️ Picture Upload
+                            <input type="file" accept="image/*" onchange="loadQuestionImage(event,this)">
+                        </label>
+                        <button type="button" onclick="addQuestionText(this)">✏️ Add/Edit Text</button>
+                        <button type="button" class="remove-upload" onclick="removeQuestionImage(this)">✕ Remove Picture</button>
+                    </div>
+                    <div class="question-image-slot"></div>
+                <div class="svg-container">
+                    <svg width="320" height="70" viewBox="0 0 320 70">
+                        <!-- Option a -->
+                        <rect x="5" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <circle cx="15" cy="15" r="4" fill="none" stroke="black"/>
+                        <circle cx="15" cy="40" r="4" fill="none" stroke="black"/>
+                        <text x="30" y="65" font-size="12" text-anchor="middle" font-weight="bold">(a)</text>
+                        
+                        <!-- Option b -->
+                        <rect x="85" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <circle cx="100" cy="40" r="4" fill="black"/>
+                        <circle cx="120" cy="20" r="4" fill="black"/>
+                        <text x="110" y="65" font-size="12" text-anchor="middle" font-weight="bold">(b)</text>
+                        
+                        <!-- Option c (Correct) -->
+                        <rect x="165" y="5" width="50" height="50" fill="none" stroke="#2e7d32" stroke-width="2" rx="4"/>
+                        <circle cx="180" cy="20" r="4" fill="black"/>
+                        <circle cx="195" cy="20" r="4" fill="black"/>
+                        <circle cx="180" cy="40" r="4" fill="none" stroke="black"/>
+                        <text x="190" y="65" font-size="12" text-anchor="middle" font-weight="bold" fill="#2e7d32">(c) ✓</text>
+                        
+                        <!-- Option d -->
+                        <rect x="245" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <circle cx="270" cy="20" r="4" fill="black"/>
+                        <circle cx="270" cy="40" r="4" fill="none" stroke="black"/>
+                        <text x="270" y="65" font-size="12" text-anchor="middle" font-weight="bold">(d)</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="solution-box editable-text" contenteditable="true"><span class="solution-tag">हल (c)</span> इस श्रृंखला में ठोस काले बिंदुओं (Black Dots) की संख्या लगातार बढ़ रही है (0, 1, 2)। अतः तार्किक रूप से दो काले बिंदुओं वाला विकल्प (c) यहाँ सही बैठता है।
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="card">
+            <div class="card-header">उदाहरण 5</div>
+            <div class="question-box">
+                <div class="box-title">प्रश्न आकृतियाँ</div>
+                    <div class="question-tools">
+                        <label>🖼️ Picture Upload
+                            <input type="file" accept="image/*" onchange="loadQuestionImage(event,this)">
+                        </label>
+                        <button type="button" onclick="addQuestionText(this)">✏️ Add/Edit Text</button>
+                        <button type="button" class="remove-upload" onclick="removeQuestionImage(this)">✕ Remove Picture</button>
+                    </div>
+                    <div class="question-image-slot"></div>
+                <div class="svg-container">
+                    <svg width="320" height="70" viewBox="0 0 320 70">
+                        <rect x="5" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polygon points="15,40 15,25 30,12 45,25 45,40" fill="none" stroke="black" stroke-width="1.2"/>
+                        <text x="30" y="65" font-size="12" text-anchor="middle" font-weight="bold">A</text>
+                        <text x="65" y="35" font-size="18" font-weight="bold">:</text>
+                        
+                        <rect x="80" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <polygon points="90,40 90,25 105,12 120,25 120,40" fill="none" stroke="black" stroke-width="1.2"/>
+                        <line x1="90" y1="40" x2="105" y2="48" stroke="black" stroke-width="1.2"/>
+                        <line x1="120" y1="40" x2="105" y2="48" stroke="black" stroke-width="1.2"/>
+                        <text x="105" y="65" font-size="12" text-anchor="middle" font-weight="bold">B</text>
+                        <text x="140" y="35" font-size="18" font-weight="bold">::</text>
+                        
+                        <rect x="160" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <rect x="172" y="17" width="26" height="26" fill="none" stroke="black" stroke-width="1.5"/>
+                        <text x="185" y="65" font-size="12" text-anchor="middle" font-weight="bold">C</text>
+                        <text x="220" y="35" font-size="18" font-weight="bold">:</text>
+                        
+                        <rect x="245" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <text x="270" y="38" font-size="28" font-weight="bold" text-anchor="middle">?</text>
+                        <text x="270" y="65" font-size="12" text-anchor="middle" font-weight="bold">D</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="options-box">
+                <div class="box-title">उत्तर आकृतियाँ</div>
+                    <div class="question-tools">
+                        <label>🖼️ Picture Upload
+                            <input type="file" accept="image/*" onchange="loadQuestionImage(event,this)">
+                        </label>
+                        <button type="button" onclick="addQuestionText(this)">✏️ Add/Edit Text</button>
+                        <button type="button" class="remove-upload" onclick="removeQuestionImage(this)">✕ Remove Picture</button>
+                    </div>
+                    <div class="question-image-slot"></div>
+                <div class="svg-container">
+                    <svg width="320" height="70" viewBox="0 0 320 70">
+                        <!-- Option a -->
+                        <rect x="5" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <rect x="15" y="20" width="30" height="20" fill="none" stroke="black" stroke-width="1.2"/>
+                        <line x1="15" y1="40" x2="45" y2="40" stroke="black" stroke-width="1.2"/>
+                        <text x="30" y="65" font-size="12" text-anchor="middle" font-weight="bold">(a)</text>
+                        
+                        <!-- Option b -->
+                        <rect x="85" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <rect x="95" y="15" width="30" height="25" fill="none" stroke="black" stroke-width="1.2"/>
+                        <polygon points="95,40 110,48 125,40" fill="none" stroke="black" stroke-width="1.2"/>
+                        <text x="110" y="65" font-size="12" text-anchor="middle" font-weight="bold">(b)</text>
+                        
+                        <!-- Option c -->
+                        <rect x="165" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <rect x="175" y="15" width="30" height="25" fill="none" stroke="black" stroke-width="1.2"/>
+                        <line x1="175" y1="15" x2="205" y2="40" stroke="black" stroke-width="1.2"/>
+                        <text x="190" y="65" font-size="12" text-anchor="middle" font-weight="bold">(c)</text>
+                        
+                        <!-- Option d (Correct) -->
+                        <rect x="245" y="5" width="50" height="50" fill="none" stroke="#2e7d32" stroke-width="2" rx="4"/>
+                        <rect x="255" y="15" width="30" height="25" fill="none" stroke="black" stroke-width="1.2"/>
+                        <line x1="255" y1="40" x2="270" y2="48" stroke="black" stroke-width="1.2"/>
+                        <line x1="285" y1="40" x2="270" y2="48" stroke="black" stroke-width="1.2"/>
+                        <text x="270" y="65" font-size="12" text-anchor="middle" font-weight="bold" fill="#2e7d32">(d) ✓</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="solution-box editable-text" contenteditable="true"><span class="solution-tag">हल (d)</span> पहली आकृति (पंचभुज) के निचले हिस्से में एक नीचे की ओर झुकी हुई त्रिकोणीय रेखा जोड़ी गई है। समान नियम से वर्ग के नीचे भी यही रेखा जोड़ने पर विकल्प (d) प्राप्त होगा।
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="card">
+            <div class="card-header">उदाहरण 6</div>
+            <div class="question-box">
+                <div class="box-title">प्रश्न आकृतियाँ</div>
+                    <div class="question-tools">
+                        <label>🖼️ Picture Upload
+                            <input type="file" accept="image/*" onchange="loadQuestionImage(event,this)">
+                        </label>
+                        <button type="button" onclick="addQuestionText(this)">✏️ Add/Edit Text</button>
+                        <button type="button" class="remove-upload" onclick="removeQuestionImage(this)">✕ Remove Picture</button>
+                    </div>
+                    <div class="question-image-slot"></div>
+                <div class="svg-container">
+                    <svg width="320" height="70" viewBox="0 0 320 70">
+                        <rect x="5" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <line x1="30" y1="45" x2="30" y2="30" stroke="black" stroke-width="1.2"/>
+                        <line x1="30" y1="30" x2="15" y2="15" stroke="black" stroke-width="1.2"/>
+                        <line x1="30" y1="30" x2="45" y2="15" stroke="black" stroke-width="1.2"/>
+                        <circle cx="15" cy="15" r="3" fill="none" stroke="black"/>
+                        <circle cx="45" cy="15" r="3" fill="none" stroke="black"/>
+                        <circle cx="30" cy="45" r="3" fill="black"/>
+                        <text x="30" y="65" font-size="12" text-anchor="middle" font-weight="bold">A</text>
+                        <text x="65" y="35" font-size="18" font-weight="bold">:</text>
+                        
+                        <rect x="80" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <line x1="105" y1="15" x2="105" y2="30" stroke="black" stroke-width="1.2"/>
+                        <line x1="105" y1="30" x2="90" y2="45" stroke="black" stroke-width="1.2"/>
+                        <line x1="105" y1="30" x2="120" y2="45" stroke="black" stroke-width="1.2"/>
+                        <circle cx="90" cy="45" r="3" fill="none" stroke="black"/>
+                        <circle cx="120" cy="45" r="3" fill="none" stroke="black"/>
+                        <circle cx="105" cy="15" r="3" fill="black"/>
+                        <text x="105" y="65" font-size="12" text-anchor="middle" font-weight="bold">B</text>
+                        <text x="140" y="35" font-size="18" font-weight="bold">::</text>
+                        
+                        <rect x="160" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <line x1="185" y1="45" x2="185" y2="30" stroke="black" stroke-width="1.2"/>
+                        <line x1="185" y1="30" x2="170" y2="15" stroke="black" stroke-width="1.2"/>
+                        <line x1="185" y1="30" x2="200" y2="15" stroke="black" stroke-width="1.2"/>
+                        <polygon points="170,15 167,20 173,20" fill="black"/>
+                        <polygon points="200,15 197,20 203,20" fill="black"/>
+                        <text x="185" y="65" font-size="12" text-anchor="middle" font-weight="bold">C</text>
+                        <text x="220" y="35" font-size="18" font-weight="bold">:</text>
+                        
+                        <rect x="245" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <text x="270" y="38" font-size="28" font-weight="bold" text-anchor="middle">?</text>
+                        <text x="270" y="65" font-size="12" text-anchor="middle" font-weight="bold">D</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="options-box">
+                <div class="box-title">उत्तर आकृतियाँ</div>
+                    <div class="question-tools">
+                        <label>🖼️ Picture Upload
+                            <input type="file" accept="image/*" onchange="loadQuestionImage(event,this)">
+                        </label>
+                        <button type="button" onclick="addQuestionText(this)">✏️ Add/Edit Text</button>
+                        <button type="button" class="remove-upload" onclick="removeQuestionImage(this)">✕ Remove Picture</button>
+                    </div>
+                    <div class="question-image-slot"></div>
+                <div class="svg-container">
+                    <svg width="320" height="70" viewBox="0 0 320 70">
+                        <!-- Option a -->
+                        <rect x="5" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <line x1="30" y1="15" x2="30" y2="30" stroke="black" stroke-width="1.2"/>
+                        <line x1="30" y1="30" x2="15" y2="45" stroke="black" stroke-width="1.2"/>
+                        <line x1="30" y1="30" x2="45" y2="45" stroke="black" stroke-width="1.2"/>
+                        <text x="30" y="65" font-size="12" text-anchor="middle" font-weight="bold">(a)</text>
+                        
+                        <!-- Option b (Correct) -->
+                        <rect x="85" y="5" width="50" height="50" fill="none" stroke="#2e7d32" stroke-width="2" rx="4"/>
+                        <line x1="110" y1="15" x2="110" y2="30" stroke="black" stroke-width="1.2"/>
+                        <line x1="110" y1="30" x2="95" y2="45" stroke="black" stroke-width="1.2"/>
+                        <line x1="110" y1="30" x2="125" y2="45" stroke="black" stroke-width="1.2"/>
+                        <polygon points="95,45 92,40 98,40" fill="black"/>
+                        <polygon points="125,45 122,40 128,40" fill="black"/>
+                        <text x="110" y="65" font-size="12" text-anchor="middle" font-weight="bold" fill="#2e7d32">(b) ✓</text>
+                        
+                        <!-- Option c -->
+                        <rect x="165" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <line x1="190" y1="45" x2="190" y2="20" stroke="black" stroke-width="1.2"/>
+                        <text x="190" y="65" font-size="12" text-anchor="middle" font-weight="bold">(c)</text>
+                        
+                        <!-- Option d -->
+                        <rect x="245" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                        <line x1="270" y1="15" x2="270" y2="45" stroke="black" stroke-width="1.2"/>
+                        <text x="270" y="65" font-size="12" text-anchor="middle" font-weight="bold">(d)</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="solution-box editable-text" contenteditable="true"><span class="solution-tag">हल (b)</span> प्रथम युग्म में मूल आकृति लंबवत रूप से 180 डिग्री उलट जाती है। उसी प्रकार, तीरों वाली शाखा की दिशा भी नीचे की ओर हो जाएगी, जो विकल्प (b) में सही है।
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="card" style="grid-column: span 2;">
+            <div class="card-header">उदाहरण 7</div>
+            <div style="display: flex; flex-direction: row;">
+                <div class="question-box" style="flex: 1; border-bottom: none; border-right: 1px dashed #cfd8dc;">
+                    <div class="box-title">प्रश्न आकृतियाँ</div>
+                    <div class="svg-container">
+                        <svg width="320" height="70" viewBox="0 0 320 70">
+                            <rect x="5" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                            <polygon points="30,12 45,30 30,48 15,30" fill="none" stroke="black" stroke-width="1.2"/>
+                            <text x="30" y="65" font-size="12" text-anchor="middle" font-weight="bold">A</text>
+                            <text x="65" y="35" font-size="18" font-weight="bold">:</text>
+                            
+                            <rect x="80" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                            <polyline points="95,15 110,30 95,45" fill="none" stroke="black" stroke-width="2"/>
+                            <text x="105" y="65" font-size="12" text-anchor="middle" font-weight="bold">B</text>
+                            <text x="140" y="35" font-size="18" font-weight="bold">::</text>
+                            
+                            <rect x="160" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                            <circle cx="173" cy="30" r="6" fill="none" stroke="black" stroke-width="1.2"/>
+                            <circle cx="185" cy="30" r="6" fill="none" stroke="black" stroke-width="1.2"/>
+                            <circle cx="197" cy="30" r="6" fill="none" stroke="black" stroke-width="1.2"/>
+                            <text x="185" y="65" font-size="12" text-anchor="middle" font-weight="bold">C</text>
+                            <text x="220" y="35" font-size="18" font-weight="bold">:</text>
+                            
+                            <rect x="245" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                            <text x="270" y="38" font-size="28" font-weight="bold" text-anchor="middle">?</text>
+                            <text x="270" y="65" font-size="12" text-anchor="middle" font-weight="bold">D</text>
+                        </svg>
+                    </div>
+                </div>
+                <div class="options-box" style="flex: 1;">
+                    <div class="box-title">उत्तर आकृतियाँ</div>
+                    <div class="svg-container">
+                        <svg width="320" height="70" viewBox="0 0 320 70">
+                            <!-- Option a -->
+                            <rect x="5" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                            <path d="M 15 20 Q 25 40 35 20 T 55 20" fill="none" stroke="black" stroke-width="1.5"/>
+                            <text x="30" y="65" font-size="12" text-anchor="middle" font-weight="bold">(a)</text>
+                            
+                            <!-- Option b -->
+                            <rect x="85" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                            <path d="M 95 30 C 105 15, 105 45, 115 30 C 125 15, 125 45, 135 30" fill="none" stroke="black" stroke-width="1.5"/>
+                            <text x="110" y="65" font-size="12" text-anchor="middle" font-weight="bold">(b)</text>
+                            
+                            <!-- Option c -->
+                            <rect x="165" y="5" width="50" height="50" fill="none" stroke="black" stroke-width="1.5"/>
+                            <path d="M 185 15 A 10 10 0 0 0 185 35 A 10 10 0 0 0 185 55" fill="none" stroke="black" stroke-width="1.5"/>
+                            <text x="190" y="65" font-size="12" text-anchor="middle" font-weight="bold">(c)</text>
+                            
+                            <!-- Option d (Correct) -->
+                            <rect x="245" y="5" width="20" height="50" fill="none" stroke="none"/>
+                            <rect x="245" y="5" width="50" height="50" fill="none" stroke="#2e7d32" stroke-width="2" rx="4"/>
+                            <path d="M 260 20 A 8 8 0 0 0 260 36 M 272 20 A 8 8 0 0 0 272 36 M 284 20 A 8 8 0 0 0 284 36" fill="none" stroke="black" stroke-width="1.5"/>
+                            <text x="270" y="65" font-size="12" text-anchor="middle" font-weight="bold" fill="#2e7d32">(d) ✓</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="solution-box editable-text" contenteditable="true" style="border-top: 1px solid #fff59d;"><span class="solution-tag">हल (d)</span> पहली आकृति (Diamond) के बाहरी हिस्से को दाईं ओर से खोल दिया गया है। उसी नियम के आधार पर, तीन पूर्ण वृत्तों को दाईं ओर से खोलने पर तीन अर्धवृत्ताकार खुले वक्र (ƆƆƆ) यानी विकल्प (d) प्राप्त होगा।
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer Template -->
+    <div class="footer-banner">
+        <span>Rameshwar Sahu GDS Departmental Exam Study Hub</span>
+        <span>ज्ञान ही सफलता की कुंजी है (Knowledge is the Key to Success)</span>
+    </div>
+</div>
+
+
+<script>
+(function(){
+  const KEY='rsh_exam_study_hub_edits_v2';
+  window.loadLogo=function(e){
+    const f=e.target.files && e.target.files[0]; if(!f)return;
+    const r=new FileReader();
+    r.onload=function(){
+      const img=document.getElementById('logoImage');
+      document.getElementById('logoFallback').style.display='none';
+      img.src=r.result; img.style.display='block';
+      savePage();
+    }; r.readAsDataURL(f);
+  };
+
+  window.loadHeaderImage=function(e){
+    const f=e.target.files && e.target.files[0]; if(!f)return;
+    const r=new FileReader();
+    r.onload=function(){
+      const slot=document.getElementById('headerImageSlot');
+      slot.innerHTML='<img class="upload-preview" src="'+r.result+'" alt="Header image">';
+      slot.style.display='flex'; savePage();
+    }; r.readAsDataURL(f);
+  };
+
+  window.loadQuestionImage=function(e, input){
+    const f=e.target.files && e.target.files[0]; if(!f)return;
+    const r=new FileReader();
+    r.onload=function(){
+      const box=input.closest('.question-box,.options-box');
+      const slot=box.querySelector('.question-image-slot');
+      slot.innerHTML='<img class="upload-preview" src="'+r.result+'" alt="Uploaded question figure">';
+      savePage();
+    }; r.readAsDataURL(f);
+  };
+
+  window.removeQuestionImage=function(btn){
+    const box=btn.closest('.question-box,.options-box');
+    const slot=box.querySelector('.question-image-slot');
+    slot.innerHTML='';
+    savePage();
+  };
+
+  window.addQuestionText=function(btn){
+    const box=btn.closest('.question-box,.options-box');
+    let old=box.querySelector('.custom-question-text');
+    if(old){
+      old.focus();
+      return;
+    }
+    const t=document.createElement('div');
+    t.className='custom-question-text editable-text';
+    t.contentEditable='true';
+    t.textContent='यहाँ प्रश्न/आकृति का टेक्स्ट लिखें…';
+    t.style.cssText='margin:8px auto;padding:8px;border:1px dashed #90caf9;border-radius:5px;max-width:95%;font-weight:600;';
+    box.querySelector('.question-image-slot').after(t);
+    t.focus();
+    document.execCommand('selectAll',false,null);
+    savePage();
+  };
+
+  window.toggleEdit=function(){
+    document.querySelectorAll('.editable-text').forEach(el=>{
+      el.contentEditable = el.contentEditable !== 'true' ? 'true' : 'false';
+    });
+    document.getElementById('saveStatus').textContent='Text edit toggled';
+  };
+
+  window.savePage=function(){
+    const root=document.querySelector('.container');
+    if(!root)return;
+    const clone=root.cloneNode(true);
+    clone.querySelectorAll('.editor-toolbar,.question-tools').forEach(x=>x.remove());
+    clone.querySelectorAll('input[type=file]').forEach(x=>x.remove());
+    clone.querySelectorAll('.question-image-slot').forEach(x=>{
+      if(!x.innerHTML.trim()) x.remove();
+    });
+    const data={
+      html: clone.innerHTML,
+      logo: document.getElementById('logoImage')?.src || '',
+      header: document.getElementById('headerImageSlot')?.innerHTML || ''
+    };
+    try{
+      localStorage.setItem(KEY,JSON.stringify(data));
+      document.getElementById('saveStatus').textContent='✓ Saved';
+      setTimeout(()=>document.getElementById('saveStatus').textContent='',1200);
+    }catch(err){
+      document.getElementById('saveStatus').textContent='Storage full';
+    }
+  };
+
+  window.clearSavedPage=function(){
+    if(confirm('Saved edits हटाएँ और original page reload करें?')){
+      localStorage.removeItem(KEY); location.reload();
+    }
+  };
+
+  function restore(){
+    const raw=localStorage.getItem(KEY); if(!raw)return;
+    try{
+      const data=JSON.parse(raw);
+      const root=document.querySelector('.container');
+      // Keep toolbar, replace content after it with saved content.
+      const toolbar=root.querySelector('#editorToolbar');
+      const saved=document.createElement('div'); saved.innerHTML=data.html;
+      [...root.children].forEach(ch=>{ if(ch!==toolbar) ch.remove(); });
+      [...saved.children].forEach(ch=>root.appendChild(ch));
+      if(data.logo){
+        const img=document.getElementById('logoImage');
+        const fb=document.getElementById('logoFallback');
+        if(img){img.src=data.logo;img.style.display='block';}
+        if(fb)fb.style.display='none';
+      }
+      if(data.header){
+        const slot=document.getElementById('headerImageSlot');
+        if(slot){slot.innerHTML=data.header;slot.style.display='flex';}
+      }
+    }catch(e){}
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    restore();
+    document.addEventListener('input',e=>{
+      if(e.target.matches('[contenteditable="true"]')) {
+        clearTimeout(window.__rshSaveTimer);
+        window.__rshSaveTimer=setTimeout(savePage,500);
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
