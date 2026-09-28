@@ -331,35 +331,31 @@ return;
 
 list.innerHTML = "";
 
-filtered.forEach(item=>{
+filtered.forEach(item => {
 
-list.innerHTML += `
+    list.innerHTML += `
 
-<div class="card">
+    <div class="card">
 
-<h3>${safe(item.title)}</h3>
+    <h3>${safe(item.title)}</h3>
 
-<div class="category">
-${safe(item.category)}
-</div>
+    <div class="category">
+    ${safe(item.category)}
+    </div>
 
-<p class="small">
-${safe(item.desc)}
-</p>
+    <p class="small">
+    ${safe(item.desc)}
+    </p>
 
-<a
-class="download-btn"
-onclick="openSyllabusPDF('${item.fileName}')"
-target="_blank"
->
+    <button
+    class="download-btn"
+    onclick="openSyllabusPDF('${item.fileName}')">
+    📄 Open PDF
+    </button>
 
-📄 Open PDF
+    </div>
 
-</a>
-
-</div>
-
-`;
+    `;
 
 });
 
