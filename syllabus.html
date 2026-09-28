@@ -385,202 +385,80 @@ window.goBack = function() {
 };
 
 window.openSyllabusPDF = async function(fileName) {
+    const user = auth.currentUser;
+
+    if (!user) {
+        alert("Pehle login karein!");
+        window.location.href = "login.html";
+        return;
+    }
+
+    if (!fileName || typeof fileName !== "string") {
+        alert("Invalid fileName.");
+        return;
+    }
 
     try {
+        const idToken = await user.getIdToken();
 
-        const user = auth.currentUser;
+        // 1. Dynamic 5-minute access token fetch karein (fileType: "syllabus")
+        const tokenRes = await fetch(`${BACKEND_URL}/get-download-token`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${idToken}`
+            },
+            body: JSON.stringify({ 
+                fileType: "syllabus", 
+                identifier: fileName 
+            })
+        });
 
-        if (!user) {
-            alert("User login nahi hai.");
-            window.location.href = "login.html";
-            return;
+        const tokenData = await tokenRes.json();
+        if (!tokenRes.ok || !tokenData.token) {
+            return alert("Download authorization fail ho gaya. Kripya dobara login karein.");
         }
 
-        if (!fileName || typeof fileName !== "string") {
-            alert("Invalid fileName.");
-            return;
-        }
+        // 2. Token ke sath Syllabus PDF ka URL banayein
+        const pdfUrl = `${BACKEND_URL}/get-syllabus-pdf?fileName=${encodeURIComponent(fileName)}&email=${encodeURIComponent(user.email)}&token=${encodeURIComponent(tokenData.token)}`;
 
-        console.log("STEP 1 - User:", user.email);
-        console.log("STEP 1 - File:", fileName);
-
-        // Firebase ID Token
-        const idToken = await user.getIdToken(true);
-
-        console.log("STEP 2 - Firebase token received");
-
-
-        // Secure download token
-        const tokenResponse = await fetch(
-            `${BACKEND_URL}/get-download-token`,
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${idToken}`
-                },
-
-                body: JSON.stringify({
-                    fileType: "syllabus",
-                    identifier: fileName
-                })
-            }
-        );
-
-        console.log(
-            "STEP 3 - Token API status:",
-            tokenResponse.status
-        );
-
-
-        const tokenData =
-            await tokenResponse.json().catch(() => ({}));
-
-        console.log(
-            "STEP 3 - Token API response:",
-            tokenData
-        );
-
-
-        if (!tokenResponse.ok) {
-
-            alert(
-                "Token Error:\n" +
-                tokenResponse.status +
-                "\n" +
-                (tokenData.error || "Unknown error")
-            );
-
-            return;
-        }
-
-
-        const secureToken =
-            tokenData.token;
-
-
-        if (!secureToken) {
-
-            alert(
-                "Server ne secure token return nahi kiya."
-            );
-
-            return;
-        }
-
-
-        console.log("STEP 4 - Secure token received");
-
-
-        // Final secure PDF URL
-        const pdfUrl =
-            `${BACKEND_URL}/get-syllabus-pdf` +
-            `?fileName=${encodeURIComponent(fileName)}` +
-            `&email=${encodeURIComponent(user.email)}` +
-            `&token=${encodeURIComponent(secureToken)}`;
-
-
-        console.log(
-            "STEP 5 - Requesting PDF"
-        );
-
-
-        // Android App
-        if (window.AndroidBridge) {
-
-            window.AndroidBridge.download(
+        // 3. Android App Bridge check (PYQ ki tarah)
+        if (window.AndroidBridge && typeof AndroidBridge.download === "function") {
+            alert("Downloading shuru ho gayi hai!\n\nKripya kuch samay wait karein.");
+            AndroidBridge.download(
                 pdfUrl,
-                fileName
+                fileName,
+                ""
             );
-
             return;
         }
 
-
-        // Browser
-        const pdfResponse =
-            await fetch(pdfUrl);
-
-
-        console.log(
-            "STEP 6 - PDF status:",
-            pdfResponse.status
-        );
-
-
+        // 4. Normal Browser ke liye fallback download
+        const pdfResponse = await fetch(pdfUrl);
         if (!pdfResponse.ok) {
-
-            const errorData =
-                await pdfResponse
-                    .json()
-                    .catch(() => ({}));
-
-
-            console.error(
-                "PDF SERVER ERROR:",
-                errorData
-            );
-
-
-            alert(
-                "PDF Server Error:\n" +
-                pdfResponse.status +
-                "\n" +
-                (errorData.error || "Unknown error")
-            );
-
-            return;
+            const errData = await pdfResponse.json().catch(() => ({}));
+            return alert("PDF Server Error: " + (errData.error || "Unknown error"));
         }
 
-
-        const blob =
-            await pdfResponse.blob();
-
-
-        console.log(
-            "STEP 7 - PDF received:",
-            blob.size,
-            "bytes"
-        );
-
-
-        const blobUrl =
-            URL.createObjectURL(blob);
-
-
-        const link =
-            document.createElement("a");
-
+        const blob = await pdfResponse.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
         link.href = blobUrl;
         link.download = fileName;
-
         document.body.appendChild(link);
-
         link.click();
-
         link.remove();
-
 
         setTimeout(() => {
             URL.revokeObjectURL(blobUrl);
         }, 1000);
 
-
-    } catch (error) {
-
-        console.error(
-            "DOWNLOAD EXCEPTION:",
-            error
-        );
-
-        alert(
-            "Download Exception:\n" +
-            error.message
-        );
+    } catch (err) {
+        console.error("Download Exception:", err);
+        alert("Error: " + err.message);
     }
 };
-    
+
 </script>
 
 </body>
