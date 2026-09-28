@@ -389,40 +389,128 @@ window.goBack = function() {
 };
 
 window.openSyllabusPDF = async function(fileName) {
-    
-    alert("Downloading started.\n\nPlease wait 30 to 60 seconds.\nServer load ke karan thoda samay lag sakta hai.");
 
-    const url = `${BACKEND_URL}/get-syllabus-pdf?fileName=${encodeURIComponent(fileName)}`;
-
-    const res = await fetch(url, {
-        headers: { 'x-source-auth': 'RSH-GDS-SECURE-ACCESS' }
-    });
-    
-    if (!res.ok) {
-    alert("PDF load failed");
-    return;
+    if (!fileName || typeof fileName !== "string") {
+        alert("Invalid PDF file.");
+        return;
     }
-    // Android App
-     if (window.AndroidBridge) {
 
-       window.AndroidBridge.download(
-           url,
-          fileName
-     );
+    const user = auth.currentUser;
 
-     return;
+    if (!user) {
+        alert("Please login first.");
+        window.location.href = "login.html";
+        return;
     }
-    const blob = await res.blob();
 
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = fileName;
+    try {
 
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+        // 1. Firebase ID Token
+        const idToken = await user.getIdToken(true);
+
+        // 2. Backend se 5-minute secure token
+        const tokenResponse = await fetch(
+            `${BACKEND_URL}/get-download-token`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${idToken}`
+                },
+                body: JSON.stringify({
+                    fileType: "syllabus",
+                    identifier: fileName
+                })
+            }
+        );
+
+        if (!tokenResponse.ok) {
+            const errorData = await tokenResponse.json().catch(() => ({}));
+
+            alert(
+                errorData.error ||
+                "Download token generate nahi hua."
+            );
+
+            return;
+        }
+
+        const tokenData = await tokenResponse.json();
+
+        if (!tokenData.token) {
+            alert("Secure token nahi mila.");
+            return;
+        }
+
+        // 3. Secure PDF URL
+        const pdfUrl =
+            `${BACKEND_URL}/get-syllabus-pdf` +
+            `?fileName=${encodeURIComponent(fileName)}` +
+            `&email=${encodeURIComponent(user.email)}` +
+            `&token=${encodeURIComponent(tokenData.token)}`;
+
+        // 4. Android App
+        if (window.AndroidBridge) {
+
+            window.AndroidBridge.download(
+                pdfUrl,
+                fileName
+            );
+
+            return;
+        }
+
+        // 5. Browser download
+        const res = await fetch(pdfUrl);
+
+        if (!res.ok) {
+
+            const errorData =
+                await res.json().catch(() => ({}));
+
+            alert(
+                errorData.error ||
+                "PDF load failed."
+            );
+
+            return;
+        }
+
+        const blob = await res.blob();
+
+        const blobUrl =
+            URL.createObjectURL(blob);
+
+        const link =
+            document.createElement("a");
+
+        link.href = blobUrl;
+        link.download = fileName;
+        link.style.display = "none";
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        link.remove();
+
+        setTimeout(() => {
+            URL.revokeObjectURL(blobUrl);
+        }, 1000);
+
+    } catch (error) {
+
+        console.error(
+            "Syllabus PDF Error:",
+            error
+        );
+
+        alert(
+            "PDF download failed.\nPlease try again."
+        );
+    }
 };
-
+    
 </script>
 
 </body>
