@@ -182,32 +182,21 @@ onAuthStateChanged
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-/* FIREBASE CONFIG */
 
-const firebaseConfig = {
+const BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
 
-apiKey: "AIzaSyDjzmo0A4KhOkrqFQdOyCEek6bsPF-UVPQ",
+// Backend se Firebase Web Config load karein (PYQ ki tarah)
+const configRes = await fetch(`${BACKEND_URL}/firebase-config`);
 
-authDomain: "gds-departmental-exam-studyhub.firebaseapp.com",
-
-projectId: "gds-departmental-exam-studyhub",
-
-storageBucket: "gds-departmental-exam-studyhub.appspot.com",
-
-messagingSenderId: "759916756080",
-
-appId: "1:759916756080:web:7f2c0e66458bd007e888b5"
-
-};
-
-/* INIT */
+if (!configRes.ok) {
+    throw new Error("Firebase config load failed");
+}
+const firebaseConfig = await configRes.json();
 
 const app = initializeApp(firebaseConfig);
-
-const db = getFirestore(app);
 const auth = getAuth(app);
-const BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
-  
+const db = getFirestore(app);
+
 /* ELEMENTS */
 
 const list = document.getElementById("list");
@@ -222,23 +211,17 @@ document.getElementById("searchBox");
 
 let allData = [];
 let currentUserEmail = "";
+
 /* LOGIN CHECK */
-
-onAuthStateChanged(auth,(user)=>{
-
-if(user){
-
-currentUserEmail = user.email;
-
-loadData();
-
-}else{
-
-window.location.href = "login.html";
-
-}
-
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        currentUserEmail = user.email;
+        loadData();
+    } else {
+        window.location.href = "login.html";
+    }
 });
+
   
 /* LOAD DATA */
 
