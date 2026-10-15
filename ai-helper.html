@@ -207,12 +207,18 @@ body { background: var(--bg); padding: 10px; color: #333; }
         }
     });
 
-    async function askQuestion() {
-        const query = userInput.value.trim();
-        if (!query) return;
+        async function askQuestion() {
+        const rawQuery = userInput.value.trim();
+        if (!rawQuery) return;
 
-        appendMessage(query, 'user-msg');
+        appendMessage(rawQuery, 'user-msg');
         userInput.value = '';
+
+        // 🎯 यहाँ हम एआई को ऑटोमैटिक निर्देश दे रहे हैं कि अगर कोई चैप्टर या टॉपिक पूछा जाए, तो 30-50 MCQs दे
+        const enhancedQuery = `आप GDS से MTS, Postman, और PA/SA विभागीय परीक्षा के एक एक्सपर्ट ट्रेनर हैं। 
+        यूजर का टॉपिक/चैप्टर यह है: "${rawQuery}"।
+        इस चैप्टर से संबंधित परीक्षा पैटर्न (2020 से 2026 तक के रुझान) के आधार पर कम से कम 30 से 50 महत्वपूर्ण बहुविकल्पीय प्रश्न (MCQs) बनाएं।
+        हर प्रश्न के बाद उसका सही उत्तर (Answer) और संक्षिप्त व्याख्या (Explanation) जरूर दें। जवाब स्पष्ट और अच्छी फॉर्मेटिंग में होना चाहिए।`;
 
         const loadingHTML = `
             <div class="loading-dots">
@@ -227,7 +233,7 @@ body { background: var(--bg); padding: 10px; color: #333; }
             const response = await fetch(`${BACKEND_URL}/api/ask-ai`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question: query, aiType: 'gemini' }) 
+                body: JSON.stringify({ question: enhancedQuery }) // 👈 यहाँ modified query भेजी जा रही है
             });
 
             const data = await response.json();
