@@ -216,8 +216,12 @@ body {
                     ⚖️ <b>अस्वीकरण (Disclaimer):</b> यह एक ऑटोमेटेड AI मॉडल है जिसका उद्देश्य केवल शैक्षिक सहायता प्रदान करना है। यह आधिकारिक भारतीय डाक विभाग का टूल नहीं है। परीक्षा में किसी भी नियम या डेटा की सटीकता के लिए कृपया आधिकारिक पोस्टल मैनुअल/गाइड से अवश्य मिलान करें। किसी भी अनजाने त्रुटि के लिए यह ऐप उत्तरदायी नहीं होगा।
                 </div>`;
 
-            chatBox.innerHTML = ''; 
-            appendMessage(welcomeHTML, 'ai-msg', true);
+            chatBox.innerHTML = '';
+            const msgDiv = document.createElement('div');
+        msgDiv.className = 'message ai-msg';
+        msgDiv.id = 'welcomeMsg'; 
+        msgDiv.innerHTML = welcomeHTML;
+        chatBox.appendChild(msgDiv);
         } else {
             alert("Security Alert: Please login first!");
             window.location.href = "login.html"; 
@@ -289,7 +293,14 @@ body {
 
     sendBtn.onclick = askQuestion;
     userInput.onkeypress = (e) => { if (e.key === 'Enter') askQuestion(); };
-
+    // 🎯 जैसे ही यूजर इनपुट बॉक्स पर क्लिक या टैप करेगा, स्वागत संदेश ऑटो-डिपसियर (गायब) हो जाएगा
+    userInput.addEventListener('focus', () => {
+        const welcomeElement = document.getElementById('welcomeMsg');
+        if (welcomeElement) {
+            welcomeElement.remove(); // यह स्वागत संदेश को चैट बॉक्स से हटा देगा
+        }
+    });
+    
     /* सुरक्षा नियम */
     document.addEventListener("contextmenu", e => e.preventDefault());
     document.addEventListener("copy", e => e.preventDefault());
