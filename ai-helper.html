@@ -15,38 +15,31 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
         
-        body { 
-            background: var(--bg); 
-            height: 100vh; 
-            height: 100dvh; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden; /* 🛠️ पूरे पेज को बाहर भागने से रोकेगा */
-        }
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
 
-        .chat-container { 
-            width: 100%;
-            max-width: 550px; 
-            height: 100vh; 
-            height: 100dvh; 
-            background: #fff; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-        }
+.chat-container {
+    width: 100%;
+    max-width: 550px;
+    height: 100%;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
 
-        .chat-header { 
-            background: linear-gradient(135deg, var(--primary), #6f42c1); 
-            color: white; 
-            padding: 15px; 
-            font-size: 16px; 
-            font-weight: bold; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px;
-            flex-shrink: 0; 
-        }
+
+
+.chat-header,
+.input-area {
+    flex-shrink: 0;
+}
 
         .back-btn {
             background: rgba(255, 255, 255, 0.2);
@@ -65,17 +58,20 @@
         .back-btn:hover { background: rgba(255, 255, 255, 0.35); }
 
         /* 🔄 यहाँ सबसे मुख्य बदलाव है: चैट बॉक्स अब पूरी तरह स्क्रॉलेबुल है */
-        .chat-box { 
-            flex: 1; 
-            padding: 15px; 
-            overflow-y: auto !important; 
-            -webkit-overflow-scrolling: touch; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
-            scroll-behavior: smooth; 
-        }
-
+        .chat-box {
+    flex: 1 1 0%;
+    min-height: 0;
+    min-width: 0;
+    padding: 15px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
         .message { 
             padding: 12px 16px; 
             border-radius: 12px; 
