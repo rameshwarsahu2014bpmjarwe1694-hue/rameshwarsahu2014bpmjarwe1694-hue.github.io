@@ -224,18 +224,31 @@ body {
         }
     });
 
-        async function askQuestion() {
+            async function askQuestion() {
         const rawQuery = userInput.value.trim();
         if (!rawQuery) return;
 
         appendMessage(rawQuery, 'user-msg');
         userInput.value = '';
 
-        // 🎯 यहाँ हम एआई को ऑटोमैटिक निर्देश दे रहे हैं कि अगर कोई चैप्टर या टॉपिक पूछा जाए, तो 30-50 MCQs दे
-        const enhancedQuery = `आप GDS से MTS, Postman, और PA/SA विभागीय परीक्षा के एक एक्सपर्ट ट्रेनर हैं। 
-        यूजर का टॉपिक/चैप्टर यह है: "${rawQuery}"।
-        इस चैप्टर से संबंधित परीक्षा पैटर्न (2020 से 2026 तक के रुझान) के आधार पर कम से कम 30 से 50 महत्वपूर्ण बहुविकल्पीय प्रश्न (MCQs) बनाएं।
-        हर प्रश्न के बाद उसका सही उत्तर (Answer) और संक्षिप्त व्याख्या (Explanation) जरूर दें। जवाब स्पष्ट और अच्छी फॉर्मेटिंग में होना चाहिए।`;
+        // 🔍 चेक करें कि क्या यूजर ने MCQ या प्रश्न की मांग की है या नहीं
+        const lowerQuery = rawQuery.toLowerCase();
+        const wantsMCQ = lowerQuery.includes('mcq') || lowerQuery.includes('प्रश्न') || lowerQuery.includes('question') || lowerQuery.includes('test') || lowerQuery.includes('mock');
+
+        let finalPrompt = "";
+
+        if (wantsMCQ) {
+            // 🎯 यदि यूजर ने MCQ या टेस्ट मांगा है, तब 30-50 सवाल दें
+            finalPrompt = `आप GDS से MTS, Postman, और PA/SA विभागीय परीक्षा के एक एक्सपर्ट ट्रेनर हैं। 
+            यूजर का टॉपिक/चैप्टर यह है: "${rawQuery}"।
+            इस चैप्टर से संबंधित परीक्षा पैटर्न (2020 से 2026 तक के रुझान) के आधार पर कम से कम 30 से 50 महत्वपूर्ण बहुविकल्पीय प्रश्न (MCQs) बनाएं।
+            हर प्रश्न के बाद उसका सही उत्तर (Answer) और संक्षिप्त व्याख्या (Explanation) जरूर दें। जवाब स्पष्ट और अच्छी फॉर्मेटिंग में होना चाहिए।`;
+        } else {
+            // 📖 यदि यूजर ने सामान्य सवाल या सिलेबस पूछा है, तो केवल सामान्य और सटीक जानकारी दें
+            finalPrompt = `आप GDS से MTS, Postman, और PA/SA विभागीय परीक्षा के एक एक्सपर्ट गाइड हैं। 
+            यूजर का सवाल है: "${rawQuery}"।
+            कृपया इसके बारे में सटीक, स्पष्ट और पूरी जानकारी (नियम, विवरण या सिलेबस) हिंदी में आसान भाषा में समझाएं।`;
+        }
 
         const loadingHTML = `
             <div class="loading-dots">
@@ -250,7 +263,7 @@ body {
             const response = await fetch(`${BACKEND_URL}/api/ask-ai`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question: enhancedQuery }) // 👈 यहाँ modified query भेजी जा रही है
+                body: JSON.stringify({ question: finalPrompt }) 
             });
 
             const data = await response.json();
@@ -272,6 +285,7 @@ body {
             appendMessage('सर्वर से संपर्क नहीं हो पाया। कृपया अपना इंटरनेट कनेक्शन चेक करें। 🌐', 'ai-msg');
         }
     }
+
 
     sendBtn.onclick = askQuestion;
     userInput.onkeypress = (e) => { if (e.key === 'Enter') askQuestion(); };
