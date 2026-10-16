@@ -18,21 +18,36 @@ body {
     background: var(--bg); 
     padding: 0; 
     margin: 0; 
-    height: 100vh; 
-    height: 100dvh; 
-    overflow: hidden; /* 🛠️ पूरे पेज को हिलने से रोकने के लिए */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden; 
 }
 
 .chat-container { 
+    width: 100%;
     max-width: 550px; 
-    height: 100vh; 
-    height: 100dvh; /* 📱 मोबाइल स्क्रीन की पूरी फिक्स हाइट */
-    margin: auto; 
+    height: 100%; /* 📱 मोबाइल स्क्रीन की पूरी हाइट लेने के लिए */
+    max-height: 100dvh; 
     background: #fff; 
     display: flex; 
     flex-direction: column; 
     overflow: hidden; 
+    border-radius: 0; /* मोबाइल पर पूरा फिट बैठने के लिए */
 }
+
+.chat-box { 
+    flex: 1; 
+    padding: 15px; 
+    overflow-y: auto !important; /* 🔄 यह सुनिश्चित करेगा कि अंदर का कंटेंट स्क्रॉल हो सके */
+    -webkit-overflow-scrolling: touch; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+}
+
 
 .chat-header { 
     background: linear-gradient(135deg, var(--primary), #6f42c1); 
@@ -44,16 +59,6 @@ body {
     align-items: center; 
     gap: 10px;
     flex-shrink: 0; /* 🛠️ हेडर अपनी जगह से छोटा या बड़ा नहीं होगा */
-}
-
-.chat-box { 
-    flex: 1; /* 🛠️ बची हुई सारी जगह चैट बॉक्स को मिलेगी */
-    padding: 15px; 
-    overflow-y: scroll !important; /* 🔄 हर हाल में स्क्रॉल बार चालू रहेगा */
-    -webkit-overflow-scrolling: touch; /* 📱 मोबाइल टच स्क्रॉलिंग स्मूथ होगी */
-    display: flex; 
-    flex-direction: column; 
-    gap: 12px; 
 }
 
 .input-area { 
