@@ -14,35 +14,55 @@
     --bg: #f0f2f5; 
 }
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-body { background: var(--bg); padding: 10px; color: #333; }
+body { 
+    background: var(--bg); 
+    padding: 0; 
+    margin: 0; 
+    height: 100vh; 
+    height: 100dvh; 
+    overflow: hidden; /* 🛠️ पूरे पेज को हिलने से रोकने के लिए */
+}
 
 .chat-container { 
     max-width: 550px; 
-    height: 94vh; /* 📱 फिक्स हाइट ताकि स्क्रीन के बाहर न जाए */
-    margin: 10px auto; 
+    height: 100vh; 
+    height: 100dvh; /* 📱 मोबाइल स्क्रीन की पूरी फिक्स हाइट */
+    margin: auto; 
     background: #fff; 
-    border-radius: 15px; 
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
     display: flex; 
     flex-direction: column; 
-    overflow: hidden; /* 🛠️ बाहर के पेज को स्क्रॉल होने से रोकेगा, अंदर चैट बॉक्स को स्क्रॉल देगा */
+    overflow: hidden; 
 }
 
-/* 🛠️ हेडर को टॉप पर फिक्स और लॉक रखने के लिए */
 .chat-header { 
     background: linear-gradient(135deg, var(--primary), #6f42c1); 
     color: white; 
     padding: 15px; 
     font-size: 16px; 
     font-weight: bold; 
-    border-radius: 15px 15px 0 0; 
     display: flex; 
     align-items: center; 
     gap: 10px;
-    position: sticky;
-    top: 0;
-    z-index: 10; /* 🛠️ ताकि टेक्स्ट हेडर के ऊपर ओवरलैप न करे */
-    width: 100%;
+    flex-shrink: 0; /* 🛠️ हेडर अपनी जगह से छोटा या बड़ा नहीं होगा */
+}
+
+.chat-box { 
+    flex: 1; /* 🛠️ बची हुई सारी जगह चैट बॉक्स को मिलेगी */
+    padding: 15px; 
+    overflow-y: scroll !important; /* 🔄 हर हाल में स्क्रॉल बार चालू रहेगा */
+    -webkit-overflow-scrolling: touch; /* 📱 मोबाइल टच स्क्रॉलिंग स्मूथ होगी */
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+}
+
+.input-area { 
+    display: flex; 
+    flex-direction: column; 
+    padding: 12px; 
+    border-top: 1px solid #eee; 
+    background: #fff; 
+    flex-shrink: 0; /* 🛠️ इनपुट एरिया हमेशा नीचे फिक्स रहेगा */
 }
 
 /* 🛠️ बैक बटन का सुंदर और फिक्स लुक */
@@ -65,17 +85,6 @@ body { background: var(--bg); padding: 10px; color: #333; }
     background: rgba(255, 255, 255, 0.35);
 }
 
-/* 🛠️ चैट बॉक्स में पैडिंग एडजस्टमेंट ताकि टेक्स्ट नीचे से शुरू हो */
-.chat-box { 
-    flex: 1; 
-    padding: 20px 15px; 
-    overflow-y: auto; /* 🔄 इससे यूजर आसानी से ऊपर और नीचे स्क्रॉल कर सकेगा */
-    display: flex; 
-    flex-direction: column; 
-    gap: 12px; 
-    scroll-behavior: smooth; 
-    -webkit-overflow-scrolling: touch; /* 📱 मोबाइल पर स्मूथ टच स्क्रॉलिंग के लिए */
-}
 .message { 
     padding: 12px 16px; 
     border-radius: 12px; 
