@@ -9,123 +9,112 @@
     <title>RAMESHWAR SAHU AI STUDY HUB</title>
     <style>
         :root { 
-    --primary: #007bff; 
-    --dark: #2c3e50; 
-    --bg: #f0f2f5; 
-}
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-body { 
-    background: var(--bg); 
-    padding: 0; 
-    margin: 0; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    height: 100dvh;
-    overflow: hidden; 
-}
+            --primary: #007bff; 
+            --dark: #2c3e50; 
+            --bg: #f0f2f5; 
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        
+        body { 
+            background: var(--bg); 
+            height: 100vh; 
+            height: 100dvh; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* 🛠️ पूरे पेज को बाहर भागने से रोकेगा */
+        }
 
-.chat-container { 
-    width: 100%;
-    max-width: 550px; 
-    height: 100%; /* 📱 मोबाइल स्क्रीन की पूरी हाइट लेने के लिए */
-    max-height: 100dvh; 
-    background: #fff; 
-    display: flex; 
-    flex-direction: column; 
-    overflow: hidden; 
-    border-radius: 0; /* मोबाइल पर पूरा फिट बैठने के लिए */
-}
+        .chat-container { 
+            width: 100%;
+            max-width: 550px; 
+            height: 100vh; 
+            height: 100dvh; 
+            background: #fff; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
 
-.chat-box { 
-    flex: 1; 
-    padding: 15px; 
-    overflow-y: auto !important; /* 🔄 यह सुनिश्चित करेगा कि अंदर का कंटेंट स्क्रॉल हो सके */
-    -webkit-overflow-scrolling: touch; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 12px; 
-}
+        .chat-header { 
+            background: linear-gradient(135deg, var(--primary), #6f42c1); 
+            color: white; 
+            padding: 15px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            flex-shrink: 0; 
+        }
 
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 60px; 
+        }
+        .back-btn:hover { background: rgba(255, 255, 255, 0.35); }
 
-.chat-header { 
-    background: linear-gradient(135deg, var(--primary), #6f42c1); 
-    color: white; 
-    padding: 15px; 
-    font-size: 16px; 
-    font-weight: bold; 
-    display: flex; 
-    align-items: center; 
-    gap: 10px;
-    flex-shrink: 0; /* 🛠️ हेडर अपनी जगह से छोटा या बड़ा नहीं होगा */
-}
+        /* 🔄 यहाँ सबसे मुख्य बदलाव है: चैट बॉक्स अब पूरी तरह स्क्रॉलेबुल है */
+        .chat-box { 
+            flex: 1; 
+            padding: 15px; 
+            overflow-y: auto !important; 
+            -webkit-overflow-scrolling: touch; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            scroll-behavior: smooth; 
+        }
 
-.input-area { 
-    display: flex; 
-    flex-direction: column; 
-    padding: 12px; 
-    border-top: 1px solid #eee; 
-    background: #fff; 
-    flex-shrink: 0; /* 🛠️ इनपुट एरिया हमेशा नीचे फिक्स रहेगा */
-}
+        .message { 
+            padding: 12px 16px; 
+            border-radius: 12px; 
+            max-width: 90%; 
+            font-size: 15px; 
+            line-height: 1.6; 
+            word-wrap: break-word; 
+        }
 
-/* 🛠️ बैक बटन का सुंदर और फिक्स लुक */
-.back-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s;
-    min-width: 60px; /* 🛠️ बटन को एक फिक्स चौड़ाई देने के लिए */
-}
-.back-btn:hover {
-    background: rgba(255, 255, 255, 0.35);
-}
+        .user-msg { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .ai-msg { background: #f1f3f4; color: #2c3e50; align-self: flex-start; border-bottom-left-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
 
-.message { 
-    padding: 12px 16px; 
-    border-radius: 12px; 
-    max-width: 90%; /* 📏 मैसेज बॉक्स की चौड़ाई थोड़ी बढ़ाई गई है ताकि लंबे सवाल अच्छे से दिखें */
-    font-size: 15px; 
-    line-height: 1.6; 
-    word-wrap: break-word; 
-}
+        .legal-disclaimer {
+            font-size: 11px;
+            color: #7f8c8d;
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
 
-.user-msg { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-
-.ai-msg { background: #f1f3f4; color: #2c3e50; align-self: flex-start; border-bottom-left-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-
-/* ⚖️ LEGAL DISCLAIMER BOX STYLE */
-.legal-disclaimer {
-    font-size: 11px;
-    color: #7f8c8d;
-    background: #fff3cd;
-    border: 1px solid #ffeeba;
-    padding: 10px;
-    border-radius: 8px;
-    margin-top: 10px;
-    line-height: 1.4;
-}
-
-
-        /* Loading Animation */
         .loading-dots { display: flex; gap: 4px; justify-content: center; align-items: center; height: 20px; }
         .dot { width: 8px; height: 8px; background: #90a4ae; border-radius: 50%; animation: blink 1.4s infinite both; }
         .dot:nth-child(2) { animation-delay: .2s; }
         .dot:nth-child(3) { animation-delay: .4s; }
         @keyframes blink { 0% { opacity: .2; } 20% { opacity: 1; } 100% { opacity: .2; } }
 
-        .input-area { display: flex; flex-direction: column; padding: 12px; border-top: 1px solid #eee; background: #fff; border-radius: 0 0 15px 15px; }
+        .input-area { 
+            display: flex; 
+            flex-direction: column; 
+            padding: 12px; 
+            border-top: 1px solid #eee; 
+            background: #fff; 
+            flex-shrink: 0; 
+        }
         .input-row { display: flex; width: 100%; }
-        input { flex: 1; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; outline: none; font-size: 15px; transition: border-color 0.3s; }
+        input { flex: 1; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; outline: none; font-size: 15px; }
         input:focus { border-color: var(--primary); }
         
         button.send-btn { background: var(--primary); color: white; border: none; padding: 0 20px; margin-left: 8px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; }
@@ -203,7 +192,6 @@ body {
             let userName = user.displayName || user.email.split('@')[0];
             const greetingText = getGreeting();
             
-            // स्वागत संदेश में लीगल डिस्क्लेमर बॉक्स को जोड़ा गया है
             const welcomeHTML = `
                 <b>Hi / Hello, ${greetingText}!</b> 👋<br>
                 <b>${userName}</b>, मैं <b>RAMESHWAR SAHU AI STUDY HUB</b> का ऑफिशियल असिस्टेंट हूँ। 🤖<br><br>
@@ -221,39 +209,51 @@ body {
                     ⚖️ <b>अस्वीकरण (Disclaimer):</b> यह एक ऑटोमेटेड AI मॉडल है जिसका उद्देश्य केवल शैक्षिक सहायता प्रदान करना है। यह आधिकारिक भारतीय डाक विभाग का टूल नहीं है। परीक्षा में किसी भी नियम या डेटा की सटीकता के लिए कृपया आधिकारिक पोस्टल मैनुअल/गाइड से अवश्य मिलान करें। किसी भी अनजाने त्रुटि के लिए यह ऐप उत्तरदायी नहीं होगा।
                 </div>`;
 
-            chatBox.innerHTML = '';
+            chatBox.innerHTML = ''; 
+            
             const msgDiv = document.createElement('div');
-        msgDiv.className = 'message ai-msg';
-        msgDiv.id = 'welcomeMsg'; 
-        msgDiv.innerHTML = welcomeHTML;
-        chatBox.appendChild(msgDiv);
+            msgDiv.className = 'message ai-msg';
+            msgDiv.id = 'welcomeMsg'; 
+            msgDiv.innerHTML = welcomeHTML;
+            chatBox.appendChild(msgDiv);
         } else {
             alert("Security Alert: Please login first!");
             window.location.href = "login.html"; 
         }
     });
 
-            async function askQuestion() {
+    // 🎯 जैसे ही यूजर इनपुट बॉक्स पर क्लिक करेगा, स्वागत संदेश गायब हो जाएगा
+    userInput.addEventListener('focus', () => {
+        const welcomeElement = document.getElementById('welcomeMsg');
+        if (welcomeElement) {
+            welcomeElement.remove();
+        }
+    });
+
+    async function askQuestion() {
         const rawQuery = userInput.value.trim();
         if (!rawQuery) return;
+
+        // यदि स्वागत संदेश अभी भी है, तो पूछने पर उसे हटा दें
+        const welcomeElement = document.getElementById('welcomeMsg');
+        if (welcomeElement) {
+            welcomeElement.remove();
+        }
 
         appendMessage(rawQuery, 'user-msg');
         userInput.value = '';
 
-        // 🔍 चेक करें कि क्या यूजर ने MCQ या प्रश्न की मांग की है या नहीं
         const lowerQuery = rawQuery.toLowerCase();
         const wantsMCQ = lowerQuery.includes('mcq') || lowerQuery.includes('प्रश्न') || lowerQuery.includes('question') || lowerQuery.includes('test') || lowerQuery.includes('mock');
 
         let finalPrompt = "";
 
         if (wantsMCQ) {
-            // 🎯 यदि यूजर ने MCQ या टेस्ट मांगा है, तब 30-50 सवाल दें
             finalPrompt = `आप GDS से MTS, Postman, और PA/SA विभागीय परीक्षा के एक एक्सपर्ट ट्रेनर हैं। 
             यूजर का टॉपिक/चैप्टर यह है: "${rawQuery}"।
             इस चैप्टर से संबंधित परीक्षा पैटर्न (2020 से 2026 तक के रुझान) के आधार पर कम से कम 30 से 50 महत्वपूर्ण बहुविकल्पीय प्रश्न (MCQs) बनाएं।
             हर प्रश्न के बाद उसका सही उत्तर (Answer) और संक्षिप्त व्याख्या (Explanation) जरूर दें। जवाब स्पष्ट और अच्छी फॉर्मेटिंग में होना चाहिए।`;
         } else {
-            // 📖 यदि यूजर ने सामान्य सवाल या सिलेबस पूछा है, तो केवल सामान्य और सटीक जानकारी दें
             finalPrompt = `आप GDS से MTS, Postman, और PA/SA विभागीय परीक्षा के एक एक्सपर्ट गाइड हैं। 
             यूजर का सवाल है: "${rawQuery}"।
             कृपया इसके बारे में सटीक, स्पष्ट और पूरी जानकारी (नियम, विवरण या सिलेबस) हिंदी में आसान भाषा में समझाएं।`;
@@ -295,37 +295,8 @@ body {
         }
     }
 
-
     sendBtn.onclick = askQuestion;
     userInput.onkeypress = (e) => { if (e.key === 'Enter') askQuestion(); };
-    // 🎯 जैसे ही यूजर इनपुट बॉक्स पर क्लिक या टैप करेगा, स्वागत संदेश ऑटो-डिपसियर (गायब) हो जाएगा
-    userInput.addEventListener('focus', () => {
-        const welcomeElement = document.getElementById('welcomeMsg');
-        if (welcomeElement) {
-            welcomeElement.remove(); // यह स्वागत संदेश को चैट बॉक्स से हटा देगा
-        }
-    });
-    
-    /* सुरक्षा नियम */
-    document.addEventListener("contextmenu", e => e.preventDefault());
-    document.addEventListener("copy", e => e.preventDefault());
-    document.addEventListener("cut", e => e.preventDefault());
-    document.addEventListener("paste", e => e.preventDefault());
-    document.addEventListener("selectstart", e => e.preventDefault());
-
-    document.addEventListener("keydown", function(e) {
-        if (e.key === "PrintScreen") {
-            if (navigator.clipboard) navigator.clipboard.writeText("");
-            alert("Screenshot Disabled");
-            e.preventDefault();
-        }
-        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "s") e.preventDefault();
-        if (e.ctrlKey && e.key.toLowerCase() === "u") e.preventDefault();
-        if (e.key === "F12") e.preventDefault();
-        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i") e.preventDefault();
-        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "j") e.preventDefault();
-        if (e.ctrlKey && e.key.toLowerCase() === "s") e.preventDefault();
-    });
 </script>
 </body>
 </html>
