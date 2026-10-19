@@ -32,7 +32,13 @@
 
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
-        body{background:#f4f6fb;color:#222;}
+        body {
+    background: #f4f6fb;
+    color: #222;
+    touch-action: pan-y;
+    overscroll-behavior-y: contain;
+        }
+        
 
         .hero{
             background:linear-gradient(135deg,#8d151a,#c62828,#0d47a1);
