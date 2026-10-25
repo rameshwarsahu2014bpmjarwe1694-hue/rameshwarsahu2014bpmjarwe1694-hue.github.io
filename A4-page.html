@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PO Guide Part – 02 | Page 1</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap');
+  *{box-sizing:border-box}
+  body{margin:0;background:#e9e9e9;color:#172b48;font-family:"Noto Sans Devanagari",Mangal,Arial,sans-serif}
+  .page{width:min(100%,900px);margin:18px auto;background:#fffdf9;padding:22px 24px 18px;box-shadow:0 4px 20px #0002;border-left:12px solid #e2e0da;border-right:12px solid #e2e0da}
+  .top{display:grid;grid-template-columns:100px 1fr 145px;align-items:center;gap:12px;text-align:center}
+  .logo{width:82px;height:82px;border:2px solid #18375b;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#9d1016;font-weight:800;font-size:12px;background:#fff8e7}
+  .logo .mark{font-size:28px;color:#b10d16;line-height:1}
+  h1{font-size:clamp(23px,4vw,38px);line-height:1.1;color:#a40f16;margin:0 0 7px;font-weight:800}
+  .sub{display:inline-block;background:#123b70;color:white;border-radius:7px;padding:7px 14px;font-weight:800;font-size:clamp(13px,2.4vw,20px)}
+  .manual{border:2px solid #a51017;color:#9e1017;background:#fff4cf;border-radius:9px;padding:9px 7px;font-weight:800;font-size:16px}
+  .section-title{margin:12px 0 10px;background:#a70f16;color:white;border-radius:7px;text-align:center;padding:7px;font-weight:800;font-size:clamp(17px,2.5vw,23px)}
+  .panel{border:1.5px solid #b21c22;border-radius:11px;margin:9px 0;padding:10px 12px;position:relative;background:#fffefa}
+  .panel-title{display:inline-block;margin:-10px 0 8px;background:#a71017;color:#fff;padding:5px 10px;border-radius:6px;font-weight:800;font-size:clamp(14px,2.1vw,18px)}
+  .row{display:grid;grid-template-columns:48px 1fr 190px;gap:10px;align-items:center}
+  .q{height:42px;width:42px;border-radius:50%;background:#c91820;color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;box-shadow:0 1px 3px #777}
+  .copy{font-size:15px;line-height:1.55}
+  .art{font-size:60px;text-align:center;line-height:1.2}
+  .art small{display:block;font-size:13px;font-weight:700;color:#17416e}
+  .bullet-list{margin:0;padding-left:22px}
+  .bullet-list li{padding:1px 0 2px}
+  .bodies{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .body-card{border:2px solid var(--c);border-radius:10px;overflow:hidden;background:#fff}
+  .body-head{background:var(--c);color:#fff;padding:7px 6px;text-align:center;font-weight:800;min-height:58px;font-size:14px}
+  .body-head strong{display:block;font-size:20px}
+  .body-text{padding:8px;font-size:13px;line-height:1.5}
+  .bottom-grid{display:grid;grid-template-columns:2fr 1fr;gap:9px}
+  .facts{background:#fffefa}
+  .fact-content{display:grid;grid-template-columns:1fr 130px;gap:8px;align-items:center}
+  .quick{background:#fff8d9;border:1.5px solid #b21c22;border-radius:11px;padding:10px 12px;margin-top:9px}
+  .quick-title{display:inline-block;background:#a71017;color:#fff;border-radius:6px;padding:5px 10px;font-weight:800;margin-bottom:6px}
+  .quick-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .quick-cols ul{margin:0;padding:0 8px 0 22px;border-right:1px dashed #c04a4a;font-size:13px;line-height:1.6}
+  .quick-cols ul:last-child{border:0}
+  .page-foot{display:flex;align-items:center;gap:14px;margin:13px 0 0;color:#a71017}
+  .page-foot:before,.page-foot:after{content:"";height:2px;background:#b21c22;flex:1}
+  .page-no{background:#123b70;color:#fff;border-radius:50%;width:40px;height:40px;display:grid;place-items:center;font-size:20px;font-weight:800}
+  @media(max-width:650px){
+    .page{padding:12px 10px;margin:0;border-width:4px}
+    .top{grid-template-columns:60px 1fr 86px;gap:5px}
+    .logo{width:55px;height:55px;font-size:9px}.logo .mark{font-size:20px}
+    .manual{font-size:10px;padding:5px 3px}.sub{padding:5px 6px}
+    .row{grid-template-columns:34px 1fr;gap:7px}.q{width:31px;height:31px;font-size:21px}.art{grid-column:2;font-size:38px}
+    .copy{font-size:13px}.bodies{grid-template-columns:repeat(2,1fr)}
+    .bottom-grid{grid-template-columns:1fr}.fact-content{grid-template-columns:1fr 80px}
+    .quick-cols{grid-template-columns:1fr}.quick-cols ul{border-right:0;border-bottom:1px dashed #c04a4a;padding-bottom:7px}
+  }
+  @media print{body{background:white}.page{margin:0 auto;box-shadow:none;width:100%;border:0}.panel,.body-card,.quick{break-inside:avoid}}
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="top">
+    <div class="logo"><span>भारतीय डाक</span><span class="mark">〰✓</span><small>India Post</small></div>
+    <div>
+      <h1>PO GUIDE PART – 02</h1>
+      <div class="sub">DEPARTMENTAL EXAM STUDY HUB</div>
+    </div>
+    <div class="manual">PO MANUAL<br>VOLUME 5</div>
+  </header>
+
+  <div class="section-title">SECTION – 1 : सामान्य (General)</div>
+
+  <section class="panel">
+    <div class="panel-title">📖 1. “विदेशी डाक” (Foreign Post) की परिभाषा</div>
+    <div class="row">
+      <div class="q">?</div>
+      <div class="copy">“विदेशी डाक” उन डाक सेवाओं को कहा जाता है, जो “अंतर्देशीय डाक” (Inland Post) की परिभाषा के अंतर्गत नहीं आती हैं।</div>
+      <div class="art">🌍 ✉️<small>Foreign Post</small></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-title">📖 2. विदेशी डाक की श्रेणियाँ (Categories of Foreign Postal Articles)</div>
+    <div class="row">
+      <div class="q">?</div>
+      <div class="copy">विदेशी डाक में आदान-प्रदान की जाने वाली डाक-वस्तुओं को मुख्यतः दो श्रेणियों में बाँटा जाता है:
+        <ol class="bullet-list"><li>पत्र डाक (Letter Post)</li><li>पार्सल डाक (Parcel Post)</li></ol>
+      </div>
+      <div class="art">💌 📦<small>AIR MAIL • PARCEL</small></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-title">📖 3. सार्वभौमिक डाक संघ (Universal Postal Union — UPU)</div>
+    <div class="row">
+      <div class="q">?</div>
+      <div class="copy">
+        <ol class="bullet-list">
+          <li>कुछ अपवादों को छोड़कर, विश्व के अधिकांश देश UPU के सदस्य हैं।</li>
+          <li>सदस्य देशों के क्षेत्रों को पत्र डाक-वस्तुओं के पारस्परिक आदान-प्रदान के लिए एकल डाक क्षेत्र माना जाता है।</li>
+          <li>UPU के पूरे क्षेत्र में डाक के निर्बाध पारगमन (Freedom of Transit) की गारंटी दी जाती है।</li>
+          <li>Universal Postal Convention तथा उसके विस्तृत विनियम सभी सदस्य देशों पर बाध्यकारी होते हैं। ये अंतरराष्ट्रीय डाक सेवा और पत्र डाक से संबंधित प्रावधानों पर लागू होते हैं।</li>
+          <li>अधिकांश देशों या डाक प्रशासनों के साथ पार्सल डाक सेवा, UPU Parcel Post Agreement के अंतर्गत संचालित होती है।</li>
+          <li>बीमित पत्रों (Insured Letters) का आदान-प्रदान Universal Postal Convention के अंतर्गत नियंत्रित होता है। हालाँकि, सभी देश बीमित डाक-वस्तुओं को स्वीकार नहीं करते हैं।</li>
+          <li>मनी ऑर्डर (Money Orders), पोस्टल ऑर्डर (Postal Orders) तथा डिलीवरी पर भुगतान (Cash on Delivery—COD) वाली वस्तुओं का आदान-प्रदान विशेष द्विपक्षीय समझौतों (Bilateral Agreements) के अंतर्गत होता है।</li>
+          <li>भूटान, बांग्लादेश और नेपाल के साथ विशेष व्यवस्थाएँ हैं, जिनके अंतर्गत डाक-वस्तुओं के आदान-प्रदान के लिए अधिक अनुकूल शर्तें निर्धारित की गई हैं।</li>
+        </ol>
+      </div>
+      <div class="art">🌐<small style="font-size:22px">UPU</small><small>UNIVERSAL<br>POSTAL UNION</small></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-title">📖 4. UPU के चार प्रमुख निकाय (Four Bodies of UPU)</div>
+    <div class="bodies">
+      <article class="body-card" style="--c:#12549b">
+        <div class="body-head"><strong>1</strong>कांग्रेस<br>(The Congress)</div>
+        <div class="body-text">कांग्रेस Universal Postal Union का सर्वोच्च प्राधिकरण है। इसकी बैठक प्रत्येक चार वर्ष में होती है।</div>
+      </article>
+      <article class="body-card" style="--c:#247744">
+        <div class="body-head"><strong>2</strong>प्रशासन परिषद<br>(Council of Administration — CA)</div>
+        <div class="body-text">यह परिषद कांग्रेसों के बीच UPU के कार्यों की निरंतरता सुनिश्चित करती है, गतिविधियों की निगरानी करती है तथा नियामक, प्रशासनिक, विधायी और कानूनी विषयों का अध्ययन करती है।</div>
+      </article>
+      <article class="body-card" style="--c:#71318f">
+        <div class="body-head"><strong>3</strong>डाक संचालन परिषद<br>(Postal Operations Council — POC)</div>
+        <div class="body-text">यह UPU का तकनीकी एवं परिचालन निकाय है। दी गई अध्ययन-सामग्री के अनुसार, इसमें कांग्रेस द्वारा चुने गए 48 सदस्य देश होते हैं।</div>
+      </article>
+      <article class="body-card" style="--c:#b65a19">
+        <div class="body-head"><strong>4</strong>अंतरराष्ट्रीय ब्यूरो<br>(International Bureau)</div>
+        <div class="body-text">यह सचिवालय के रूप में कार्य करता है तथा UPU के विभिन्न निकायों को लॉजिस्टिक और तकनीकी सहायता प्रदान करता है।</div>
+      </article>
+    </div>
+  </section>
+
+  <div class="bottom-grid">
+    <section class="panel facts">
+      <div class="panel-title">📖 5. UPU के सदस्य देश एवं महत्वपूर्ण तथ्य (Countries in UPU)</div>
+      <div class="fact-content">
+        <div class="copy">
+          <ol class="bullet-list">
+            <li>संयुक्त राष्ट्र (United Nations—UN) का कोई भी सदस्य देश UPU का सदस्य बन सकता है।</li>
+            <li>जो देश संयुक्त राष्ट्र का सदस्य नहीं है, वह भी UPU का सदस्य बन सकता है, बशर्ते उसके आवेदन को UPU के कम-से-कम दो-तिहाई सदस्य देशों की स्वीकृति प्राप्त हो।</li>
+            <li>दी गई अध्ययन-सामग्री में UPU के 192 सदस्य देशों का उल्लेख है।</li>
+            <li>UPU की स्थापना: <b>9 अक्टूबर 1874</b></li>
+            <li>मुख्यालय: <b>बर्न (Bern), स्विट्ज़रलैंड</b></li>
+          </ol>
+        </div>
+        <div class="art">🏢<small>UPU HQ</small><small>BERN, SWITZERLAND</small></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-title">4-A. एशिया-प्रशांत डाक संघ (APPU)</div>
+      <div class="row" style="grid-template-columns:38px 1fr">
+        <div class="q">?</div>
+        <div class="copy">यह शीर्षक मूल अध्ययन-सामग्री में दिया गया है। इसके अंतर्गत विवरण उपलब्ध नहीं कराया गया था।<div class="art" style="font-size:38px">🌏<small>APPU</small></div></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="quick">
+    <div class="quick-title">🎯 LDCE परीक्षा हेतु महत्वपूर्ण तथ्य — त्वरित पुनरावृत्ति</div>
+    <div class="quick-cols">
+      <ul>
+        <li>UPU की स्थापना — 9 अक्टूबर 1874</li>
+        <li>UPU का मुख्यालय — बर्न, स्विट्ज़रलैंड</li>
+      </ul>
+      <ul>
+        <li>UPU की सर्वोच्च संस्था — कांग्रेस</li>
+        <li>कांग्रेस की बैठक — प्रत्येक चार वर्ष में</li>
+        <li>UPU के प्रमुख निकाय — चार</li>
+      </ul>
+      <ul>
+        <li>विदेशी डाक की श्रेणियाँ — पत्र डाक और पार्सल डाक</li>
+        <li>Freedom of Transit — UPU के पूरे क्षेत्र में सुनिश्चित</li>
+        <li>विशेष डाक व्यवस्था वाले देश — भूटान, बांग्लादेश और नेपाल</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="page-foot"><span class="page-no">1</span></footer>
+</main>
+</body>
+                                                                                            </html>
+                                                                                            
