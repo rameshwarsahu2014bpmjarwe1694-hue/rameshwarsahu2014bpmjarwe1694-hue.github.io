@@ -755,20 +755,46 @@ function captureCanvas() {
   const poster = document.getElementById("poster");
   return html2canvas(poster, { scale:3, backgroundColor:"#fff8e7", useCORS:true, allowTaint:true, windowWidth:poster.scrollWidth, windowHeight:poster.scrollHeight });
 }
-function downloadPNG(){ captureCanvas().then(c=>{ const a=document.createElement('a'); a.href=c.toDataURL('image/png'); a.download='rsh-gds-poster.png'; a.click(); }); }
+function downloadPNG(){ 
+  captureCanvas().then(c => { 
+    const base64Data = c.toDataURL('image/png');
+    
+    // Check karein ki Android Bridge available hai ya nahi
+    if (window.AndroidInterface && typeof window.AndroidInterface.downloadBase64File === 'function') {
+      window.AndroidInterface.downloadBase64File(base64Data, 'rsh-gds-poster.png', 'image/png');
+    } else {
+      // Browser fallback
+      const a = document.createElement('a'); 
+      a.href = base64Data; 
+      a.download = 'rsh-gds-poster.png'; 
+      a.click(); 
+    }
+  }); 
+}
 
 /* single-page PDF — poster already A4 ratio, so it fits perfectly */
 function downloadPDF(){
   const { jsPDF } = window.jspdf;
-  captureCanvas().then(canvas=>{
-    const pdf=new jsPDF('p','mm','a4');
-    const pw=210, ph=297;
-    const ir=canvas.width/canvas.height, pr=pw/ph;
-    let w,h; if(ir>pr){ w=pw; h=pw/ir; } else { h=ph; w=ph*ir; }
-    pdf.addImage(canvas.toDataURL('image/png'),'PNG',(pw-w)/2,(ph-h)/2,w,h);
-    pdf.save('rsh-gds-poster.pdf');
+  captureCanvas().then(canvas => {
+    const pdf = new jsPDF('p','mm','a4');
+    const pw = 210, ph = 297;
+    const ir = canvas.width / canvas.height, pr = pw / ph;
+    let w, h; 
+    if (ir > pr) { w = pw; h = pw / ir; } else { h = ph; w = ph * ir; }
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', (pw - w) / 2, (ph - h) / 2, w, h);
+    
+    const pdfData = pdf.output('datauristring'); // Base64 Data URI for PDF
+    
+    // Check karein ki Android Bridge available hai ya nahi
+    if (window.AndroidInterface && typeof window.AndroidInterface.downloadBase64File === 'function') {
+      window.AndroidInterface.downloadBase64File(pdfData, 'rsh-gds-poster.pdf', 'application/pdf');
+    } else {
+      // Browser fallback
+      pdf.save('rsh-gds-poster.pdf');
+    }
   });
 }
+
 // ==========================================================================
 // ADD THIS BLOCK JUST BEFORE renderPoster();
 // ==========================================================================
