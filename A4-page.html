@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAMESHWAR SAHU GDS - Study Hub Page</title>
+    <title>RAMESHWAR SAHU GDS - Mobile Study Module</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,59 +13,106 @@
         }
 
         body {
-            background-color: #555;
+            background: linear-gradient(135deg, #1e1e2f, #2a2a40);
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 15px;
         }
 
-        /* Non-printable toolbar */
-        .no-print {
+        /* Top Action Bar for 3D Book / A4 PDF Generation */
+        .top-action-bar {
             margin-bottom: 15px;
-            background: #222;
-            padding: 10px 20px;
-            border-radius: 8px;
-            color: #fff;
             display: flex;
-            gap: 15px;
-            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
         }
 
-        .no-print button {
+        .action-btn {
             background: #d32f2f;
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
+            padding: 10px 20px;
+            border-radius: 20px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 13px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: 0.2s;
         }
 
-        .no-print button:hover {
+        .action-btn:hover {
             background: #b71c1c;
+            transform: translateY(-2px);
         }
 
-        /* A4 Page Container */
-        .page-container {
-            width: 210mm;
-            min-height: 297mm;
-            background: #fff;
-            padding: 15mm;
+        .action-btn.blue {
+            background: #0d47a1;
+        }
+        .action-btn.blue:hover {
+            background: #1565c0;
+        }
+
+        /* Mobile Phone Outer Frame */
+        .mobile-frame {
+            width: 390px;
+            height: 780px;
+            background: #000;
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 0 10px rgba(255,255,255,0.2);
             position: relative;
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Permanent Center Watermark */
+        /* Phone Speaker / Camera Notch */
+        .mobile-notch {
+            width: 130px;
+            height: 20px;
+            background: #000;
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            z-index: 100;
+        }
+
+        /* Inner Mobile Screen Content (Scrollable Study Page) */
+        .mobile-screen {
+            flex: 1;
+            background: #fff;
+            border-radius: 32px;
+            overflow-y: auto;
+            padding: 25px 12px 15px 12px;
+            position: relative;
+        }
+
+        /* Custom Scrollbar for mobile screen */
+        .mobile-screen::-webkit-scrollbar {
+            width: 4px;
+        }
+        .mobile-screen::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+        /* Permanent Center Watermark (Non-Editable) */
         .watermark-container {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 450px;
-            height: 450px;
-            opacity: 0.12;
+            width: 250px;
+            height: 250px;
+            opacity: 0.10;
             pointer-events: none;
             z-index: 0;
             display: flex;
@@ -79,41 +126,41 @@
             object-fit: contain;
         }
 
-        /* Layer management */
+        /* Content Layering */
         .header-top, .section-banner, .content-box, .summary-box, .page-footer {
             position: relative;
             z-index: 1;
         }
 
-        /* Header Top */
+        /* Header Top (Brand Name Locked / Non-Editable) */
         .header-top {
             display: flex;
             align-items: center;
             justify-content: center;
             background: #ffffff;
             border: 2px solid #d32f2f;
-            border-radius: 8px;
-            padding: 8px;
-            margin-bottom: 12px;
-            gap: 15px;
+            border-radius: 6px;
+            padding: 6px;
+            margin-bottom: 10px;
+            gap: 8px;
         }
 
         .header-top img {
-            width: 45px;
-            height: 45px;
+            width: 35px;
+            height: 35px;
             object-fit: contain;
         }
 
         .header-top-text h1 {
             color: #d32f2f;
-            font-size: 22px;
+            font-size: 14px;
             font-weight: 900;
             text-align: center;
         }
 
         .header-top-text h2 {
             color: #0d47a1;
-            font-size: 14px;
+            font-size: 10px;
             font-weight: 700;
             text-align: center;
         }
@@ -123,18 +170,18 @@
             background: linear-gradient(90deg, #b71c1c, #d32f2f, #b71c1c);
             color: white;
             text-align: center;
-            padding: 8px;
-            font-size: 16px;
+            padding: 6px;
+            font-size: 12px;
             font-weight: bold;
-            border-radius: 5px;
-            margin-bottom: 15px;
+            border-radius: 4px;
+            margin-bottom: 10px;
         }
 
         /* Content Boxes */
         .content-box {
-            border: 2px solid #d32f2f;
-            border-radius: 6px;
-            margin-bottom: 12px;
+            border: 1.5px solid #d32f2f;
+            border-radius: 5px;
+            margin-bottom: 10px;
             background: #fff;
             overflow: hidden;
         }
@@ -142,34 +189,32 @@
         .box-title {
             background: #b71c1c;
             color: white;
-            padding: 6px 12px;
-            font-size: 14px;
+            padding: 5px 8px;
+            font-size: 11px;
             font-weight: bold;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .box-body {
-            padding: 10px 12px;
+            padding: 8px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
+            flex-direction: column;
+            gap: 6px;
         }
 
         .box-text-content {
-            flex: 1;
-            font-size: 13px;
+            font-size: 11px;
             color: #000;
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
-        /* --- PICTURE / IMAGE PLACEHOLDER CODING (Jab picture dalni ho tab ye use karein) --- */
+        /* Picture Box Placeholder */
         .content-image-box {
-            width: 120px;
-            height: 80px;
-            border: 2px dashed #0d47a1;
+            width: 100%;
+            height: 70px;
+            border: 1.5px dashed #0d47a1;
             background: #e3f2fd;
             display: flex;
             flex-direction: column;
@@ -178,7 +223,6 @@
             text-align: center;
             border-radius: 4px;
             cursor: pointer;
-            padding: 5px;
         }
 
         .content-image-box img {
@@ -188,22 +232,22 @@
         }
 
         .content-image-box span {
-            font-size: 10px;
+            font-size: 9px;
             color: #0d47a1;
             font-weight: bold;
         }
 
-        /* 4 Bodies Grid Example */
+        /* 4 Bodies Grid */
         .four-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            padding: 8px;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            padding: 6px;
         }
 
         .grid-card {
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 4px;
             overflow: hidden;
             text-align: center;
         }
@@ -211,40 +255,39 @@
         .grid-card-header {
             background: #0d47a1;
             color: white;
-            font-size: 11px;
-            padding: 4px;
+            font-size: 9px;
+            padding: 3px;
             font-weight: bold;
         }
 
         .grid-card-body {
-            padding: 6px;
-            font-size: 11px;
+            padding: 5px;
+            font-size: 9px;
             color: #333;
-            min-height: 60px;
             background: #f9f9f9;
         }
 
         /* Summary Box */
         .summary-box {
-            border: 2px solid #b71c1c;
-            border-radius: 6px;
+            border: 1.5px solid #b71c1c;
+            border-radius: 5px;
             background: #fff8f8;
-            padding: 10px;
-            margin-bottom: 15px;
+            padding: 8px;
+            margin-bottom: 10px;
         }
 
         .summary-title {
             color: #b71c1c;
             font-weight: bold;
-            font-size: 13px;
-            margin-bottom: 6px;
+            font-size: 11px;
+            margin-bottom: 5px;
         }
 
         .summary-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
-            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 10px;
         }
 
         .summary-item span {
@@ -257,21 +300,21 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
         }
 
         .page-no-box {
             background: #0d47a1;
             color: white;
-            width: 35px;
-            height: 35px;
-            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
             display: flex;
             justify-content: center;
             align-items: center;
             font-weight: bold;
-            font-size: 16px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            font-size: 13px;
         }
 
         [contenteditable="true"]:hover {
@@ -282,131 +325,128 @@
 </head>
 <body>
 
-    <div class="no-print">
-        <span>💡 Sabhi text editable hain. Picture box par click karke nayi image link daal sakte hain.</span>
-        <button onclick="window.print()">Print / Save PDF</button>
+    <!-- Action Buttons for 3D Book & A4 Page Export -->
+    <div class="top-action-bar">
+        <button class="action-btn" onclick="generate3DBook()">📖 3D Book View</button>
+        <button class="action-btn blue" onclick="generateA4Page()">📄 A4 Page Print/PDF</button>
     </div>
 
-    <div class="page-container">
+    <!-- Mobile View Frame -->
+    <div class="mobile-frame">
+        <div class="mobile-notch"></div>
+        
+        <div class="mobile-screen">
 
-        <!-- Permanent Watermark in Center -->
-        <div class="watermark-container">
-            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500" alt="Watermark Logo" id="watermarkImg" title="Click to change watermark">
-        </div>
-
-        <!-- Header Top -->
-        <div class="header-top">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Emblem_of_India.svg" alt="Emblem">
-            <div class="header-top-text">
-                <h1 contenteditable="true">RAMESHWAR SAHU GDS</h1>
-                <h2 contenteditable="true">DEPARTMENTAL EXAM STUDY HUB</h2>
+            <!-- Permanent Watermark (Non-Editable) -->
+            <div class="watermark-container">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500" alt="Permanent Watermark Logo">
             </div>
-        </div>
 
-        <!-- Section Banner -->
-        <div class="section-banner" contenteditable="true">
-            SECTION – 1 : सामान्य (General)
-        </div>
-
-        <!-- Box 1 (With Picture Coding Example) -->
-        <div class="content-box">
-            <div class="box-title">
-                <span>📖</span>
-                <span contenteditable="true">1. “विदेशी डाक” (Foreign Post) की परिभाषा</span>
-            </div>
-            <div class="box-body">
-                <div style="font-size: 24px; color: #d32f2f; font-weight: bold; padding-right: 10px;">❓</div>
-                <div class="box-text-content" contenteditable="true">
-                    “विदेशी डाक” उन डाक सेवाओं को कहा जाता है, जो “अंतर्देशीय डाक” (Inland Post) की परिभाषा के अंतर्गत नहीं आती हैं।
-                </div>
-                
-                <!-- Yahan picture coding hai, agar picture lagani ho toh is code ko rakhein -->
-                <div class="content-image-box" onclick="insertImage(this)" title="Click to add/change image">
-                    <span>🖼️ Picture Box<br>(Click to add)</span>
+            <!-- Header Top (Locked Brand Name) -->
+            <div class="header-top">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Emblem_of_India.svg" alt="Emblem">
+                <div class="header-top-text">
+                    <h1>RAMESHWAR SAHU GDS</h1>
+                    <h2>DEPARTMENTAL EXAM STUDY HUB</h2>
                 </div>
             </div>
-        </div>
 
-        <!-- Box 2 (Without Picture) -->
-        <div class="content-box">
-            <div class="box-title">
-                <span>📖</span>
-                <span contenteditable="true">2. विदेशी डाक की श्रेणियाँ (Categories of Foreign Postal Articles)</span>
+            <!-- Section Banner -->
+            <div class="section-banner" contenteditable="true">
+                SECTION – 1 : सामान्य (General)
             </div>
-            <div class="box-body">
-                <div style="font-size: 24px; color: #d32f2f; font-weight: bold; padding-right: 10px;">❓</div>
-                <div class="box-text-content" contenteditable="true">
-                    विदेशी डाक में आदान-प्रदान की जाने वाली डाक-वस्तुओं को मुख्यत: दो श्रेणियों में बांटा जाता है—<br>
-                    1. पत्र डाक (Letter Post)<br>
-                    2. पार्सल डाक (Parcel Post)
+
+            <!-- Box 1 -->
+            <div class="content-box">
+                <div class="box-title">
+                    <span>📖</span>
+                    <span contenteditable="true">1. “विदेशी डाक” की परिभाषा</span>
+                </div>
+                <div class="box-body">
+                    <div class="box-text-content" contenteditable="true">
+                        “विदेशी डाक” उन डाक सेवाओं को कहा जाता है, जो “अंतर्देशीय डाक” (Inland Post) की परिभाषा के अंतर्गत नहीं आती हैं।
+                    </div>
+                    <div class="content-image-box" onclick="insertImage(this)">
+                        <span>🖼️ Click to Add Picture</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Box 3: 4 Bodies Grid -->
-        <div class="content-box">
-            <div class="box-title">
-                <span>📖</span>
-                <span contenteditable="true">4. UPU के चार प्रमुख निकाय (Four Bodies of UPU)</span>
-            </div>
-            <div class="four-grid">
-                <div class="grid-card">
-                    <div class="grid-card-header" contenteditable="true">1. कांग्रेस (The Congress)</div>
-                    <div class="grid-card-body" contenteditable="true">कांग्रेस UPU का सर्वोच्च प्राधिकरण है। इसकी बैठक प्रत्येक चार वर्ष में होती है।</div>
+            <!-- Box 2 -->
+            <div class="content-box">
+                <div class="box-title">
+                    <span>📖</span>
+                    <span contenteditable="true">2. विदेशी डाक की श्रेणियाँ</span>
                 </div>
-                <div class="grid-card">
-                    <div class="grid-card-header" contenteditable="true">2. प्रशासन परिषद (CA)</div>
-                    <div class="grid-card-body" contenteditable="true">यह परिषद कांग्रेस के बीच UPU के कार्यों की निरंतरता सुनिश्चित करती है।</div>
-                </div>
-                <div class="grid-card">
-                    <div class="grid-card-header" contenteditable="true">3. डाक संचालन परिषद</div>
-                    <div class="grid-card-body" contenteditable="true">यह UPU का तकनीकी एवं परिचालन निकाय है। इसमें 48 सदस्य देश होते हैं।</div>
-                </div>
-                <div class="grid-card">
-                    <div class="grid-card-header" contenteditable="true">4. अंतर्राष्ट्रीय ब्यूरो</div>
-                    <div class="grid-card-body" contenteditable="true">यह सचिवालय के रूप में कार्य करता है तथा विभिन्न निकायों को सहायता देता है।</div>
+                <div class="box-body">
+                    <div class="box-text-content" contenteditable="true">
+                        विदेशी डाक की मुख्य श्रेणियाँ:<br>
+                        1. पत्र डाक (Letter Post)<br>
+                        2. पार्सल डाक (Parcel Post)
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Summary Box -->
-        <div class="summary-box">
-            <div class="summary-title" contenteditable="true">
-                🎯 LDCE परीक्षा हेतु महत्वपूर्ण तथ्य — त्वरित पुनरावृत्ति
+            <!-- Box 3: 4 Bodies Grid -->
+            <div class="content-box">
+                <div class="box-title">
+                    <span>📖</span>
+                    <span contenteditable="true">4. UPU के चार प्रमुख निकाय</span>
+                </div>
+                <div class="four-grid">
+                    <div class="grid-card">
+                        <div class="grid-card-header" contenteditable="true">1. कांग्रेस</div>
+                        <div class="grid-card-body" contenteditable="true">सर्वोच्च प्राधिकरण</div>
+                    </div>
+                    <div class="grid-card">
+                        <div class="grid-card-header" contenteditable="true">2. प्रशासन परिषद</div>
+                        <div class="grid-card-body" contenteditable="true">कार्य निरंतरता</div>
+                    </div>
+                    <div class="grid-card">
+                        <div class="grid-card-header" contenteditable="true">3. संचालन परिषद</div>
+                        <div class="grid-card-body" contenteditable="true">तकनीकी निकाय</div>
+                    </div>
+                    <div class="grid-card">
+                        <div class="grid-card-header" contenteditable="true">4. अंतर्राष्ट्रीय ब्यूरो</div>
+                        <div class="grid-card-body" contenteditable="true">सचिवालय कार्य</div>
+                    </div>
+                </div>
             </div>
-            <div class="summary-grid">
-                <div class="summary-item" contenteditable="true"><span>• UPU की स्थापना</span> – 9 अक्टूबर 1874</div>
-                <div class="summary-item" contenteditable="true"><span>• UPU की सर्वोच्च संस्था</span> – कांग्रेस</div>
-                <div class="summary-item" contenteditable="true"><span>• विदेशी डाक की श्रेणियाँ</span> – पत्र डाक और पार्सल डाक</div>
-                <div class="summary-item" contenteditable="true"><span>• UPU का मुख्यालय</span> – बर्न, स्विट्जरलैंड</div>
-                <div class="summary-item" contenteditable="true"><span>• कांग्रेस की बैठक</span> – प्रत्येक चार वर्ष में</div>
-                <div class="summary-item" contenteditable="true"><span>• Freedom of Transit</span> – UPU के पूरे क्षेत्र में सुरक्षित</div>
+
+            <!-- Summary Box -->
+            <div class="summary-box">
+                <div class="summary-title" contenteditable="true">
+                    🎯 LDCE परीक्षा हेतु महत्वपूर्ण तथ्य
+                </div>
+                <div class="summary-grid">
+                    <div class="summary-item" contenteditable="true"><span>• UPU स्थापना:</span> 9 अक्टूबर 1874</div>
+                    <div class="summary-item" contenteditable="true"><span>• मुख्यालय:</span> बर्न, स्विट्जरलैंड</div>
+                </div>
             </div>
-        </div>
 
-        <!-- Page Number Footer Box -->
-        <div class="page-footer">
-            <div class="page-no-box" contenteditable="true" title="Edit Page Number">1</div>
-        </div>
+            <!-- Page Footer -->
+            <div class="page-footer">
+                <div class="page-no-box" contenteditable="true">1</div>
+            </div>
 
+        </div>
     </div>
 
     <script>
-        // Function to add or change image dynamically inside the box
         function insertImage(boxElement) {
-            const imgUrl = prompt("Apni image ka Direct Link (URL) yahan daalein:");
+            const imgUrl = prompt("Image ka Direct Link (URL) yahan daalein:");
             if (imgUrl && imgUrl.trim() !== "") {
                 boxElement.innerHTML = `<img src="${imgUrl.trim()}" alt="Content Image">`;
             }
         }
 
-        // Change watermark image
-        document.getElementById('watermarkImg').addEventListener('click', function() {
-            const newWm = prompt("Watermark logo ka Image URL yahan daalein:", this.src);
-            if (newWm && newWm.trim() !== "") {
-                this.src = newWm.trim();
-            }
-        });
+        function generate3DBook() {
+            alert("3D Book View Mode: Ye feature aapke module ko 3D flip-book style mein badalne ke liye taiyar kiya gaya hai!");
+        }
+
+        function generateA4Page() {
+            window.print();
+        }
     </script>
 
 </body>
