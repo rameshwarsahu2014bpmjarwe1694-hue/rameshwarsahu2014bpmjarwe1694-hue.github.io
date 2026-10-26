@@ -758,21 +758,21 @@ function captureCanvas() {
 function downloadPNG(){ 
   captureCanvas().then(c => { 
     const base64Data = c.toDataURL('image/png');
+    const fileName = 'rsh-gds-poster.png';
     
-    // Check karein ki Android Bridge available hai ya nahi
-    if (window.AndroidInterface && typeof window.AndroidInterface.downloadBase64File === 'function') {
-      window.AndroidInterface.downloadBase64File(base64Data, 'rsh-gds-poster.png', 'image/png');
+    // Android App Bridge check (PYQ Hub ke pattern par)
+    if (window.AndroidBridge && typeof window.AndroidBridge.download === 'function') {
+      window.AndroidBridge.download(base64Data, fileName, "");
     } else {
-      // Browser fallback
+      // Browser Fallback
       const a = document.createElement('a'); 
       a.href = base64Data; 
-      a.download = 'rsh-gds-poster.png'; 
+      a.download = fileName; 
       a.click(); 
     }
   }); 
 }
 
-/* single-page PDF — poster already A4 ratio, so it fits perfectly */
 function downloadPDF(){
   const { jsPDF } = window.jspdf;
   captureCanvas().then(canvas => {
@@ -783,17 +783,19 @@ function downloadPDF(){
     if (ir > pr) { w = pw; h = pw / ir; } else { h = ph; w = ph * ir; }
     pdf.addImage(canvas.toDataURL('image/png'), 'PNG', (pw - w) / 2, (ph - h) / 2, w, h);
     
-    const pdfData = pdf.output('datauristring'); // Base64 Data URI for PDF
+    const pdfData = pdf.output('datauristring'); // Base64 data URI
+    const fileName = 'rsh-gds-poster.pdf';
     
-    // Check karein ki Android Bridge available hai ya nahi
-    if (window.AndroidInterface && typeof window.AndroidInterface.downloadBase64File === 'function') {
-      window.AndroidInterface.downloadBase64File(pdfData, 'rsh-gds-poster.pdf', 'application/pdf');
+    // Android App Bridge check
+    if (window.AndroidBridge && typeof window.AndroidBridge.download === 'function') {
+      window.AndroidBridge.download(pdfData, fileName, "");
     } else {
-      // Browser fallback
-      pdf.save('rsh-gds-poster.pdf');
+      // Browser Fallback
+      pdf.save(fileName);
     }
   });
 }
+
 
 // ==========================================================================
 // ADD THIS BLOCK JUST BEFORE renderPoster();
