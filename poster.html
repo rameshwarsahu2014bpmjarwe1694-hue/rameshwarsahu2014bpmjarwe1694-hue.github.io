@@ -755,45 +755,77 @@ function captureCanvas() {
   const poster = document.getElementById("poster");
   return html2canvas(poster, { scale:3, backgroundColor:"#fff8e7", useCORS:true, allowTaint:true, windowWidth:poster.scrollWidth, windowHeight:poster.scrollHeight });
 }
-function downloadPNG(){ 
-  captureCanvas().then(c => { 
-    const base64Data = c.toDataURL('image/png');
-    const fileName = 'rsh-gds-poster.png';
-    
-    // Android App Bridge check (PYQ Hub ke pattern par)
-    if (window.AndroidBridge && typeof window.AndroidBridge.download === 'function') {
+function downloadPNG() {
+  console.log("[Poster Download] PNG button clicked");
+  console.log("[Poster Download] html2canvas:", typeof html2canvas);
+  console.log("[Poster Download] AndroidBridge:", window.AndroidBridge);
+
+  captureCanvas().then(c => {
+    console.log("[Poster Download] Canvas captured:", c.width, c.height);
+
+    const base64Data = c.toDataURL("image/png");
+    console.log("[Poster Download] PNG data generated:", base64Data.length);
+
+    const fileName = "rsh-gds-poster.png";
+
+    if (window.AndroidBridge && typeof window.AndroidBridge.download === "function") {
+      console.log("[Poster Download] Calling AndroidBridge.download");
       window.AndroidBridge.download(base64Data, fileName, "");
     } else {
-      // Browser Fallback
-      const a = document.createElement('a'); 
-      a.href = base64Data; 
-      a.download = fileName; 
-      a.click(); 
+      console.log("[Poster Download] Using browser download");
+      const a = document.createElement("a");
+      a.href = base64Data;
+      a.download = fileName;
+      a.click();
     }
-  }); 
+  }).catch(err => console.error("[Poster Download] PNG ERROR:", err));
 }
 
-function downloadPDF(){
+function downloadPDF() {
+  console.log("[Poster Download] PDF button clicked");
+  console.log("[Poster Download] jsPDF:", typeof window.jspdf);
+  console.log("[Poster Download] AndroidBridge:", window.AndroidBridge);
+
   const { jsPDF } = window.jspdf;
+
   captureCanvas().then(canvas => {
-    const pdf = new jsPDF('p','mm','a4');
+    console.log("[Poster Download] Canvas captured:", canvas.width, canvas.height);
+
+    const pdf = new jsPDF("p", "mm", "a4");
     const pw = 210, ph = 297;
     const ir = canvas.width / canvas.height, pr = pw / ph;
-    let w, h; 
-    if (ir > pr) { w = pw; h = pw / ir; } else { h = ph; w = ph * ir; }
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', (pw - w) / 2, (ph - h) / 2, w, h);
-    
-    const pdfData = pdf.output('datauristring'); // Base64 data URI
-    const fileName = 'rsh-gds-poster.pdf';
-    
-    // Android App Bridge check
-    if (window.AndroidBridge && typeof window.AndroidBridge.download === 'function') {
+    let w, h;
+
+    if (ir > pr) {
+      w = pw;
+      h = pw / ir;
+    } else {
+      h = ph;
+      w = ph * ir;
+    }
+
+    pdf.addImage(
+      canvas.toDataURL("image/png"),
+      "PNG",
+      (pw - w) / 2,
+      (ph - h) / 2,
+      w,
+      h
+    );
+
+    console.log("[Poster Download] PDF generated");
+
+    const pdfData = pdf.output("datauristring");
+    const fileName = "rsh-gds-poster.pdf";
+
+    if (window.AndroidBridge && typeof window.AndroidBridge.download === "function") {
+      console.log("[Poster Download] Calling AndroidBridge.download for PDF");
       window.AndroidBridge.download(pdfData, fileName, "");
     } else {
-      // Browser Fallback
+      console.log("[Poster Download] Using browser PDF download");
       pdf.save(fileName);
     }
-  });
+  }).catch(err => console.error("[Poster Download] PDF ERROR:", err));
 }
 
 
