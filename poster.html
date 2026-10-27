@@ -75,15 +75,21 @@
     flex-direction: column;
     overflow: hidden;
   }
-  @media print {
-  /* Print ya download karte waqt background graphics aur watermark ko force karein */
+@media print {
   body {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
+  /* 👈 Watermark ko print mein force karne ke liye ye add karein */
+  .exact-circular-watermark {
+    display: flex !important;
+    opacity: 0.13 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
   .poster {
-    /* Watermark aur shadow ko print me retain karne ke liye */
     background-color: #fff8e7 !important;
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0.06) 0%, rgba(255, 255, 255, 0) 4%) !important;
     box-shadow: 
@@ -93,6 +99,7 @@
     print-color-adjust: exact;
   }
 }
+
  
 
   .logo { 
