@@ -249,7 +249,7 @@
 
  /* NEW: 4TH TYPE - A4 3D BOOK PAGE STYLING BLOCK (MASTER BOX FORMAT)
      ========================================================================== */
-  .
+  
   /* 3D Book Page Style with Shadow & Depth */
   .book3d-master-wrap {
     width: 100%;
@@ -753,44 +753,43 @@ function renderPoster() {
 
 function captureCanvas() {
   const poster = document.getElementById("poster");
-  return html2canvas(poster, { scale:3, backgroundColor:"#fff8e7", useCORS:true, allowTaint:true, windowWidth:poster.scrollWidth, windowHeight:poster.scrollHeight });
+  return html2canvas(poster, { 
+    scale: 2, // Scale 3 se kabhi-kabhi mobile browser memory crash ho jati hai, 2 is safe.
+    backgroundColor: "#fff8e7", 
+    useCORS: true, 
+    allowTaint: false, 
+    windowWidth: poster.scrollWidth, 
+    windowHeight: poster.scrollHeight 
+  });
 }
+
 function downloadPNG() {
   console.log("[Poster Download] PNG button clicked");
-  console.log("[Poster Download] html2canvas:", typeof html2canvas);
-  console.log("[Poster Download] AndroidBridge:", window.AndroidBridge);
-
+  
   captureCanvas().then(c => {
-    console.log("[Poster Download] Canvas captured:", c.width, c.height);
-
     const base64Data = c.toDataURL("image/png");
-    console.log("[Poster Download] PNG data generated:", base64Data.length);
-
     const fileName = "rsh-gds-poster.png";
 
     if (window.AndroidBridge && typeof window.AndroidBridge.download === "function") {
-      console.log("[Poster Download] Calling AndroidBridge.download");
       window.AndroidBridge.download(base64Data, fileName, "");
     } else {
-      console.log("[Poster Download] Using browser download");
       const a = document.createElement("a");
       a.href = base64Data;
       a.download = fileName;
       a.click();
     }
-  }).catch(err => console.error("[Poster Download] PNG ERROR:", err));
+  }).catch(err => {
+    console.error("[Poster Download] PNG ERROR:", err);
+    alert("PNG download mein samasya aayi: " + err.message);
+  });
 }
 
 function downloadPDF() {
   console.log("[Poster Download] PDF button clicked");
-  console.log("[Poster Download] jsPDF:", typeof window.jspdf);
-  console.log("[Poster Download] AndroidBridge:", window.AndroidBridge);
-
+  
   const { jsPDF } = window.jspdf;
 
   captureCanvas().then(canvas => {
-    console.log("[Poster Download] Canvas captured:", canvas.width, canvas.height);
-
     const pdf = new jsPDF("p", "mm", "a4");
     const pw = 210, ph = 297;
     const ir = canvas.width / canvas.height, pr = pw / ph;
@@ -813,19 +812,18 @@ function downloadPDF() {
       h
     );
 
-    console.log("[Poster Download] PDF generated");
-
     const pdfData = pdf.output("datauristring");
     const fileName = "rsh-gds-poster.pdf";
 
     if (window.AndroidBridge && typeof window.AndroidBridge.download === "function") {
-      console.log("[Poster Download] Calling AndroidBridge.download for PDF");
       window.AndroidBridge.download(pdfData, fileName, "");
     } else {
-      console.log("[Poster Download] Using browser PDF download");
       pdf.save(fileName);
     }
-  }).catch(err => console.error("[Poster Download] PDF ERROR:", err));
+  }).catch(err => {
+    console.error("[Poster Download] PDF ERROR:", err);
+    alert("PDF download mein samasya aayi: " + err.message);
+  });
 }
 
 
