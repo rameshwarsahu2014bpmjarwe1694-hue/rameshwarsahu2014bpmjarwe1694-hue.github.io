@@ -817,14 +817,13 @@ async function captureCanvas() {
 
   try {
     const canvas = await html2canvas(poster, { 
-      scale: 1.5, 
-      backgroundColor: "#fff8e7", 
-      useCORS: false,       // CORS error se bachne ke liye false rakhein
-      allowTaint: true,     // Tainted canvas allow karega taaki image block na ho
-      logging: true,
-      windowWidth: poster.scrollWidth, 
-      windowHeight: poster.scrollHeight 
-    });
+  scale: 1.0, // Scale kam karne se lamba base64 error solve ho jayega
+  backgroundColor: "#fff8e7", 
+  useCORS: false, 
+  allowTaint: true, 
+  logging: true
+});
+
 
     console.log("[Poster Download] Canvas captured successfully!");
     return canvas;
