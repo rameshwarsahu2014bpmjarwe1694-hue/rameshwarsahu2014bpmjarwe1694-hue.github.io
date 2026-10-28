@@ -800,28 +800,37 @@ function renderPoster() {
 
 async function captureCanvas() {
   const poster = document.getElementById("poster");
-  console.log("[Poster Download] Starting robust Base64 watermark capture...");
+  console.log("[Poster Download] Starting foolproof canvas capture...");
 
   if (!poster) {
     throw new Error("Poster element (#poster) not found on page!");
   }
 
-  // Watermark image ko fetch karke Base64 mein convert karna taaki CORS issue khatam ho jaye
+  // Watermark image ko Canvas ke zariye Base64 mein convert karna (No CORS fetch issues)
   const imgEl = poster.querySelector('.exact-circular-watermark img');
   if (imgEl && imgEl.src && !imgEl.src.startsWith('data:')) {
     try {
-      const response = await fetch(imgEl.src, { mode: 'cors' });
-      const blob = await response.blob();
-      const base64Data = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.readAsDataURL(blob);
+      await new Promise((resolve) => {
+        const tempImg = new Image();
+        tempImg.crossOrigin = "anonymous";
+        tempImg.onload = function() {
+          const canvas = document.createElement('canvas');
+          canvas.width = tempImg.naturalWidth || 500;
+          canvas.height = tempImg.naturalHeight || 500;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(tempImg, 0, 0);
+          imgEl.src = canvas.toDataURL('image/png');
+          resolve();
+        };
+        tempImg.onerror = function() {
+          console.warn("[Poster Download Warning] Image load fallback triggered.");
+          resolve();
+        };
+        tempImg.src = imgEl.src;
       });
-      imgEl.src = base64Data;
-      // DOM render hone ke liye thoda pause dein
-      await new Promise(r => setTimeout(r, 300));
+      await new Promise(r => setTimeout(r, 200)); // Render settle time
     } catch (e) {
-      console.warn("[Poster Download Warning] Direct fetch failed, proceeding with standard src:", e);
+      console.warn("[Poster Download Warning] Conversion skipped:", e);
     }
   }
 
@@ -845,6 +854,7 @@ async function captureCanvas() {
     throw err;
   }
 }
+
 
 
 
