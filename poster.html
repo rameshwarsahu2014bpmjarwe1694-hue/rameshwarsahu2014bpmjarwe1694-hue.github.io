@@ -845,19 +845,33 @@ function downloadPNG() {
     const base64Data = c.toDataURL("image/png");
     const fileName = "rsh-gds-poster.png";
 
+    // Android App ke andar aur Browser dono ke liye safe fallback download
     if (window.AndroidBridge && typeof window.AndroidBridge.download === "function") {
-      window.AndroidBridge.download(base64Data, fileName, "");
+      try {
+        window.AndroidBridge.download(base64Data, fileName, "image/png");
+      } catch (e) {
+        console.warn("AndroidBridge download failed, using standard link:", e);
+        fallbackDownload(base64Data, fileName);
+      }
     } else {
-      const a = document.createElement("a");
-      a.href = base64Data;
-      a.download = fileName;
-      a.click();
+      fallbackDownload(base64Data, fileName);
     }
   }).catch(err => {
     console.error("[Poster Download] PNG ERROR:", err);
     alert("PNG download mein samasya aayi: " + err.message);
   });
 }
+
+// Safe standard fallback download helper
+function fallbackDownload(dataUrl, filename) {
+  const a = document.createElement("a");
+  a.href = dataUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
 
 function downloadPDF() {
   console.log("[Poster Download] PDF button clicked");
