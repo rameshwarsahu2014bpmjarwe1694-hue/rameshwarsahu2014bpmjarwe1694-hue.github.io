@@ -839,20 +839,13 @@ async function captureCanvas() {
 
 
 function downloadPNG() {
-  console.log("[Poster Download] PNG button clicked");
   
   captureCanvas().then(c => {
     const base64Data = c.toDataURL("image/png");
     const fileName = "rsh-gds-poster.png";
 
-    // Android App ke andar aur Browser dono ke liye safe fallback download
     if (window.AndroidBridge && typeof window.AndroidBridge.download === "function") {
-      try {
-        window.AndroidBridge.download(base64Data, fileName, "image/png");
-      } catch (e) {
-        console.warn("AndroidBridge download failed, using standard link:", e);
-        fallbackDownload(base64Data, fileName);
-      }
+      window.AndroidBridge.download(base64Data, fileName, "");
     } else {
       fallbackDownload(base64Data, fileName);
     }
@@ -873,8 +866,8 @@ function fallbackDownload(dataUrl, filename) {
 }
 
 
+
 function downloadPDF() {
-  console.log("[Poster Download] PDF button clicked");
   
   const { jsPDF } = window.jspdf;
 
