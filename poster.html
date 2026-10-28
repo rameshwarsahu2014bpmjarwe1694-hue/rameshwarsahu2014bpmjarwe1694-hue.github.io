@@ -593,8 +593,9 @@
  <div class="poster" id="poster">
   
   <div class="exact-circular-watermark">
-  <img src="/rsh-final-logo.png" crossorigin="anonymous" />
+  <img src="https://rsh.gdsnotes.in/rsh-final-logo.png" crossorigin="anonymous" />
 </div>
+
 
 
   
@@ -799,30 +800,32 @@ function renderPoster() {
 
 async function captureCanvas() {
   const poster = document.getElementById("poster");
-  console.log("[Poster Download] Starting html2canvas capture with preloaded watermark...");
+  console.log("[Poster Download] Starting robust Base64 watermark capture...");
 
   if (!poster) {
     throw new Error("Poster element (#poster) not found on page!");
   }
 
-  // 1. वाटरमार्क इमेज को पहले से लोड (Preload) करना अनिवार्य है
-  await new Promise((resolve) => {
-    const imgEl = poster.querySelector('.exact-circular-watermark img');
-    if (!imgEl || imgEl.complete) {
-      resolve();
-      return;
+  // Watermark image ko fetch karke Base64 mein convert karna taaki CORS issue khatam ho jaye
+  const imgEl = poster.querySelector('.exact-circular-watermark img');
+  if (imgEl && imgEl.src && !imgEl.src.startsWith('data:')) {
+    try {
+      const response = await fetch(imgEl.src, { mode: 'cors' });
+      const blob = await response.blob();
+      const base64Data = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+      imgEl.src = base64Data;
+      // DOM render hone ke liye thoda pause dein
+      await new Promise(r => setTimeout(r, 300));
+    } catch (e) {
+      console.warn("[Poster Download Warning] Direct fetch failed, proceeding with standard src:", e);
     }
-    imgEl.onload = () => resolve();
-    imgEl.onerror = () => {
-      console.warn("[Poster Download] Watermark image load failed, continuing anyway...");
-      resolve();
-    };
-    // सुरक्षा के लिए 2 सेकंड का टाइमआउट ताकि अटके नहीं
-    setTimeout(resolve, 2000); 
-  });
+  }
 
   try {
-    // 2. अब html2canvas को चलाएं जब इमेज पूरी तरह लोड हो चुकी हो
     const canvas = await html2canvas(poster, { 
       scale: 1.5, 
       backgroundColor: "#fff8e7", 
@@ -833,7 +836,7 @@ async function captureCanvas() {
       windowHeight: poster.scrollHeight 
     });
 
-    console.log("[Poster Download] Canvas captured successfully with full watermark!");
+    console.log("[Poster Download] Canvas captured successfully with 100% full watermark!");
     return canvas;
 
   } catch (err) {
@@ -842,6 +845,7 @@ async function captureCanvas() {
     throw err;
   }
 }
+
 
 
 function downloadPNG() {
