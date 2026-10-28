@@ -798,53 +798,43 @@ function renderPoster() {
 
 async function captureCanvas() {
   const poster = document.getElementById("poster");
-  console.log("[Debug] Starting captureCanvas()...");
+  console.log("[Poster Download] Starting standard html2canvas capture...");
 
   if (!poster) {
-    console.error("[Debug Error] Poster element (#poster) not found!");
     throw new Error("Poster element (#poster) not found on page!");
   }
 
-  // 1. Check watermark image element
+  // Watermark image ke puri tarah load hone ka wait karein (jaise baaki logos karte hain)
   const imgEl = poster.querySelector('.exact-circular-watermark img');
-  if (!imgEl) {
-    console.error("[Debug Error] Watermark <img> tag not found inside .exact-circular-watermark!");
-  } else {
-    console.log("[Debug] Watermark img found. Current src: " + imgEl.src);
-    console.log("[Debug] imgEl.complete status: " + imgEl.complete + ", naturalWidth: " + imgEl.naturalWidth);
+  if (imgEl && !imgEl.complete) {
+    await new Promise((resolve) => {
+      imgEl.onload = resolve;
+      imgEl.onerror = resolve;
+      setTimeout(resolve, 2000); // 2 second safety timeout
+    });
   }
 
-  // 2. Base64 conversion with deep error tracing
-  if (imgEl && imgEl.src && !imgEl.src.startsWith('data:')) {
-    try {
-      console.log("[Debug] Attempting to convert watermark image to Base64 via Image object...");
-      await new Promise((resolve) => {
-        const tempImg = new Image();
-        tempImg.crossOrigin = "anonymous";
-        
-        tempImg.onload = function() {
-          console.log("[Debug] tempImg loaded successfully. Size: " + tempImg.naturalWidth + "x" + tempImg.naturalHeight);
-          try {
-            const canvas = document.createElement('canvas');
-            canvas.width = tempImg.naturalWidth || 500;
-            canvas.height = tempImg.naturalHeight || 500;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(tempImg, 0, 0);
-            imgEl.src = canvas.toDataURL('image/png');
-            console.log("[Debug] Watermark successfully converted to Base64 and applied!");
-          } catch (drawErr) {
-            console.error("[Debug Error] Canvas drawImage failed (Likely CORS taint): " + drawErr.message);
-          }
-          resolve();
-        };
+  try {
+    const canvas = await html2canvas(poster, { 
+      scale: 1.5, 
+      backgroundColor: "#fff8e7", 
+      useCORS: true,       // Yeh zaroori hai taaki cross-origin logo/watermark fetch ho sake
+      allowTaint: true, 
+      logging: true,
+      windowWidth: poster.scrollWidth, 
+      windowHeight: poster.scrollHeight 
+    });
 
-        tempImg.onerror = function(err) {
-          console.error("[Debug Error] tempImg failed to load. Check if /rsh-final-logo.png path or CORS headers are blocking it.", err);
-          resolve();
-        };
+    console.log("[Poster Download] Canvas captured successfully with direct watermark!");
+    return canvas;
 
-        tempImg.src = imgEl.src;
-      });
+  } catch (err) {
+    console.error("[Poster Download ERROR] Failed inside captureCanvas:", err);
+    alert("Canvas capture mein error aayi: " + err.message);
+    throw err;
+  }
+}
+
 
       // Wait a moment for DOM to settle
       await new Promise(r => setTimeout(r, 400));
