@@ -842,7 +842,8 @@ function downloadPNG() {
   
   captureCanvas().then(c => {
     const base64Data = c.toDataURL("image/png");
-    const fileName = "rsh-gds-poster.png";
+    const timestamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0].replace("T", "_");
+    const fileName = `rsh-gds-poster_${timestamp}.png`;
 
     if (window.AndroidBridge && typeof window.AndroidBridge.download === "function") {
       window.AndroidBridge.download(base64Data, fileName, "");
@@ -895,7 +896,9 @@ function downloadPDF() {
     );
 
     const pdfData = pdf.output("datauristring");
-    const fileName = "rsh-gds-poster.pdf";
+    const timestamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0].replace("T", "_");
+    const fileName = `rsh-gds-poster_${timestamp}.pdf`;
+   
 
     if (window.AndroidBridge && typeof window.AndroidBridge.download === "function") {
       window.AndroidBridge.download(pdfData, fileName, "");
