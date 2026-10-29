@@ -265,11 +265,18 @@ body {
         const loadingMsgElement = chatBox.lastChild;
 
         try {
+                        // Android app ke MainActivity se inject kiya gaya token, warna empty
+            const secureToken = window.APP_SECRET || "";
+
             const response = await fetch(`${BACKEND_URL}/api/ask-ai`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-Source-Auth': secureToken // 👈 Yahan dynamic token pass hoga, hardcode nahi
+                },
                 body: JSON.stringify({ question: finalPrompt }) 
             });
+
 
             const data = await response.json();
             loadingMsgElement.remove(); 
