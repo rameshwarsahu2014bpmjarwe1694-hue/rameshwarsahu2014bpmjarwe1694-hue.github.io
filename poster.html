@@ -7,6 +7,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
+    /* 🔓 Chat/Input box aur text selection ko wapas chalu karne ke liye */
+  body {
+    -webkit-user-select: text; /* Chrome, Safari, Opera */
+    -moz-user-select: text;    /* Firefox */
+    -ms-user-select: text;     /* Internet Explorer / Edge */
+    user-select: text;         /* Standard Syntax */
+  }
+
+  input, select, textarea {
+    -webkit-user-select: text !important;
+    user-select: text !important;
+  }
+  
   body {
   -webkit-user-select: none; /* Chrome, Safari, Opera */
   -moz-user-select: none;    /* Firefox */
