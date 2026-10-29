@@ -7,6 +7,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
+  body {
+  -webkit-user-select: none; /* Chrome, Safari, Opera */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* Internet Explorer / Edge */
+  user-select: none;         /* Standard Syntax (Sabhi modern browsers ke liye) */
+  }
+ 
+ 
   * { box-sizing: border-box; }
   body { font-family: 'Noto Sans Devanagari', Arial, sans-serif; background: #eef0f3; margin: 0; padding: 20px; color: #222; }
   h1 { text-align: center; margin: 4px 0 18px; color: #8b0000; }
@@ -627,43 +635,37 @@
 </div>
 
 <script>
- // Override console.log and console.error to show in UI box
-(function() {
-    const originalLog = console.log;
-    const originalError = console.error;
-    
-    function appendToLogBox(message, isError = false) {
-        const logContent = document.getElementById('logContent');
-        if (!logContent) return;
-        
-        const div = document.createElement('div');
-        div.style.color = isError ? '#ff6b6b' : '#51cf66';
-        div.style.marginBottom = '3px';
-        div.style.wordBreak = 'break-all';
-        
-        const time = new Date().toLocaleTimeString();
-        div.textContent = `[${time}] ${message}`;
-        logContent.appendChild(div);
-        
-        // Auto scroll to bottom
-        const box = document.getElementById('debugBox');
-        if (box) box.scrollTop = box.scrollHeight;
+ // 1. Right-click menu disable karna
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+});
+
+// 2. Keyboard shortcuts (F12, Ctrl+U, Ctrl+Shift+I, etc.) disable karna
+document.addEventListener('keydown', function(e) {
+    // F12 key
+    if (e.keyCode === 123) {
+        e.preventDefault();
+        return false;
     }
-
-    console.log = function(...args) {
-        originalLog.apply(console, args);
-        const msg = args.map(arg => (typeof arg === 'object' ? JSON.stringify(arg) : arg)).join(' ');
-        appendToLogBox(msg, false);
-    };
-
-    console.error = function(...args) {
-        originalError.apply(console, args);
-        const msg = args.map(arg => (typeof arg === 'object' ? JSON.stringify(arg) : arg)).join(' ');
-        appendToLogBox(msg, true);
-    };
-})();
+    // Ctrl+Shift+I, Ctrl+Shift+C, Ctrl+Shift+J (DevTools)
+    if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) {
+        e.preventDefault();
+        return false;
+    }
+    // Ctrl+U (View Source)
+    if (e.ctrlKey && e.keyCode === 85) {
+        e.preventDefault();
+        return false;
+    }
+    // Ctrl+C (Copy prevention alert optional)
+    if (e.ctrlKey && e.keyCode === 67) {
+        e.preventDefault();
+        return false;
+    }
+});
  
-// Image load hone ki status check karne wala robust logo path
+
 const logoSVG = `
   <img src="/rsh-final-logo.png" 
        alt="RSH Logo" 
@@ -719,7 +721,6 @@ function buildBook3DLayout(rows) {
   let html = '<div class="book3d-master-wrap">';
   
   rows.forEach((line) => {
-    // Headings, sections, ya questions ke liye bada, bold aur 3D heading style
     if (line.includes('प्रश्न') || line.includes('PO manual') || line.includes('Q.') || line.match(/^\d+[\.-]/) || line.includes('Section') || line.includes('अध्याय')) {
       html += `
         <div style="padding-bottom: 8px; border-bottom: 2.5px solid #b00020; margin-top: 10px;">
@@ -729,7 +730,6 @@ function buildBook3DLayout(rows) {
         </div>
       `;
     } 
-    // Normal content lines ke liye large bold dark black text
     else {
       html += `
         <div style="padding: 6px 0; color: #111111; font-size: 16px; font-weight: 700; line-height: 1.6;">
@@ -799,7 +799,6 @@ function renderPoster() {
 
 async function captureCanvas() {
   const poster = document.getElementById("poster");
-  console.log("[Poster Download] Starting clean canvas capture...");
 
   if (!poster) {
     throw new Error("Poster element (#poster) not found on page!");
@@ -824,8 +823,6 @@ async function captureCanvas() {
   logging: true
 });
 
-
-    console.log("[Poster Download] Canvas captured successfully!");
     return canvas;
 
   } catch (err) {
