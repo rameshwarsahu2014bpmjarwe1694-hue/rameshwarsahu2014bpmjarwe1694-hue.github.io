@@ -627,6 +627,32 @@
 </div>
 
 <script>
+ // 🔓 Sirf textarea aur input (chat/content box) ke liye selection aur copy/paste enable karne ke liye
+document.addEventListener('DOMContentLoaded', () => {
+    // Sirf inputs aur textareas par user-select text force karein
+    const chatInputs = document.querySelectorAll('input, textarea');
+    chatInputs.forEach(el => {
+        el.style.webkitUserSelect = 'text';
+        el.style.userSelect = 'text';
+    });
+
+    // Right-click aur context menu sirf textarea/input ke andar allow karein
+    document.addEventListener('contextmenu', function(e) {
+        if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {
+            e.stopPropagation(); // Sirf input/textarea ke liye global block roke ga
+        }
+    }, true);
+
+    // Keyboard copy/paste (Ctrl+C / Ctrl+V) sirf textarea/input ke andar allow karein
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86)) {
+            if (document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'INPUT') {
+                e.stopPropagation(); // Sirf active input/textarea par allow karega
+            }
+        }
+    }, true);
+});
+ 
  // Override console.log and console.error to show in UI box
 (function() {
     const originalLog = console.log;
