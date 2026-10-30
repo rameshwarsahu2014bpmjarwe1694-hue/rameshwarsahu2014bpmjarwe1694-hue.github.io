@@ -1,7 +1,8 @@
 {
-  "versionCode": 14,
-  "versionName": "1.8.5",
+  "versionCode": 15,
+  "versionName": "1.8.6",
   "apkUrl": "https://rsh.gdsnotes.in/app-release.apk",
   "message": "New update available. Download latest version.",
-  "sha256": "94d2f8b60ebd2b1a63fb6b7df71beca97c6548630464b36879dd64027a704651"
+  "sha256": "04d70f9a586f5dd8a4b3ca3f888dc75bab531997e98b845767263f808af9fa21"
 }
+
