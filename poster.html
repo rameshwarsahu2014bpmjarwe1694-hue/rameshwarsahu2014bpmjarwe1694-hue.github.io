@@ -7,27 +7,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-    /* 🔓 Chat/Input box aur text selection ko wapas chalu karne ke liye */
-  body {
-    -webkit-user-select: text; /* Chrome, Safari, Opera */
-    -moz-user-select: text;    /* Firefox */
-    -ms-user-select: text;     /* Internet Explorer / Edge */
-    user-select: text;         /* Standard Syntax */
+  /* App ke andar text select, copy aur paste chalu rakhne ke liye */
+  body, .poster, .chat-container, p, div {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    user-select: text !important;
   }
 
   input, select, textarea {
     -webkit-user-select: text !important;
     user-select: text !important;
   }
-  
-  body {
-  -webkit-user-select: none; /* Chrome, Safari, Opera */
-  -moz-user-select: none;    /* Firefox */
-  -ms-user-select: none;     /* Internet Explorer / Edge */
-  user-select: none;         /* Standard Syntax (Sabhi modern browsers ke liye) */
-  }
- 
- 
+    
   * { box-sizing: border-box; }
   body { font-family: 'Noto Sans Devanagari', Arial, sans-serif; background: #eef0f3; margin: 0; padding: 20px; color: #222; }
   h1 { text-align: center; margin: 4px 0 18px; color: #8b0000; }
