@@ -848,7 +848,8 @@ async function captureCanvas() {
   if (!poster) {
     throw new Error("Poster element (#poster) not found on page!");
   }
-
+   Const oldPosterTransform = poster.style.transform;
+  Poster.style.transform = 'scale(1)';
   // Capture ke dauran scale transform ko temporarily remove karna taaki download rotate/distort na ho
   const oldTransform = inner ? inner.style.transform : '';
   if (inner) inner.style.transform = 'none';
@@ -875,13 +876,14 @@ async function captureCanvas() {
       allowTaint: true, 
       logging: false
     });
-
+    Poster.style.transform = oldPosterTransform;
     // Transform wapas restore karein
     if (inner) inner.style.transform = oldTransform;
     console.log("[Poster Download] Canvas captured successfully!");
     return canvas;
 
   } catch (err) {
+   Poster.style.transform = oldPosterTransform;
     if (inner) inner.style.transform = oldTransform;
     console.error("[Poster Download ERROR] Failed inside captureCanvas:", err);
     alert("Canvas capture mein error aayi: " + err.message);
