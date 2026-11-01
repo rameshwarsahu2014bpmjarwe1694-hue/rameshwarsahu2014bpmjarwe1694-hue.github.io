@@ -848,8 +848,8 @@ async function captureCanvas() {
   if (!poster) {
     throw new Error("Poster element (#poster) not found on page!");
   }
-   Const oldPosterTransform = poster.style.transform;
-  Poster.style.transform = 'scale(1)';
+   const oldPosterTransform = poster.style.transform;
+  poster.style.transform = 'scale(1)';
   // Capture ke dauran scale transform ko temporarily remove karna taaki download rotate/distort na ho
   const oldTransform = inner ? inner.style.transform : '';
   if (inner) inner.style.transform = 'none';
