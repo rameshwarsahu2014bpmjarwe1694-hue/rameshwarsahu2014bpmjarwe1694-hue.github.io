@@ -184,9 +184,36 @@ body {
         chatBox.scrollTop = chatBox.scrollHeight; 
     }
 
-    onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
         if (user) {
-            let userName = user.displayName || user.email.split('@')[0];
+            let userName = "";
+
+            // 1. सबसे पहले Firestore से यूजर का असली नाम ढूंढने की कोशिश करें
+            try {
+                const q = query(collection(db, "users"), where("uid", "==", user.uid));
+                const querySnapshot = await getDocs(q);
+                
+                if (!querySnapshot.empty) {
+                    const userData = querySnapshot.docs[0].data();
+                    userName = userData.name || userData.fullName || userData.userName;
+                }
+            } catch (err) {
+                console.error("Error fetching user profile:", err);
+            }
+
+            // 2. अगर Firestore में नाम न मिले, तो Google/Firebase का displayName देखें
+            if (!userName) {
+                userName = user.displayName;
+            }
+
+            // 3. अगर फिर भी नाम न मिले, तब मजबूरी में ईमेल का यूजरनेम लें
+            if (!userName && user.email) {
+                userName = user.email.split('@')[0];
+            }
+
+            // अगर अभी भी नाम खाली है तो डिफ़ॉल्ट 'Student' सेट कर दें
+            userName = userName || "Student";
+
             const greetingText = getGreeting();
             
             const welcomeHTML = `
@@ -218,6 +245,7 @@ body {
             window.location.href = "login.html"; 
         }
     });
+
 
     // 🎯 जैसे ही यूजर इनपुट बॉक्स पर क्लिक करेगा, स्वागत संदेश गायब हो जाएगा
     userInput.addEventListener('focus', () => {
