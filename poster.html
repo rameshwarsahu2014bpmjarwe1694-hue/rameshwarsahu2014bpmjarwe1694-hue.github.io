@@ -472,11 +472,11 @@
   .poster {
     width: 1080px;
     height: 1527px;
-    background: #fff8e7 !important; /* Poore poster ka background ek jaisa creamy color rahega */
+    background: #fff8e7 !important;
     border-top: 2px solid #e8d9b0;
     border-right: 2px solid #e8d9b0;
     border-bottom: 2px solid #e8d9b0;
-    border-left: 6px solid #d0c29b; /* Book binding edge */
+    border-left: 6px solid #d0c29b;
     padding: 22px 30px 18px 40px;
     box-shadow: 
       0 20px 40px rgba(0, 0, 0, 0.35), 
@@ -487,7 +487,9 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    flex-shrink: 0;
   }
+
 
   .book3d-master-wrap {
     width: 100%;
@@ -830,11 +832,16 @@ function renderPoster() {
 
 async function captureCanvas() {
   const poster = document.getElementById("poster");
+  const inner = document.getElementById("bodyInner");
   console.log("[Poster Download] Starting clean canvas capture...");
 
   if (!poster) {
     throw new Error("Poster element (#poster) not found on page!");
   }
+
+  // Capture ke dauran scale transform ko temporarily remove karna taaki download rotate/distort na ho
+  const oldTransform = inner ? inner.style.transform : '';
+  if (inner) inner.style.transform = 'none';
 
   // Watermark image ke load hone ka wait karein
   const imgEl = poster.querySelector('.exact-circular-watermark img');
@@ -848,23 +855,30 @@ async function captureCanvas() {
 
   try {
     const canvas = await html2canvas(poster, { 
-  scale: 1.0, // Scale kam karne se lamba base64 error solve ho jayega
-  backgroundColor: "#fff8e7", 
-  useCORS: false, 
-  allowTaint: true, 
-  logging: true
-});
+      scale: 2, // High resolution sharp output ke liye
+      width: 1080,
+      height: 1527,
+      windowWidth: 1080,
+      windowHeight: 1527,
+      backgroundColor: "#fff8e7", 
+      useCORS: true, 
+      allowTaint: true, 
+      logging: false
+    });
 
-
+    // Transform wapas restore karein
+    if (inner) inner.style.transform = oldTransform;
     console.log("[Poster Download] Canvas captured successfully!");
     return canvas;
 
   } catch (err) {
+    if (inner) inner.style.transform = oldTransform;
     console.error("[Poster Download ERROR] Failed inside captureCanvas:", err);
     alert("Canvas capture mein error aayi: " + err.message);
     throw err;
   }
 }
+
 
 
 
