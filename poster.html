@@ -683,33 +683,36 @@ window.addEventListener('DOMContentLoaded', () => {
 /* ==========================================================================
    UPDATED: 3D BOOK PAGE LAYOUT (LARGER BOLD FONTS & CLEAN SEPARATORS)
    ========================================================================== */
-function buildBook3DLayout(rows) {
-  let html = '<div class="book3d-master-wrap">';
+function buildBook3DLayout(rows, highlight) {
+  const colCount = rows.length > 44 ? 3 : 2;
+  const per = Math.ceil(rows.length / colCount);
+  let cols = '';
   
-  rows.forEach((line) => {
-    // Headings, sections, ya questions ke liye bada, bold aur 3D heading style
-    if (line.includes('प्रश्न') || line.includes('PO manual') || line.includes('Q.') || line.match(/^\d+[\.-]/) || line.includes('Section') || line.includes('अध्याय')) {
-      html += `
-        <div style="padding-bottom: 8px; border-bottom: 2.5px solid #b00020; margin-top: 10px;">
-          <div style="color: #900000; font-weight: 800; font-size: 19px; line-height: 1.5; text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.1);">
-            ${line}
-          </div>
-        </div>
-      `;
-    } 
-    // Normal content lines ke liye large bold dark black text
-    else {
-      html += `
-        <div style="padding: 6px 0; color: #111111; font-size: 16px; font-weight: 700; line-height: 1.6;">
-          ${line}
-        </div>
-      `;
-    }
-  });
-
-  html += '</div>';
-  return html;
+  for (let c = 0; c < colCount; c++) {
+    const arr = rows.slice(c*per, (c+1)*per);
+    let html = '<div class="col" style="border: 1px solid #d4c29a; background: #fffdf6;">';
+    html += '<div class="cell sn head" style="background:#e8d9b0; font-weight:800; color:#6b2b16; font-size:14px;">क्र.</div>' +
+            '<div class="cell name head" style="background:#e8d9b0; font-weight:800; color:#6b2b16; font-size:14px;">नियम</div>' +
+            '<div class="cell pg head" style="background:#e8d9b0; font-weight:800; color:#6b2b16; font-size:14px;">पृष्ठ</div>';
+    
+    arr.forEach(line => {
+      const p = line.split('|').map(s=>s.trim());
+      const sn = p[0] || '', name = p[1] || '', pg = p[2] || '';
+      const hl = (highlight && sn === highlight) ? ' highlight' : '';
+      html += `<div class="cell sn${hl}" style="font-size:14px; font-weight:700;">${sn}</div>` +
+              `<div class="cell name${hl}" style="font-size:14px; font-weight:600; color:#1a1a1a;">${name}</div>` +
+              `<div class="cell pg${hl}" style="font-size:14px; font-weight:700;">${pg}</div>`;
+    });
+    cols += html + '</div>';
+  }
+  
+  return `<div class="book3d-master-wrap" style="width: 100%; padding: 0;">
+            <div class="table-wrap" style="grid-template-columns:repeat(${colCount},1fr); box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-radius: 6px; overflow: hidden;">
+              ${cols}
+            </div>
+          </div>`;
 }
+
  
 /* Page Number show/hide + digit-only sanitize */
 function updatePageNumber() {
