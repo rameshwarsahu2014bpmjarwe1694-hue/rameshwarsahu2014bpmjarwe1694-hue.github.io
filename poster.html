@@ -52,33 +52,27 @@
     padding: 30px 0;
   }
 
-  .poster {
+   .poster {
     width: 1080px;
     height: 1527px;
     background: #fff8e7;
-    
-    /* Border hata kar ya soft karke left side binding edge banayein */
     border-top: 2px solid #e8d9b0;
     border-right: 2px solid #e8d9b0;
     border-bottom: 2px solid #e8d9b0;
-    border-left: 6px solid #d0c29b; /* Book binding edge */
-
-    padding: 22px 26px 18px 40px; /* Left padding thodi zyada taaki content spine ke andar na ruke */
-    
-    /* Real 3D Book & Spine Shadow */
+    border-left: 6px solid #d0c29b;
+    padding: 15px 25px 12px 35px; /* Padding ko thoda balance kiya hai taaki jagah bache */
     box-shadow: 
-      0 20px 40px rgba(0, 0, 0, 0.35), /* Bahar ka gahra 3D shadow */
-      inset 20px 0 30px -10px rgba(0, 0, 0, 0.12); /* Left side book fold/spine crease shadow */
-    
-    /* Book ke page me curve/gradient feel dene ke liye */
+      0 20px 40px rgba(0, 0, 0, 0.35), 
+      inset 20px 0 30px -10px rgba(0, 0, 0, 0.12);
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0.06) 0%, rgba(255, 255, 255, 0) 4%);
-    
     font-family: 'Noto Sans Devanagari', Arial, sans-serif;
     position: relative;
     display: flex;
     flex-direction: column;
     overflow: hidden;
   }
+    
+
 @media print {
   body {
     -webkit-print-color-adjust: exact;
@@ -432,6 +426,36 @@
     pointer-events: none !important;
     z-index: 9999 !important; /* सभी कार्ड्स और आकृतियों के ऊपर दिखेगा */
   }
+     /* Real 3D Book & Spine Shadow */
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.35), /* Bahar ka gahra 3D shadow */
+      inset 20px 0 30px -10px rgba(0, 0, 0, 0.12); /* Left side book fold/spine crease shadow */
+    
+    /* Book ke page me curve/gradient feel dene ke liye */
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.06) 0%, rgba(255, 255, 255, 0) 4%);
+    
+    font-family: 'Noto Sans Devanagari', Arial, sans-serif;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+ }
+ #bodyArea{ 
+    flex: 1 1 auto; 
+    overflow: hidden; 
+    display: flex; 
+    align-items: flex-start; 
+    justify-content: center; 
+    min-height: 0; 
+    width: 100%;
+    margin: 4px 0;
+  }
+
+  #bodyInner{ 
+    width: 100%; 
+    height: 100%;
+    transform-origin: top center; 
+  }
 
 </style>
 </head>
@@ -707,6 +731,7 @@ function buildBook3DLayout(rows) {
   html += '</div>';
   return html;
 }
+
  
 /* Page Number show/hide + digit-only sanitize */
 function updatePageNumber() {
