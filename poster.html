@@ -506,6 +506,33 @@
   .zoom-controls { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px auto; background: #fff; padding: 8px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); max-width: 1100px; }
   .zoom-btn { background: #143b73; color: white; border: none; padding: 6px 14px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px; }
   .zoom-btn:hover { background: #0a2a55; }
+   #posterWrap { 
+    display: flex; 
+    justify-content: center; 
+    background-color: #555; 
+    padding: 30px 0;
+    overflow: auto; /* Taaki bada hone par scroll ho sake */
+  }
+
+  .poster {
+    width: 1080px;
+    height: 1527px;
+    background: #fff8e7;
+    border-top: 2px solid #e8d9b0;
+    border-right: 2px solid #e8d9b0;
+    border-bottom: 2px solid #e8d9b0;
+    border-left: 6px solid #d0c29b;
+    padding: 15px 25px 12px 35px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35), inset 20px 0 30px -10px rgba(0, 0, 0, 0.12);
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.06) 0%, rgba(255, 255, 255, 0) 4%);
+    font-family: 'Noto Sans Devanagari', Arial, sans-serif;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-shrink: 0;
+    transform-origin: top center; /* Zoom karne ke liye sabse zaroori property */
+  }
  
 </style>
 </head>
@@ -1251,17 +1278,16 @@ async function pasteText() {
         alert("Clipboard permission required. Please use your keyboard/device paste option inside the box.");
     }
 }
- let currentPosterScale = 1;
+let currentPosterScale = 1;
 
 function adjustZoom(amount) {
   currentPosterScale += amount;
-  if (currentPosterScale < 0.5) currentPosterScale = 0.5; // Min limit
-  if (currentPosterScale > 1.8) currentPosterScale = 1.8; // Max limit
+  if (currentPosterScale < 0.4) currentPosterScale = 0.4; // Min limit
+  if (currentPosterScale > 1.6) currentPosterScale = 1.6; // Max limit
   
   const posterEl = document.getElementById('poster');
   if (posterEl) {
     posterEl.style.transform = `scale(${currentPosterScale})`;
-    posterEl.style.transformOrigin = 'top center';
   }
 }
 
@@ -1272,6 +1298,7 @@ function resetZoom() {
     posterEl.style.transform = 'scale(1)';
   }
 }
+
  
   
 </script>
