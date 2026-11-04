@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Lecture Video Generator</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        #auth-status {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="file"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: #fafafa;
+        }
+        .row {
+            display: flex;
+            gap: 10px;
+        }
+        .row .form-group {
+            flex: 1;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff;
+            font-weight: bold;
+        }
+        #result-section {
+            margin-top: 30px;
+            display: none;
+            text-align: center;
+        }
+        video {
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .script-box {
+            text-align: left;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            max-height: 150px;
+            overflow-y: auto;
+            font-size: 14px;
+            color: #444;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Book Notes se Lecture Video Banayein</h2>
+    <div id="auth-status">🔄 Firebase Authentication check ho rahi hai...</div>
+    
+    <form id="videoForm">
+        <div class="form-group">
+            <label for="pdfFile">Apne Notes ki PDF File Upload Karein:</label>
+            <input type="file" id="pdfFile" name="notes" accept=".pdf" required>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="startPage">Start Page (Optional):</label>
+                <input type="number" id="startPage" name="startPage" placeholder="Jaise: 1" min="1">
+            </div>
+            <div class="form-group">
+                <label for="endPage">End Page (Optional):</label>
+                <input type="number" id="endPage" name="endPage" placeholder="Jaise: 3" min="1">
+            </div>
+        </div>
+        
+        <button type="submit" id="submitBtn">Video Generate Karein</button>
+    </form>
+
+    <div id="loading">⏳ Video render ho rahi hai (Isme 1-2 minute lag sakte hain)...</div>
+
+    <div id="result-section">
+        <h3>Aapka Lecture Video Taiyar Hai!</h3>
+        <video id="videoPlayer" controls></video>
+        <br><br>
+        <a id="downloadBtn" href="#" download="lecture_video.mp4" style="text-decoration: none;">
+            <button style="background-color: #28a745;">Video Download Karein</button>
+        </a>
+
+        <h4>Generated Teacher Script:</h4>
+        <div class="script-box" id="scriptText"></div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
+    let currentUserToken = null;
+
+    async function initApp() {
+        try {
+            // 1. Backend se Firebase Config load karein
+            const configRes = await fetch(`${BACKEND_URL}/firebase-config`);
+            if (!configRes.ok) throw new Error("Firebase config load failed");
+            
+            const firebaseConfig = await configRes.json();
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+
+            // 2. Auth state track karein aur token lein
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    currentUserToken = await user.getIdToken();
+                    document.getElementById('auth-status').innerHTML = `✅ Logged in as: ${user.email}`;
+                    console.log("Frontend Log - User logged in:", user.email);
+                } else {
+                    currentUserToken = null;
+                    document.getElementById('auth-status').innerHTML = `⚠️ Kripya pehle login karein!`;
+                    console.log("Frontend Log - User not logged in.");
+                }
+            });
+
+        } catch (err) {
+            console.error("Initialization Error:", err);
+            document.getElementById('auth-status').innerHTML = `❌ Setup load hone mein error aayi.`;
+        }
+    }
+
+    initApp();
+
+    // 3. Form Submit Handler & Backend Connection
+    document.getElementById('videoForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        console.log("Frontend Log - 'Video Generate Karein' button click hua.");
+
+        if (!currentUserToken) {
+            alert("Aap authenticated nahi hain! Kripya pehle login karein.");
+            return;
+        }
+
+        const fileInput = document.getElementById('pdfFile');
+        if (fileInput.files.length === 0) {
+            alert("Kripya ek PDF file select karein!");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('notes', fileInput.files[0]);
+        formData.append('startPage', document.getElementById('startPage').value);
+        formData.append('endPage', document.getElementById('endPage').value);
+
+        const loadingDiv = document.getElementById('loading');
+        const resultSection = document.getElementById('result-section');
+        const submitBtn = document.getElementById('submitBtn');
+
+        loadingDiv.style.display = 'block';
+        resultSection.style.display = 'none';
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Video ban rahi hai...";
+
+        try {
+            console.log("Frontend Log - Sending request to backend...");
+            const response = await fetch(`${BACKEND_URL}/api/generate-video-from-pdf`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + currentUserToken
+                },
+                body: formData
+            });
+
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                const errText = await response.text();
+                console.error("Frontend Log Error - Non-JSON response:", errText);
+                throw new Error("Server Error: " + errText.substring(0, 100));
+            }
+
+            const data = await response.json();
+            console.log("Frontend Log - Response received:", data);
+
+            if (response.ok && data.success) {
+                loadingDiv.style.display = 'none';
+                resultSection.style.display = 'block';
+
+                // Safe URL check taaki null hone par app crash na ho
+let fullVideoUrl = '';
+if (data.videoUrl) {
+    fullVideoUrl = data.videoUrl.startsWith('http') ? data.videoUrl : BACKEND_URL + data.videoUrl;
+    document.getElementById('videoPlayer').src = fullVideoUrl;
+    document.getElementById('downloadBtn').href = fullVideoUrl;
+    document.getElementById('videoPlayer').style.display = 'block';
+    document.getElementById('downloadBtn').style.display = 'inline-block';
+} else {
+    // Agar video nahi bani, toh sirf audio/script dikhayein
+    document.getElementById('videoPlayer').style.display = 'none';
+    document.getElementById('downloadBtn').style.display = 'none';
+}
+
+document.getElementById('scriptText').innerText = data.script;
+                document.getElementById('videoPlayer').src = fullVideoUrl;
+                document.getElementById('downloadBtn').href = fullVideoUrl;
+                document.getElementById('scriptText').innerText = data.script;
+                
+                alert("🎉 Video safalpurvak generate ho gayi hai!");
+            } else {
+                throw new Error(data.error || 'Video generation failed');
+            }
+
+        } catch (error) {
+            console.error('Frontend Log Catch Error:', error);
+            alert('Error: ' + error.message);
+            loadingDiv.style.display = 'none';
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Video Generate Karein";
+        }
+    });
+</script>
+
+</body>
+</html>
