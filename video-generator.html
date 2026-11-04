@@ -133,7 +133,7 @@
 
     <div id="loading">⏳ Video render ho rahi hai (Isme 1-2 minute lag sakte hain)...</div>
 
-    <div id="result-section">
+        <div id="result-section">
         <h3>Aapka Lecture Video Taiyar Hai!</h3>
         <video id="videoPlayer" controls></video>
         <br><br>
@@ -141,9 +141,14 @@
             <button style="background-color: #28a745;">Video Download Karein</button>
         </a>
 
+        <!-- Naya Audio Player -->
+        <br><br>
+        <h4>Teacher Audio:</h4>
+        <audio id="audioPlayer" controls style="width: 100%; margin-top: 10px; display: none;"></audio>
+
         <h4>Generated Teacher Script:</h4>
         <div class="script-box" id="scriptText"></div>
-    </div>
+        </div>
 </div>
 
 <script type="module">
