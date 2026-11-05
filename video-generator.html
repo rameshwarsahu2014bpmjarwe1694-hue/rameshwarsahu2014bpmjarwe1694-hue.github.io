@@ -133,13 +133,13 @@
 
     <div id="loading">⏳ Video render ho rahi hai (Isme 1-2 minute lag sakte hain)...</div>
 
-        <div id="result-section">
+    <div id="result-section">
         <h3>Aapka Lecture Video Taiyar Hai!</h3>
         <video id="videoPlayer" controls></video>
         <br><br>
-        <a id="downloadBtn" href="#" download="lecture_video.mp4" style="text-decoration: none;">
-            <button style="background-color: #28a745;">Video Download Karein</button>
-        </a>
+        
+        <!-- Native APK Download Bridge Integration -->
+        <button id="downloadBtn" type="button" style="background-color: #28a745; display: none;">Video Download Karein</button>
 
         <!-- Naya Audio Player -->
         <br><br>
@@ -148,7 +148,7 @@
 
         <h4>Generated Teacher Script:</h4>
         <div class="script-box" id="scriptText"></div>
-        </div>
+    </div>
 </div>
 
 <script type="module">
@@ -157,10 +157,10 @@
 
     const BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
     let currentUserToken = null;
+    let currentVideoUrl = '';
 
     async function initApp() {
         try {
-            // 1. Backend se Firebase Config load karein
             const configRes = await fetch(`${BACKEND_URL}/firebase-config`);
             if (!configRes.ok) throw new Error("Firebase config load failed");
             
@@ -168,16 +168,13 @@
             const app = initializeApp(firebaseConfig);
             const auth = getAuth(app);
 
-            // 2. Auth state track karein aur token lein
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     currentUserToken = await user.getIdToken();
                     document.getElementById('auth-status').innerHTML = `✅ Logged in as: ${user.email}`;
-                    console.log("Frontend Log - User logged in:", user.email);
                 } else {
                     currentUserToken = null;
                     document.getElementById('auth-status').innerHTML = `⚠️ Kripya pehle login karein!`;
-                    console.log("Frontend Log - User not logged in.");
                 }
             });
 
@@ -189,10 +186,28 @@
 
     initApp();
 
-    // 3. Form Submit Handler & Backend Connection
+    // In-App Download Handler using Native Android Bridge or Fallback Link
+    document.getElementById('downloadBtn').addEventListener('click', function() {
+        if (!currentVideoUrl) return;
+        
+        const fileName = "lecture_video.mp4";
+
+        // Agar native Android WebView bridge available hai toh uske zariye download karein
+        if (window.AndroidBridge && typeof window.AndroidBridge.download === 'function') {
+            window.AndroidBridge.download(currentVideoUrl, fileName, currentUserToken || "");
+        } else {
+            // Normal browser fallback
+            const a = document.createElement('a');
+            a.href = currentVideoUrl;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    });
+
     document.getElementById('videoForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        console.log("Frontend Log - 'Video Generate Karein' button click hua.");
 
         if (!currentUserToken) {
             alert("Aap authenticated nahi hain! Kripya pehle login karein.");
@@ -220,7 +235,6 @@
         submitBtn.innerText = "Video ban rahi hai...";
 
         try {
-            console.log("Frontend Log - Sending request to backend...");
             const response = await fetch(`${BACKEND_URL}/api/generate-video-from-pdf`, {
                 method: 'POST',
                 headers: {
@@ -232,43 +246,40 @@
             const contentType = response.headers.get("content-type");
             if (!contentType || !contentType.includes("application/json")) {
                 const errText = await response.text();
-                console.error("Frontend Log Error - Non-JSON response:", errText);
                 throw new Error("Server Error: " + errText.substring(0, 100));
             }
 
             const data = await response.json();
-            console.log("Frontend Log - Response received:", data);
 
             if (response.ok && data.success) {
                 loadingDiv.style.display = 'none';
                 resultSection.style.display = 'block';
 
-                // Safe URL check taaki null hone par app crash na ho
-let fullVideoUrl = '';
-if (data.videoUrl) {
-    fullVideoUrl = data.videoUrl.startsWith('http') ? data.videoUrl : BACKEND_URL + data.videoUrl;
-    document.getElementById('videoPlayer').src = fullVideoUrl;
-    document.getElementById('downloadBtn').href = fullVideoUrl;
-    document.getElementById('videoPlayer').style.display = 'block';
-    document.getElementById('downloadBtn').style.display = 'inline-block';
-} else {
-    // Agar video nahi bani, toh sirf audio/script dikhayein
-    document.getElementById('videoPlayer').style.display = 'none';
-    document.getElementById('downloadBtn').style.display = 'none';
-}
+                if (data.videoUrl) {
+                    currentVideoUrl = data.videoUrl.startsWith('http') ? data.videoUrl : BACKEND_URL + data.videoUrl;
+                    document.getElementById('videoPlayer').src = currentVideoUrl;
+                    document.getElementById('videoPlayer').style.display = 'block';
+                    document.getElementById('downloadBtn').style.display = 'block';
+                } else {
+                    document.getElementById('videoPlayer').style.display = 'none';
+                    document.getElementById('downloadBtn').style.display = 'none';
+                }
 
-document.getElementById('scriptText').innerText = data.script;
-                document.getElementById('videoPlayer').src = fullVideoUrl;
-                document.getElementById('downloadBtn').href = fullVideoUrl;
-                document.getElementById('scriptText').innerText = data.script;
-                
+                if (data.audioUrl) {
+                    const audioFullUrl = data.audioUrl.startsWith('http') ? data.audioUrl : BACKEND_URL + data.audioUrl;
+                    const audioPlayer = document.getElementById('audioPlayer');
+                    audioPlayer.src = audioFullUrl;
+                    audioPlayer.style.display = 'block';
+                }
+
+                document.getElementById('scriptText').innerText = data.script || '';
                 alert("🎉 Video safalpurvak generate ho gayi hai!");
             } else {
                 throw new Error(data.error || 'Video generation failed');
             }
 
         } catch (error) {
-            console.error('Frontend Log Catch Error:', error);
+            console.error('Error:', error);
             alert('Error: ' + error.message);
             loadingDiv.style.display = 'none';
         } finally {
