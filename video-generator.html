@@ -235,14 +235,19 @@
         submitBtn.innerText = "Video ban rahi hai...";
 
         try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 180000); // 180,000 ms = 3 minutes
+            
             const response = await fetch(`${BACKEND_URL}/api/generate-video-from-pdf`, {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + currentUserToken
                 },
                 body: formData
+                signal: controller.signal // 👈 Yeh timer ko fetch request se jodta hai
             });
 
+            clearTimeout(timeoutId);
             const contentType = response.headers.get("content-type");
             if (!contentType || !contentType.includes("application/json")) {
                 const errText = await response.text();
