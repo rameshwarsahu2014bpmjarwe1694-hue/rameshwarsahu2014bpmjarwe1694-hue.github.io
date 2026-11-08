@@ -128,7 +128,12 @@
             </div>
         </div>
         
-        <button type="submit" id="submitBtn">Video Generate Karein</button>
+                <!-- Purane ek button ki jagah yeh 3 step buttons -->
+        <button type="button" id="btnStep1" class="btn-step1" onclick="runStep1()" style="background-color: #007bff; margin-bottom: 10px;">Step 1: Extract Text / OCR</button>
+        <button type="button" id="btnStep2" class="btn-step2" onclick="runStep2()" disabled style="background-color: #6c757d; margin-bottom: 10px; cursor: not-allowed;">Step 2: Generate Audio & Slides</button>
+        <button type="button" id="btnStep3" class="btn-step3" onclick="runStep3()" disabled style="background-color: #6c757d; margin-bottom: 10px; cursor: not-allowed;">Step 3: Compile Final Video</button>
+
+        <div id="statusLog" style="background: #f8f9fa; border: 1px solid #ddd; padding: 10px; height: 100px; overflow-y: auto; font-family: monospace; font-size: 12px; margin-top: 10px;">Status: Awaiting action...</div>
     </form>
 
     <div id="loading">⏳ Video render ho rahi hai (Isme 1-2 minute lag sakte hain)...</div>
@@ -185,6 +190,112 @@
     }
 
     initApp();
+
+        let extractedTextGlobal = "";
+    let step2DataCache = {};
+
+    function log(message) {
+        const box = document.getElementById('statusLog');
+        if(box) { box.innerHTML += `<br>> ${message}`; box.scrollTop = box.scrollHeight; }
+    }
+
+    window.runStep1 = async function() {
+        if (!currentUserToken) { alert("Pehle login karein!"); return; }
+        const fileInput = document.getElementById('pdfFile');
+        if (!fileInput.files[0]) { alert("Kripya PDF file select karein!"); return; }
+
+        const formData = new FormData();
+        formData.append('notes', fileInput.files[0]);
+        formData.append('startPage', document.getElementById('startPage').value);
+        formData.append('endPage', document.getElementById('endPage').value);
+
+        log("Step 1 Started: Extracting text...");
+        document.getElementById('btnStep1').disabled = true;
+
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/step1-extract`, {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + currentUserToken },
+                body: formData
+            });
+            const data = await res.json();
+            if (data.success) {
+                extractedTextGlobal = data.extractedText;
+                log(`✔ Text extracted successfully!`);
+                const b2 = document.getElementById('btnStep2');
+                b2.disabled = false; b2.style.background = "#28a745"; b2.style.cursor = "pointer";
+            } else {
+                log("❌ Error: " + data.error);
+                document.getElementById('btnStep1').disabled = false;
+            }
+        } catch (err) {
+            log("❌ Step 1 Failed: " + err.message);
+            document.getElementById('btnStep1').disabled = false;
+        }
+    };
+
+    window.runStep2 = async function() {
+        log("Step 2 Started: Generating audio & slides...");
+        document.getElementById('btnStep2').disabled = true;
+
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/step2-generate-assets`, {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + currentUserToken, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: extractedTextGlobal })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                step2DataCache = data;
+                log(`✔ Audio & Slides created successfully!`);
+                document.getElementById('scriptText').innerText = data.script;
+                if (data.audioUrl) {
+                    const audioPlayer = document.getElementById('audioPlayer');
+                    audioPlayer.src = data.audioUrl.startsWith('http') ? data.audioUrl : BACKEND_URL + data.audioUrl;
+                    audioPlayer.style.display = 'block';
+                }
+                const b3 = document.getElementById('btnStep3');
+                b3.disabled = false; b3.style.background = "#ffc107"; b3.style.color = "black"; b3.style.cursor = "pointer";
+            } else {
+                log("❌ Error: " + data.error);
+                document.getElementById('btnStep2').disabled = false;
+            }
+        } catch (err) {
+            log("❌ Step 2 Failed: " + err.message);
+            document.getElementById('btnStep2').disabled = false;
+        }
+    };
+
+    window.runStep3 = async function() {
+        log("Step 3 Started: Compiling final video via FFmpeg...");
+        document.getElementById('btnStep3').disabled = true;
+
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/step3-compile-video`, {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + currentUserToken, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ audioPath: step2DataCache.audioPath, slideImages: step2DataCache.slideImages })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                log("🎉 Video ready!");
+                document.getElementById('result-section').style.display = 'block';
+                currentVideoUrl = data.videoUrl.startsWith('http') ? data.videoUrl : BACKEND_URL + data.videoUrl;
+                document.getElementById('videoPlayer').src = currentVideoUrl;
+                document.getElementById('downloadBtn').style.display = 'block';
+                alert("🎉 Video safalpurvak generate ho gayi hai!");
+            } else {
+                log("❌ Error: " + data.error);
+                document.getElementById('btnStep3').disabled = false;
+            }
+        } catch (err) {
+            log("❌ Step 3 Failed: " + err.message);
+            document.getElementById('btnStep3').disabled = false;
+        }
+    };
+
 
     // In-App Download Handler using Native Android Bridge or Fallback Link
     document.getElementById('downloadBtn').addEventListener('click', function() {
