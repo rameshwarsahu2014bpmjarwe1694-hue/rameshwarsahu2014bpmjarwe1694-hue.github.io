@@ -160,20 +160,7 @@
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    
-    const BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
-    
-    const configRes = await fetch(`${BACKEND_URL}/firebase-config`);
-    if (!configRes.ok) throw new Error("Firebase config load failed");
-    const firebaseConfig = await configRes.json();
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    
+    const BACKEND_URL = "https://payment-backend-2-g6go.onrender.com"
     const chatBox = document.getElementById('chatBox');
     const userInput = document.getElementById('userInput');
     const sendBtn = document.getElementById('sendBtn');
@@ -187,34 +174,66 @@
         chatBox.scrollTop = chatBox.scrollHeight; 
     }
 
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            let userName = user.displayName || user.email.split('@')[0] || "Student";
-            
-            const welcomeHTML = `
-                <b>स्वागत है, ${userName}!</b> 👋<br>
-                मैं <b>RAMESHWAR SAHU AI STUDY HUB</b> का स्मार्ट असिस्टेंट हूँ🤖<br><br>
-                आप मुझसे किसी भी फीचर के लिए सीधे चैट में बात कर सकते हैं:
-                <ul style="margin-left: 20px; margin-top: 5px;">
-                    <li><b>Excel:</b> "मुझे Excel रिपोर्ट डाउनलोड करनी है</li>
-                    <li><b>Maths:</b> "मैथ्स हल करो: (25 * 4) + 10</li>
-                    <li><b>Letter/Draft:</b> "विभागीय पत्र ड्राफ्ट करो...</li>
-                    <li><b>Video & Slides:</b> "इस टॉपिक पर वीडियो लेक्चर और स्लाइड्स बनाओ..."</li>
-                    <li><b>Study Q&A:</b> विभागीय परीक्षा, जीके, और पोस्टल रूल्स से जुड़े सवाल</li>
-                </ul>
-                <br>अपना निर्देश नीचे टाइप करें! ✨`;
+        async function initApp() {
+        try {
+            chatBox.innerHTML = `
+                <div class="message ai-msg" id="welcomeMsg">
+                    <b>स्वागत है!</b> 👋<br>
+                    मैं <b>RAMESHWAR SAHU AI STUDY HUB</b> का स्मार्ट असिस्टेंट हूँ। 🤖<br><br>
+                    आप मुझसे किसी भी फीचर के लिए सीधे चैट में बात कर सकते हैं:
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li><b>Excel:</b> "मुझे Excel रिपोर्ट डाउनलोड करनी है"</li>
+                        <li><b>Maths:</b> "मैथ्स हल करो: (25 * 4) + 10"</li>
+                        <li><b>Letter/Draft:</b> "विभागीय पत्र ड्राफ्ट करो..."</li>
+                        <li><b>Video & Slides:</b> "इस टॉपिक पर वीडियो लेक्चर और स्लाइड्स बनाओ..."</li>
+                        <li><b>Study Q&A:</b> विभागीय परीक्षा, जीके, और पोस्टल रूल्स से जुड़े सवाल</li>
+                    </ul>
+                    <br>अपना निर्देश नीचे टाइप करें! ✨
+                </div>`;
 
-            chatBox.innerHTML = ''; 
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'message ai-msg';
-            msgDiv.id = 'welcomeMsg'; 
-            msgDiv.innerHTML = welcomeHTML;
-            chatBox.appendChild(msgDiv);
-        } else {
-            alert("Security Alert: Please login first!");
-            window.location.href = "login.html"; 
+            const [{ initializeApp }, { getAuth, onAuthStateChanged }, { getFirestore }] = await Promise.all([
+                import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
+                import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"),
+                import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js")
+            ]);
+
+            const configRes = await fetch(`${BACKEND_URL}/firebase-config`, { cache: "no-store" });
+            if (!configRes.ok) throw new Error("Config load failed");
+            const firebaseConfig = await configRes.json();
+
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    let userName = user.displayName || user.email.split('@')[0] || "Student";
+                    const welcomeMsg = document.getElementById('welcomeMsg');
+                    if (welcomeMsg) {
+                        welcomeMsg.innerHTML = `
+                            <b>स्वागत है, ${userName}!</b> 👋<br>
+                            मैं <b>RAMESHWAR SAHU AI STUDY HUB</b> का स्मार्ट असिस्टेंट हूँ। 🤖<br><br>
+                            आप मुझसे किसी भी फीचर के लिए सीधे चैट में बात कर सकते हैं:
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li><b>Excel:</b> "मुझे Excel रिपोर्ट डाउनलोड करनी है"</li>
+                                <li><b>Maths:</b> "मैथ्स हल करो: (25 * 4) + 10"</li>
+                                <li><b>Letter/Draft:</b> "विभागीय पत्र ड्राफ्ट करो..."</li>
+                                <li><b>Video & Slides:</b> "इस टॉपिक पर वीडियो लेक्चर और स्लाइड्स बनाओ..."</li>
+                                <li><b>Study Q&A:</b> विभागीय परीक्षा, जीके, और पोस्टल रूल्स से जुड़े सवाल</li>
+                            </ul>
+                            <br>अपना निर्देश नीचे टाइप करें! ✨`;
+                    }
+                } else {
+                    window.location.href = "login.html"; 
+                }
+            });
+        } catch (err) {
+            console.error("Init Error:", err);
         }
-    });
+    }
+
+    initApp();
+
 
     userInput.addEventListener('focus', () => {
         const welcomeElement = document.getElementById('welcomeMsg');
