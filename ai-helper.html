@@ -161,6 +161,7 @@
 
 <script type="module">
     const BACKEND_URL = "https://payment-backend-2-g6go.onrender.com"
+    let auth;
     const chatBox = document.getElementById('chatBox');
     const userInput = document.getElementById('userInput');
     const sendBtn = document.getElementById('sendBtn');
@@ -179,7 +180,7 @@
             chatBox.innerHTML = `
                 <div class="message ai-msg" id="welcomeMsg">
                     <b>स्वागत है!</b> 👋<br>
-                    मैं <b>RAMESHWAR SAHU AI STUDY HUB</b> का स्मार्ट असिस्टेंट हूँ। 🤖<br><br>
+                    मैं <b>RAMESHWAR SAHU AI STUDY HUB</b> का स्मार्ट अlet auth;सिस्टेंट हूँ। 🤖<br><br>
                     आप मुझसे किसी भी फीचर के लिए सीधे चैट में बात कर सकते हैं:
                     <ul style="margin-left: 20px; margin-top: 5px;">
                         <li><b>Excel:</b> "मुझे Excel रिपोर्ट डाउनलोड करनी है"</li>
@@ -202,7 +203,7 @@
             const firebaseConfig = await configRes.json();
 
             const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
+            auth = getAuth(app);
             const db = getFirestore(app);
 
             onAuthStateChanged(auth, async (user) => {
@@ -299,11 +300,12 @@
                 payload = { question: queryText };
             }
 
-            // 2. API REQUEST DISPATCH
+                        // 2. API REQUEST DISPATCH
             const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${idToken}`, // 👈 Yeh line zaroori hai
                     'X-Source-Auth': secureToken
                 },
                 body: JSON.stringify(payload) 
