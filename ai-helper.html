@@ -258,6 +258,7 @@
         const loadingMsgElement = chatBox.lastChild;
 
         try {
+            const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : "";
             const secureToken = window.APP_SECRET || "";
             let endpoint = `${BACKEND_URL}/api/ask-ai`;
             let payload = { question: queryText };
