@@ -300,7 +300,7 @@
                     appendMessage(`⚠️ मैथ्स एक्सप्रेशन हल करने में त्रुटि: ${data.error || 'अमान्य एक्सप्रेशन'}`, 'ai-msg', true);
                 }
             } else if (endpoint.includes('step2-generate-assets')) {
-                let assetsHTML = `🎬 आपके वीडियो एसेट्स, ऑडियो और स्लाइड्स तैयार हैं[span_7](start_span)[span_7](end_span)!`;
+                let assetsHTML = `🎬 आपके वीडियो एसेट्स, ऑडियो और स्लाइड्स तैयार हैं!`;
                 if (data.audioUrl) {
                     assetsHTML += `
                         <div class="action-card">
@@ -321,14 +321,14 @@
                     let formattedOutput = data.answer.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
                     appendMessage(formattedOutput, 'ai-msg', true);
                 } else {
-                    appendMessage('क्षमा करें, मैं इस निर्देश को प्रोसेस नहीं कर पाया। कृपया दोबारा प्रयास करें[span_8](start_span)[span_8](end_span).', 'ai-msg');
+                    appendMessage('क्षमा करें, मैं इस निर्देश को प्रोसेस नहीं कर पाया। कृपया दोबारा प्रयास करें.', 'ai-msg');
                 }
             }
 
         } catch (error) {
             loadingMsgElement.remove();
             console.error("Error:", error);
-            appendMessage('सर्वर से संपर्क नहीं हो पाया। कृपया अपना इंटरनेट कनेक्शन जाँचें[span_9](start_span)[span_9](end_span).', 'ai-msg');
+            appendMessage('सर्वर से संपर्क नहीं हो पाया। कृपया अपना इंटरनेट कनेक्शन जाँचें.', 'ai-msg');
         }
     }
 
