@@ -299,23 +299,28 @@
                 } else {
                     appendMessage(`⚠️ मैथ्स एक्सप्रेशन हल करने में त्रुटि: ${data.error || 'अमान्य एक्सप्रेशन'}`, 'ai-msg', true);
                 }
-            } else if (endpoint.includes('step2-generate-assets')) {
+                        } else if (endpoint.includes('step2-generate-assets')) {
                 let assetsHTML = `🎬 आपके वीडियो एसेट्स, ऑडियो और स्लाइड्स तैयार हैं!`;
                 if (data.audioUrl) {
+                    let finalAudioUrl = data.audioUrl.startsWith('http') ? data.audioUrl : `${BACKEND_URL}${data.audioUrl}`;
                     assetsHTML += `
                         <div class="action-card">
                             <span>🔊 Voiceover Audio Lecture</span>
-                            <a href="${data.audioUrl}" class="action-btn" target="_blank">🎧 Play / Listen</a>
+                            <button onclick="if(window.AndroidBridge) { window.AndroidBridge.download('${finalAudioUrl}', 'Audio_Lecture.mp3', ''); } else { window.open('${finalAudioUrl}', '_blank'); }" class="action-btn" style="cursor:pointer; border:none;">🎧 Download Audio</button>
                         </div>`;
                 }
                 if (data.slideImages && data.slideImages.length > 0) {
                     assetsHTML += `<br>🖼️ <b>कुल ${data.slideImages.length} Slides / Images जनरेट हुईं:</b><div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">`;
                     data.slideImages.forEach((imgUrl, index) => {
-                        assetsHTML += `<a href="${imgUrl}" target="_blank" style="padding:6px 12px; background:#e2e8f0; border-radius:4px; text-decoration:none; color:#333; font-size:13px;">View Slide ${index + 1}</a>`;
+                        let finalImgUrl = imgUrl.startsWith('http') ? imgUrl : `${BACKEND_URL}/${imgUrl}`;
+                        // Android app ke andar hai toh native bridge use hoga, web par hai toh new tab khulega
+                        assetsHTML += `<button onclick="if(window.AndroidBridge) { window.AndroidBridge.download('${finalImgUrl}', 'Slide_${index + 1}.png', ''); } else { window.open('${finalImgUrl}', '_blank'); }" style="padding:8px 14px; background:#007bff; color:white; border:none; border-radius:6px; cursor:pointer; font-size:13px; font-weight:bold;">⬇️ Download Slide ${index + 1}</button>`;
                     });
                     assetsHTML += `</div>`;
                 }
                 appendMessage(assetsHTML, 'ai-msg', true);
+            }
+
             } else {
                 if (data.answer) {
                     let formattedOutput = data.answer.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
