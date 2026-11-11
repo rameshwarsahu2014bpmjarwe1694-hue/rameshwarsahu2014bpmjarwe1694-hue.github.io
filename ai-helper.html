@@ -634,15 +634,25 @@ if (welcomeElement) welcomeElement.remove();
     });
 
     // Smart Conversational Router (All Server Features Integrated)
-    async function handleUserMessage() {
+        async function handleUserMessage() {
         const queryText = userInput.value.trim();
-        if (!queryText) return;
+        if (!queryText && selectedFiles.length === 0) return;
          
         const welcomeElement = document.getElementById('defaultWelcome');
-if (welcomeElement) welcomeElement.remove();
+        if (welcomeElement) welcomeElement.remove();
 
-        appendMessage(queryText, 'user-msg');
+        let displayMsg = queryText;
+        if (selectedFiles.length > 0) {
+            displayMsg += ` <br><small><i>(${selectedFiles.length} files attached)</i></small>`;
+        }
+
+        appendMessage(displayMsg, 'user-msg', selectedFiles.length > 0);
         userInput.value = '';
+        
+        // Files ko clear karna message bhejne ke baad
+        let currentFiles = [...selectedFiles];
+        selectedFiles = [];
+        renderAttachments();
 
         const lowerQuery = queryText.toLowerCase();
 
