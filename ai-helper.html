@@ -301,23 +301,50 @@ input {
     
 <div class="input-area">
 
+    <!-- Gemini Style Popup Menu Box -->
+    <div id="attachMenu" hidden class="attach-menu">
+        <button type="button" class="tool-card" onclick="triggerInput('galleryInput')">
+            <span class="icon">🖼️</span>
+            <span>फ़ोटो</span>
+        </button>
+
+        <button type="button" class="tool-card" onclick="triggerInput('cameraInput')">
+            <span class="icon">📷</span>
+            <span>कैमरा</span>
+        </button>
+
+        <button type="button" class="tool-card" onclick="triggerInput('fileInput')">
+            <span class="icon">📁</span>
+            <span>फ़ाइलें</span>
+        </button>
+    </div>
+
+    <!-- Hidden File Inputs -->
+    <input type="file" id="galleryInput" accept="image/*" multiple hidden>
+    <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
+    <input type="file" id="fileInput" accept="image/*,.pdf,application/pdf" multiple hidden>
+
+    <!-- Attachment Preview Area -->
+    <div id="attachmentPreview"></div>
     
-<!-- Gemini Style Popup Menu Box -->
-<div id="attachMenu" hidden class="attach-menu">
-    <button type="button" class="tool-card" onclick="triggerInput('galleryInput')">
-        <span class="icon">🖼️</span>
-        <span>फ़ोटो</span>
-    </button>
+    <!-- Text Tools (Select All, Copy, Paste) -->
+    <div class="text-tools">
+        <button type="button" onclick="selectAllText()">Select All</button>
+        <button type="button" onclick="copyText()">Copy</button>
+        <button type="button" onclick="pasteText()">Paste</button>
+    </div>
 
-    <button type="button" class="tool-card" onclick="triggerInput('cameraInput')">
-        <span class="icon">📷</span>
-        <span>कैमरा</span>
-    </button>
+    <!-- Chat Box Input Row (Jisme + button input box ke andar hai) -->
+    <div class="input-row">
+        <button type="button" class="attach-btn" id="attachToggleBtn">+</button>
+        <input type="text" id="userInput" placeholder="यहाँ अपना सवाल लिखें...">
+        <button class="send-btn" id="sendBtn">भेजें</button>
+    </div>
 
-    <button type="button" class="tool-card" onclick="triggerInput('fileInput')">
-        <span class="icon">📁</span>
-        <span>फ़ाइलें</span>
-    </button>
+    <div class="footer-note">
+        AI महत्वपूर्ण नियमों या डेटा को गलत पेश कर सकता है। कृपया विभागीय गाइड से पुष्टि करें।
+    </div>
+
 </div>
 
 <div class="composer-tools">
