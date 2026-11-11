@@ -706,6 +706,9 @@ if (welcomeElement) welcomeElement.remove();
             let payload = { question: queryText };
 
             // 1. INTENT DETECTION & ROUTING FOR ALL FEATURES
+            if (currentFiles.length > 0) {
+                endpoint = `${BACKEND_URL}/api/step1-extract`;
+            } 
 
             // 👉 Intent A: Excel Report Download
             if (lowerQuery.includes('excel') || lowerQuery.includes('xlsx') || lowerQuery.includes('शीट डाउनलोड') || lowerQuery.includes('रिपोर्ट डाउनलोड')) {
@@ -741,19 +744,30 @@ if (welcomeElement) welcomeElement.remove();
                 payload = { question: queryText };
             }
 
-                        // 2. API REQUEST DISPATCH
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${idToken}`, // 👈 Yeh line zaroori hai
-                    'X-Source-Auth': secureToken
-                },
-                body: JSON.stringify(payload) 
-            });
+      // 2. API REQUEST DISPATCH
+        let fetchOptions = {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${idToken}`,
+                'X-Source-Auth': secureToken
+            }
+        };
 
-            const data = await response.json();
-            loadingMsgElement.remove(); 
+        if (currentFiles.length > 0) {
+            endpoint = `${BACKEND_URL}/api/step1-extract`;
+            const formData = new FormData();
+            formData.append('notes', currentFiles[0]);
+            formData.append('question', queryText);
+            fetchOptions.body = formData; // 👈 FormData bina Content-Type header ke bhejna hai
+        } else {
+            fetchOptions.headers['Content-Type'] = 'application/json';
+            fetchOptions.body = JSON.stringify(payload);
+        }
+
+        const response = await fetch(endpoint, fetchOptions);
+        const data = await response.json();
+        loadingMsgElement.remove(); 
+
 
             // 3. HANDLE RESPONSES ACCORDING TO ROUTE TYPE
                     // Response Handling
