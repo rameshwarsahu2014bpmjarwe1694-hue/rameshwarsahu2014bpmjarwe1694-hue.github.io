@@ -12,6 +12,14 @@
         value: true,
         writable: false
     });
+   // View Source & DevTools Interception Shield
+setInterval(() => {
+    const threshold = 160;
+    if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
+        document.body.innerHTML = "<h2 style='text-align:center; margin-top:25vh; font-family:monospace; color:#ff0000;'>#ERR_SECURE_VIEW_BLOCKED_0x8F9A<br><span>[Encrypted Stream Intercepted]</span></h2>";
+    }
+}, 1500);
+
 
     const RSH = window.RSHSecurity = {};
 
