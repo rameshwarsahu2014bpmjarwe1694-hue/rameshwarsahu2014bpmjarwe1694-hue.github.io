@@ -141,24 +141,68 @@ input {
             background: #fff; 
             flex-shrink: 0;
         }
-        .input-row { display: flex; width: 100%; gap: 10px; align-items: center;  }
-        input { flex: 1; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; outline: none; font-size: 15px; }
-        input:focus { border-color: var(--primary); }
+        /* Poore input box ko ek unified capsule border dene ke liye */
+.input-row { 
+    display: flex; 
+    width: 100%; 
+    gap: 8px; 
+    align-items: center; 
+    border: 2px solid #ddd; 
+    border-radius: 28px; 
+    padding: 6px 10px; 
+    background: #fff;
+}
+        .input-row:focus-within {
+    border-color: var(--primary);
+        }
+        /* Text input ka alag se border hatane ke liye taaki wo box ke andar fit ho */
+.input-row input { 
+    flex: 1; 
+    border: none !important; 
+    padding: 8px 4px; 
+    outline: none; 
+    font-size: 15px; 
+    background: transparent;
+}
         
-        button.send-btn { background: var(--primary); color: white; border: none; padding: 0 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; }
-        button.send-btn:hover { background: #0056b3; }
+        /* Send button styling */
+button.send-btn { 
+    background: var(--primary); 
+    color: white; 
+    border: none; 
+    width: 38px;
+    height: 38px;
+    border-radius: 50%; 
+    cursor: pointer; 
+    font-size: 16px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button.send-btn:hover { 
+    background: #0056b3; 
+}
         
         .footer-note { text-align: center; font-size: 11px; color: #aaa; margin-top: 8px; }
 
+/* + button ko box ke andar clean look dene ke liye */
 .attach-btn {
-    background: #eaf3ff;
-    color: #0066cc;
-    font-size: 23px;
-    width: 43px;
-    height: 43px;
-    border: 1px solid #b9d7ff;
+    background: transparent;
+    color: #2c3e50;
+    font-size: 24px;
+    width: 38px;
+    height: 38px;
+    border: none;
     border-radius: 50%;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+.attach-btn:hover {
+    background: #f0f2f5;
 }
 
 #attachmentPreview {
@@ -339,10 +383,11 @@ input {
     <button type="button" onclick="pasteText()">Paste</button>
     </div>
         <div class="input-row">
-        <button type="button" class="attach-btn" id="attachToggleBtn">+</button>
-        <input type="text" id="userInput" placeholder="यहाँ अपना सवाल लिखें...">
-        <button class="send-btn" id="sendBtn">भेजें</button>
-    </div>
+    <button type="button" class="attach-btn" id="attachToggleBtn">+</button>
+    <input type="text" id="userInput" placeholder="यहाँ अपना सवाल लिखें...">
+    <button class="send-btn" id="sendBtn">➤</button>
+</div>
+
 
 
     <div class="footer-note">
