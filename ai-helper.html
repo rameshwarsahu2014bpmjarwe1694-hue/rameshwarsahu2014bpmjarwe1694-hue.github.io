@@ -302,28 +302,27 @@ input {
 <div class="input-area">
 
     
-<div class="composer-tools">
-    <button type="button" class="attach-btn"
-        onclick="document.getElementById('attachMenu').hidden =
-        !document.getElementById('attachMenu').hidden">
-        +
+<!-- Gemini Style Popup Menu Box -->
+<div id="attachMenu" hidden class="attach-menu">
+    <button type="button" class="tool-card" onclick="triggerInput('galleryInput')">
+        <span class="icon">🖼️</span>
+        <span>फ़ोटो</span>
+    </button>
+
+    <button type="button" class="tool-card" onclick="triggerInput('cameraInput')">
+        <span class="icon">📷</span>
+        <span>कैमरा</span>
+    </button>
+
+    <button type="button" class="tool-card" onclick="triggerInput('fileInput')">
+        <span class="icon">📁</span>
+        <span>फ़ाइलें</span>
     </button>
 </div>
 
-<div id="attachMenu" hidden class="composer-tools">
-    <button type="button" class="tool-btn"
-        onclick="document.getElementById('galleryInput').click()">
-        🖼️ Gallery
-    </button>
-
-    <button type="button" class="tool-btn"
-        onclick="document.getElementById('cameraInput').click()">
-        📷 Camera
-    </button>
-
-    <button type="button" class="tool-btn"
-        onclick="document.getElementById('fileInput').click()">
-        📁 Files / PDF
+<div class="composer-tools">
+    <button type="button" class="attach-btn" id="attachToggleBtn">
+        +
     </button>
 </div>
 
@@ -373,6 +372,33 @@ let selectedFiles = [];
 
 const MAX_FILES = 5;
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
+const attachMenu = document.getElementById('attachMenu');
+const attachToggleBtn = document.getElementById('attachToggleBtn');
+
+// + button dabane par menu toggle hoga
+attachToggleBtn.onclick = (e) => {
+    e.stopPropagation();
+    attachMenu.hidden = !attachMenu.hidden;
+};
+
+// Menu ke bahar kahin bhi click karne par menu band ho jayega
+document.addEventListener('click', (e) => {
+    if (!attachMenu.contains(e.target) && e.target !== attachToggleBtn) {
+        attachMenu.hidden = true;
+    }
+});
+
+// Option click hone par file input trigger hoga aur menu band ho jayega
+window.triggerInput = function(inputId) {
+    document.getElementById(inputId).click();
+    attachMenu.hidden = true;
+};
+
+// Input par focus hone par bhi menu hide ho jaye
+userInput.addEventListener('focus', () => {
+    attachMenu.hidden = true;
+});
+    
 
 function addFiles(files) {
 
