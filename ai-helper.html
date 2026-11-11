@@ -310,12 +310,12 @@ input {
 
     <div id="attachmentPreview"></div>
     
-<div class="text-tools">
+
+    <div class="text-tools">
     <button type="button" onclick="selectAllText()">Select All</button>
     <button type="button" onclick="copyText()">Copy</button>
     <button type="button" onclick="pasteText()">Paste</button>
-</div>
-    
+    </div>
     <div class="input-row">
         <input type="text" id="userInput"
             placeholder="यहाँ अपना सवाल लिखें...">
@@ -448,18 +448,15 @@ document.getElementById('fileInput').addEventListener(
 );
 
 
-function selectAllText() {
+window.selectAllText = function() {
     userInput.focus();
     userInput.select();
 }
 
-async function copyText() {
+window.copyText = async function() {
     userInput.focus();
-
     if (!userInput.value) return;
-
     userInput.select();
-
     try {
         await navigator.clipboard.writeText(userInput.value);
     } catch (e) {
@@ -467,20 +464,16 @@ async function copyText() {
     }
 }
 
-async function pasteText() {
+window.pasteText = async function() {
     userInput.focus();
-
     try {
         const text = await navigator.clipboard.readText();
-
         const start = userInput.selectionStart;
         const end = userInput.selectionEnd;
-
         userInput.setRangeText(text, start, end, 'end');
-    } catch (e) {
-        // Android keyboard ka native Paste option use karein.
-    }
+    } catch (e) {}
 }
+
 
     
 
