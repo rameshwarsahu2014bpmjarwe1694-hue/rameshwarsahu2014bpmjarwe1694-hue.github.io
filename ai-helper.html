@@ -235,6 +235,24 @@ input {
     }
 }
         
+.text-tools {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.text-tools button {
+    background: #f1f5f9;
+    color: #263238;
+    border: 1px solid #d5dce5;
+    padding: 8px 14px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+        
+        
     </style>
 </head>
 <body>
@@ -254,44 +272,32 @@ input {
     
 <div class="input-area">
 
-    <div class="composer-tools">
+    
+<div class="composer-tools">
+    <button type="button" class="attach-btn"
+        onclick="document.getElementById('attachMenu').hidden =
+        !document.getElementById('attachMenu').hidden">
+        +
+    </button>
+</div>
 
-        <button type="button" class="attach-btn"
-            onclick="document.getElementById('attachMenu').hidden =
-            !document.getElementById('attachMenu').hidden">
-            +
-        </button>
+<div id="attachMenu" hidden class="composer-tools">
+    <button type="button" class="tool-btn"
+        onclick="document.getElementById('galleryInput').click()">
+        🖼️ Gallery
+    </button>
 
-        <button type="button" class="tool-btn" onclick="selectAllText()">
-            Select All
-        </button>
+    <button type="button" class="tool-btn"
+        onclick="document.getElementById('cameraInput').click()">
+        📷 Camera
+    </button>
 
-        <button type="button" class="tool-btn" onclick="copyText()">
-            Copy
-        </button>
+    <button type="button" class="tool-btn"
+        onclick="document.getElementById('fileInput').click()">
+        📁 Files / PDF
+    </button>
+</div>
 
-        <button type="button" class="tool-btn" onclick="pasteText()">
-            Paste
-        </button>
-
-    </div>
-
-    <div id="attachMenu" hidden class="composer-tools">
-        <button type="button" class="tool-btn"
-            onclick="document.getElementById('galleryInput').click()">
-            🖼️ Gallery
-        </button>
-
-        <button type="button" class="tool-btn"
-            onclick="document.getElementById('cameraInput').click()">
-            📷 Camera
-        </button>
-
-        <button type="button" class="tool-btn"
-            onclick="document.getElementById('fileInput').click()">
-            📁 Files / PDF
-        </button>
-    </div>
 
     <input type="file" id="galleryInput"
         accept="image/*" multiple hidden>
@@ -303,7 +309,13 @@ input {
         accept="image/*,.pdf,application/pdf" multiple hidden>
 
     <div id="attachmentPreview"></div>
-
+    
+<div class="text-tools">
+    <button type="button" onclick="selectAllText()">Select All</button>
+    <button type="button" onclick="copyText()">Copy</button>
+    <button type="button" onclick="pasteText()">Paste</button>
+</div>
+    
     <div class="input-row">
         <input type="text" id="userInput"
             placeholder="यहाँ अपना सवाल लिखें...">
@@ -435,30 +447,29 @@ document.getElementById('fileInput').addEventListener(
     }
 );
 
-// Select All
+
 function selectAllText() {
     userInput.focus();
     userInput.select();
 }
 
-// Copy
 async function copyText() {
-    const text = userInput.value;
+    userInput.focus();
 
-    if (!text) return;
+    if (!userInput.value) return;
+
+    userInput.select();
 
     try {
-        await navigator.clipboard.writeText(text);
-        alert('Text Copied!');
+        await navigator.clipboard.writeText(userInput.value);
     } catch (e) {
-        userInput.select();
         document.execCommand('copy');
-        userInput.setSelectionRange(0, 0);
     }
 }
 
-// Paste
 async function pasteText() {
+    userInput.focus();
+
     try {
         const text = await navigator.clipboard.readText();
 
@@ -466,13 +477,11 @@ async function pasteText() {
         const end = userInput.selectionEnd;
 
         userInput.setRangeText(text, start, end, 'end');
-        userInput.focus();
-
     } catch (e) {
-        alert('Paste के लिए Chatbox में long press करके Paste चुनें।');
-        userInput.focus();
+        // Android keyboard ka native Paste option use karein.
     }
 }
+
     
 
     function appendMessage(text, className, isHTML = false) {
