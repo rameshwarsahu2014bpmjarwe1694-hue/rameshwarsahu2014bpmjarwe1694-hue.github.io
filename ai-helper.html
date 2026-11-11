@@ -177,22 +177,24 @@
 
         async function initApp() {
         try {
-            chatBox.innerHTML = `
-                <div class="message ai-msg" id="welcomeMsg">
-                    <b>स्वागत है!</b> 👋<br>
-                    मैं <b>RAMESHWAR SAHU AI STUDY HUB</b> का स्मार्ट असिस्टेंट हूँ। 🤖<br><br>
-                    आप मुझसे किसी भी फीचर के लिए सीधे चैट में बात कर सकते हैं:
-                    <ul style="margin-left: 20px; margin-top: 5px;">
-                        <li><b>Excel:</b> "मुझे Excel रिपोर्ट डाउनलोड करनी है"</li>
-                        <li><b>Maths:</b> "मैथ्स हल करो: (25 * 4) + 10"</li>
-                        <li><b>Letter/Draft:</b> "विभागीय पत्र ड्राफ्ट करो..."</li>
-                        <li><b>Video & Slides:</b> "इस टॉपिक पर वीडियो लेक्चर और स्लाइड्स बनाओ..."</li>
-                        <li><b>Study Q&A:</b> विभागीय परीक्षा, जीके, और पोस्टल रूल्स से जुड़े सवाल</li>
-                    </ul>
-                    <br>अपना निर्देश नीचे टाइप करें! ✨
-                </div>`;
+            
+welcomeMsg.innerHTML = `
+    <b>स्वागत है, <span id="candidateName"></span>! 👋</b><br>
+    मैं <b>RAMESHWAR SAHU AI STUDY HUB</b> का स्मार्ट असिस्टेंट हूँ। 🤖<br><br>
+    आप मुझसे किसी भी फीचर के लिए सीधे चैट में बात कर सकते हैं:
+    <ul style="margin-left: 20px; margin-top: 5px;">
+        <li><b>Excel:</b> "मुझे Excel रिपोर्ट डाउनलोड करनी है"</li>
+        <li><b>Maths:</b> "मैथ्स हल करो: (25 * 4) + 10"</li>
+        <li><b>Letter/Draft:</b> "विभागीय पत्र ड्राफ्ट करो..."</li>
+        <li><b>Video & Slides:</b> "इस टॉपिक पर वीडियो लेक्चर और स्लाइड्स बनाओ..."</li>
+        <li><b>Study Q&A:</b> विभागीय परीक्षा, जीके, और पोस्टल रूल्स से जुड़े सवाल</li>
+    </ul>
+    <br>अपना निर्देश नीचे टाइप करें! ✨`;
 
-            const [{ initializeApp }, { getAuth, onAuthStateChanged }, { getFirestore }] = await Promise.all([
+welcomeMsg.querySelector("#candidateName").textContent = userName;
+
+
+            const [{ initializeApp }, { getAuth, onAuthStateChanged },{ getFirestore, doc, getDoc } ] = await Promise.all([
                 import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
                 import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"),
                 import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js")
@@ -208,7 +210,9 @@
 
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
-                    let userName = user.displayName || user.email.split('@')[0] || "Student";
+                    const candidateSnap = await getDoc(doc(db, "candidates", user.uid));
+const candidateData = candidateSnap.exists() ? candidateSnap.data() : {};
+let userName = candidateData.name || user.displayName || "Student";
                     const welcomeMsg = document.getElementById('welcomeMsg');
                     if (welcomeMsg) {
                         welcomeMsg.innerHTML = `
