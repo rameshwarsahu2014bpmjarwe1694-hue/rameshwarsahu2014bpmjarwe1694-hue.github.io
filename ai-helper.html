@@ -756,6 +756,26 @@ if (welcomeElement) welcomeElement.remove();
             loadingMsgElement.remove(); 
 
             // 3. HANDLE RESPONSES ACCORDING TO ROUTE TYPE
+                    // Response Handling
+        if (endpoint.includes('step1-extract')) {
+            if (data.success && data.extractedText) {
+                const aiRes = await fetch(`${BACKEND_URL}/api/ask-ai`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
+                    body: JSON.stringify({ question: `Context/Document Text:\n${data.extractedText}\n\nUser Question: ${queryText || "Is document ko samjhao."}` })
+                });
+                const aiData = await aiRes.json();
+                if (aiData.answer) {
+                    let formattedOutput = aiData.answer.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+                    appendMessage(formattedOutput, 'ai-msg', true);
+                } else {
+                    appendMessage('फाइल मिल गई, लेकिन AI response नहीं दे पाया।', 'ai-msg');
+                }
+            } else {
+                appendMessage(`⚠️ File से text extract नहीं हो पाया: ${data.error || 'Unknown error'}`, 'ai-msg', true);
+            }
+        }
+            
             if (endpoint.includes('solve-math')) {
                 if (data.success && data.result !== undefined) {
                     appendMessage(`🧮 गणितीय हल (Math Result): <b>${data.result}</b>`, 'ai-msg', true);
