@@ -149,6 +149,92 @@ input {
         button.send-btn:hover { background: #0056b3; }
         
         .footer-note { text-align: center; font-size: 11px; color: #aaa; margin-top: 8px; }
+        
+/* Chat attachments */
+.composer-tools {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.tool-btn {
+    border: 1px solid #d5dce5;
+    background: #f5f7fa;
+    color: #263238;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.attach-btn {
+    background: #eaf3ff;
+    color: #0066cc;
+    font-size: 23px;
+    width: 43px;
+    height: 43px;
+    border: 1px solid #b9d7ff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#attachmentPreview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.attachment-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f1f5f9;
+    border: 1px solid #dce3eb;
+    padding: 7px;
+    border-radius: 9px;
+    max-width: 100%;
+    font-size: 12px;
+}
+
+.attachment-item img {
+    width: 42px;
+    height: 42px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.remove-attachment {
+    border: 0;
+    background: #ffe5e5;
+    color: #d00;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+}
+
+#userInput {
+    min-width: 0;
+}
+
+@media(max-width:480px) {
+    .chat-header span {
+        font-size: 12px;
+    }
+
+    .input-area {
+        padding: 10px;
+    }
+
+    button.send-btn {
+        padding: 0 15px;
+    }
+}
+        
     </style>
 </head>
 <body>
@@ -165,14 +251,73 @@ input {
         </div>
     </div>
     
-    <div class="input-area">
-        <div class="input-row">
-            <input type="text" id="userInput" placeholder="यहाँ पूछें: जैसे 'Excel शीट डाउनलोड करनी है', 'लेटर लिखो', या 'मैथ्स सवाल'...">
-            <button class="send-btn" id="sendBtn">भेजें</button>
-        </div>
-        <div class="footer-note">AI महत्वपूर्ण नियमों या डेटा को गलत पेश कर सकता है। कृपया विभागीय गाइड से पुष्टि करें।</div>
+    
+<div class="input-area">
+
+    <div class="composer-tools">
+
+        <button type="button" class="attach-btn"
+            onclick="document.getElementById('attachMenu').hidden =
+            !document.getElementById('attachMenu').hidden">
+            +
+        </button>
+
+        <button type="button" class="tool-btn" onclick="selectAllText()">
+            Select All
+        </button>
+
+        <button type="button" class="tool-btn" onclick="copyText()">
+            Copy
+        </button>
+
+        <button type="button" class="tool-btn" onclick="pasteText()">
+            Paste
+        </button>
+
     </div>
+
+    <div id="attachMenu" hidden class="composer-tools">
+        <button type="button" class="tool-btn"
+            onclick="document.getElementById('galleryInput').click()">
+            🖼️ Gallery
+        </button>
+
+        <button type="button" class="tool-btn"
+            onclick="document.getElementById('cameraInput').click()">
+            📷 Camera
+        </button>
+
+        <button type="button" class="tool-btn"
+            onclick="document.getElementById('fileInput').click()">
+            📁 Files / PDF
+        </button>
+    </div>
+
+    <input type="file" id="galleryInput"
+        accept="image/*" multiple hidden>
+
+    <input type="file" id="cameraInput"
+        accept="image/*" capture="environment" hidden>
+
+    <input type="file" id="fileInput"
+        accept="image/*,.pdf,application/pdf" multiple hidden>
+
+    <div id="attachmentPreview"></div>
+
+    <div class="input-row">
+        <input type="text" id="userInput"
+            placeholder="यहाँ अपना सवाल लिखें...">
+
+        <button class="send-btn" id="sendBtn">भेजें</button>
+    </div>
+
+    <div class="footer-note">
+        AI महत्वपूर्ण नियमों या डेटा को गलत पेश कर सकता है।
+        कृपया विभागीय गाइड से पुष्टि करें।
+    </div>
+
 </div>
+
 
 <script type="module">
     const BACKEND_URL = "https://payment-backend-2-g6go.onrender.com"
@@ -180,6 +325,155 @@ input {
     const chatBox = document.getElementById('chatBox');
     const userInput = document.getElementById('userInput');
     const sendBtn = document.getElementById('sendBtn');
+    
+const attachmentPreview = document.getElementById('attachmentPreview');
+
+let selectedFiles = [];
+
+const MAX_FILES = 5;
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+function addFiles(files) {
+
+    for (const file of files) {
+
+        const isImage = file.type.startsWith('image/');
+        const isPDF = file.type === 'application/pdf' ||
+                      file.name.toLowerCase().endsWith('.pdf');
+
+        if (!isImage && !isPDF) {
+            alert('केवल Image और PDF स्वीकार हैं।');
+            continue;
+        }
+
+        if (file.size > MAX_FILE_SIZE || file.size === 0) {
+            alert('File खाली है या 10 MB से बड़ी है।');
+            continue;
+        }
+
+        if (selectedFiles.length >= MAX_FILES) {
+            alert('एक बार में अधिकतम 5 Files चुन सकते हैं।');
+            break;
+        }
+
+        if (selectedFiles.some(f =>
+            f.name === file.name &&
+            f.size === file.size &&
+            f.lastModified === file.lastModified
+        )) continue;
+
+        selectedFiles.push(file);
+    }
+
+    renderAttachments();
+}
+
+function renderAttachments() {
+
+    attachmentPreview.innerHTML = '';
+
+    selectedFiles.forEach((file, index) => {
+
+        const item = document.createElement('div');
+        item.className = 'attachment-item';
+
+        if (file.type.startsWith('image/')) {
+
+            const img = document.createElement('img');
+            const objectUrl = URL.createObjectURL(file);
+
+            img.src = objectUrl;
+            img.onload = () => URL.revokeObjectURL(objectUrl);
+
+            item.appendChild(img);
+
+        } else {
+
+            const pdfIcon = document.createElement('span');
+            pdfIcon.textContent = '📄 PDF';
+            item.appendChild(pdfIcon);
+        }
+
+        const name = document.createElement('span');
+        name.textContent = file.name;
+
+        item.appendChild(name);
+
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'remove-attachment';
+        remove.textContent = '×';
+
+        remove.onclick = () => {
+            selectedFiles.splice(index, 1);
+            renderAttachments();
+        };
+
+        item.appendChild(remove);
+        attachmentPreview.appendChild(item);
+    });
+}
+
+document.getElementById('galleryInput').addEventListener(
+    'change', e => {
+        addFiles(e.target.files);
+        e.target.value = '';
+    }
+);
+
+document.getElementById('cameraInput').addEventListener(
+    'change', e => {
+        addFiles(e.target.files);
+        e.target.value = '';
+    }
+);
+
+document.getElementById('fileInput').addEventListener(
+    'change', e => {
+        addFiles(e.target.files);
+        e.target.value = '';
+    }
+);
+
+// Select All
+function selectAllText() {
+    userInput.focus();
+    userInput.select();
+}
+
+// Copy
+async function copyText() {
+    const text = userInput.value;
+
+    if (!text) return;
+
+    try {
+        await navigator.clipboard.writeText(text);
+        alert('Text Copied!');
+    } catch (e) {
+        userInput.select();
+        document.execCommand('copy');
+        userInput.setSelectionRange(0, 0);
+    }
+}
+
+// Paste
+async function pasteText() {
+    try {
+        const text = await navigator.clipboard.readText();
+
+        const start = userInput.selectionStart;
+        const end = userInput.selectionEnd;
+
+        userInput.setRangeText(text, start, end, 'end');
+        userInput.focus();
+
+    } catch (e) {
+        alert('Paste के लिए Chatbox में long press करके Paste चुनें।');
+        userInput.focus();
+    }
+}
+    
 
     function appendMessage(text, className, isHTML = false) {
     const msgDiv = document.createElement('div');
