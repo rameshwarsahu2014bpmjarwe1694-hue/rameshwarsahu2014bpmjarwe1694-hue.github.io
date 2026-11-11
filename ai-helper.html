@@ -141,7 +141,7 @@ input {
             background: #fff; 
             flex-shrink: 0;
         }
-        .input-row { display: flex; width: 100%; gap: 10px; }
+        .input-row { display: flex; width: 100%; gap: 10px; align-items: center;  }
         input { flex: 1; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; outline: none; font-size: 15px; }
         input:focus { border-color: var(--primary); }
         
@@ -344,12 +344,12 @@ input {
     <button type="button" onclick="copyText()">Copy</button>
     <button type="button" onclick="pasteText()">Paste</button>
     </div>
-    <div class="input-row">
-        <input type="text" id="userInput"
-            placeholder="यहाँ अपना सवाल लिखें...">
-
+        <div class="input-row">
+        <button type="button" class="attach-btn" id="attachToggleBtn">+</button>
+        <input type="text" id="userInput" placeholder="यहाँ अपना सवाल लिखें...">
         <button class="send-btn" id="sendBtn">भेजें</button>
     </div>
+
 
     <div class="footer-note">
         AI महत्वपूर्ण नियमों या डेटा को गलत पेश कर सकता है।
