@@ -70,13 +70,28 @@
         }
         
         .message { 
-            padding: 14px 18px; 
-            border-radius: 12px; 
-            max-width: 90%; 
-            font-size: 15px; 
-            line-height: 1.6; 
-            word-wrap: break-word; 
-        }
+    padding: 14px 18px; 
+    border-radius: 12px; 
+    max-width: 90%; 
+    font-size: 15px; 
+    line-height: 1.6; 
+    word-wrap: break-word;
+
+    -webkit-user-select: text !important;
+    user-select: text !important;
+    -webkit-touch-callout: default !important;
+}
+
+.message * {
+    -webkit-user-select: text !important;
+    user-select: text !important;
+}
+
+input {
+    -webkit-user-select: text !important;
+    user-select: text !important;
+    -webkit-touch-callout: default !important;
+}
         .user-msg { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
         .ai-msg { background: #ffffff; color: #2c3e50; align-self: flex-start; border-bottom-left-radius: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #e1e4e8; }
 
@@ -167,34 +182,53 @@
     const sendBtn = document.getElementById('sendBtn');
 
     function appendMessage(text, className, isHTML = false) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${className}`;
-        if (isHTML) msgDiv.innerHTML = text;
-        else msgDiv.innerText = text;
-        chatBox.appendChild(msgDiv);
-        chatBox.scrollTop = chatBox.scrollHeight; 
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `message ${className}`;
+
+    if (isHTML) msgDiv.innerHTML = text;
+    else msgDiv.innerText = text;
+
+    chatBox.appendChild(msgDiv);
+
+    // AI message ke liye Copy button
+    if (className === 'ai-msg' && !msgDiv.querySelector('.loading-dots')) {
+        const copyBtn = document.createElement('button');
+
+        copyBtn.type = 'button';
+        copyBtn.textContent = '📋 Copy';
+        copyBtn.style.cssText =
+            'display:block;margin-top:12px;padding:8px 16px;background:#007bff;color:white;border:0;border-radius:6px;font-weight:bold;cursor:pointer;';
+
+        copyBtn.onclick = async () => {
+            const clone = msgDiv.cloneNode(true);
+            clone.querySelectorAll('button').forEach(btn => btn.remove());
+
+            const copyText = clone.innerText.trim();
+
+            try {
+                await navigator.clipboard.writeText(copyText);
+                copyBtn.textContent = '✅ Copied';
+            } catch (error) {
+                const area = document.createElement('textarea');
+                area.value = copyText;
+                document.body.appendChild(area);
+                area.select();
+
+                const copied = document.execCommand('copy');
+                area.remove();
+
+                copyBtn.textContent = copied ? '✅ Copied' : '❌ Copy Failed';
+            }
+        };
+
+        msgDiv.appendChild(copyBtn);
     }
 
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
         async function initApp() {
         try {
-            
-welcomeMsg.innerHTML = `
-    <b>स्वागत है, <span id="candidateName"></span>! 👋</b><br>
-    मैं <b>RAMESHWAR SAHU AI STUDY HUB</b> का स्मार्ट असिस्टेंट हूँ। 🤖<br><br>
-    आप मुझसे किसी भी फीचर के लिए सीधे चैट में बात कर सकते हैं:
-    <ul style="margin-left: 20px; margin-top: 5px;">
-        <li><b>Excel:</b> "मुझे Excel रिपोर्ट डाउनलोड करनी है"</li>
-        <li><b>Maths:</b> "मैथ्स हल करो: (25 * 4) + 10"</li>
-        <li><b>Letter/Draft:</b> "विभागीय पत्र ड्राफ्ट करो..."</li>
-        <li><b>Video & Slides:</b> "इस टॉपिक पर वीडियो लेक्चर और स्लाइड्स बनाओ..."</li>
-        <li><b>Study Q&A:</b> विभागीय परीक्षा, जीके, और पोस्टल रूल्स से जुड़े सवाल</li>
-    </ul>
-    <br>अपना निर्देश नीचे टाइप करें! ✨`;
-
-welcomeMsg.querySelector("#candidateName").textContent = userName;
-
-
-            const [{ initializeApp }, { getAuth, onAuthStateChanged },{ getFirestore, doc, getDoc } ] = await Promise.all([
+             const [{ initializeApp }, { getAuth, onAuthStateChanged },{ getFirestore, doc, getDoc } ] = await Promise.all([
                 import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
                 import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"),
                 import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js")
@@ -213,21 +247,24 @@ welcomeMsg.querySelector("#candidateName").textContent = userName;
                     const candidateSnap = await getDoc(doc(db, "candidates", user.uid));
 const candidateData = candidateSnap.exists() ? candidateSnap.data() : {};
 let userName = candidateData.name || user.displayName || "Student";
-                    const welcomeMsg = document.getElementById('welcomeMsg');
-                    if (welcomeMsg) {
-                        welcomeMsg.innerHTML = `
-                            <b>स्वागत है, ${userName}!</b> 👋<br>
-                            मैं <b>RAMESHWAR SAHU AI STUDY HUB</b> का स्मार्ट असिस्टेंट हूँ। 🤖<br><br>
-                            आप मुझसे किसी भी फीचर के लिए सीधे चैट में बात कर सकते हैं:
-                            <ul style="margin-left: 20px; margin-top: 5px;">
-                                <li><b>Excel:</b> "मुझे Excel रिपोर्ट डाउनलोड करनी है"</li>
-                                <li><b>Maths:</b> "मैथ्स हल करो: (25 * 4) + 10"</li>
-                                <li><b>Letter/Draft:</b> "विभागीय पत्र ड्राफ्ट करो..."</li>
-                                <li><b>Video & Slides:</b> "इस टॉपिक पर वीडियो लेक्चर और स्लाइड्स बनाओ..."</li>
-                                <li><b>Study Q&A:</b> विभागीय परीक्षा, जीके, और पोस्टल रूल्स से जुड़े सवाल</li>
-                            </ul>
-                            <br>अपना निर्देश नीचे टाइप करें! ✨`;
-                    }
+                 const welcomeMsg = document.getElementById('defaultWelcome');
+
+if (welcomeMsg) {
+    welcomeMsg.innerHTML = `
+        <b>स्वागत है, <span id="candidateName"></span>! 👋</b><br>
+        मैं <b>RAMESHWAR SAHU AI STUDY HUB</b> का स्मार्ट असिस्टेंट हूँ। 🤖<br><br>
+        आप मुझसे किसी भी फीचर के लिए सीधे चैट में बात कर सकते हैं:
+        <ul style="margin-left: 20px; margin-top: 5px;">
+            <li><b>Excel:</b> "मुझे Excel रिपोर्ट डाउनलोड करनी है"</li>
+            <li><b>Maths:</b> "मैथ्स हल करो: (25 * 4) + 10"</li>
+            <li><b>Letter/Draft:</b> "विभागीय पत्र ड्राफ्ट करो..."</li>
+            <li><b>Video & Slides:</b> "इस टॉपिक पर वीडियो लेक्चर और स्लाइड्स बनाओ..."</li>
+            <li><b>Study Q&A:</b> विभागीय परीक्षा, जीके, और पोस्टल रूल्स से जुड़े सवाल</li>
+        </ul>
+        <br>अपना निर्देश नीचे टाइप करें! ✨`;
+
+    welcomeMsg.querySelector('#candidateName').textContent = userName;
+}   
                 } else {
                     window.location.href = "login.html"; 
                 }
@@ -241,17 +278,17 @@ let userName = candidateData.name || user.displayName || "Student";
 
 
     userInput.addEventListener('focus', () => {
-        const welcomeElement = document.getElementById('welcomeMsg');
-        if (welcomeElement) welcomeElement.remove();
+        const welcomeElement = document.getElementById('defaultWelcome');
+if (welcomeElement) welcomeElement.remove();
     });
 
     // Smart Conversational Router (All Server Features Integrated)
     async function handleUserMessage() {
         const queryText = userInput.value.trim();
         if (!queryText) return;
-
-        const welcomeElement = document.getElementById('welcomeMsg');
-        if (welcomeElement) welcomeElement.remove();
+         
+        const welcomeElement = document.getElementById('defaultWelcome');
+if (welcomeElement) welcomeElement.remove();
 
         appendMessage(queryText, 'user-msg');
         userInput.value = '';
