@@ -165,29 +165,68 @@
     let currentVideoUrl = '';
 
     async function initApp() {
-        try {
-            const configRes = await fetch(`${BACKEND_URL}/firebase-config`);
-            if (!configRes.ok) throw new Error("Firebase config load failed");
-            
-            const firebaseConfig = await configRes.json();
-            const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
+    try {
+        console.log("🔥 Firebase initialization started");
+        console.log("Backend URL:", BACKEND_URL);
 
-            onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    currentUserToken = await user.getIdToken();
-                    document.getElementById('auth-status').innerHTML = `✅ Logged in as: ${user.email}`;
-                } else {
-                    currentUserToken = null;
-                    document.getElementById('auth-status').innerHTML = `⚠️ Kripya pehle login karein!`;
-                }
-            });
+        const configRes = await fetch(`${BACKEND_URL}/firebase-config`);
 
-        } catch (err) {
-            console.error("Initialization Error:", err);
-            document.getElementById('auth-status').innerHTML = `❌ Setup load hone mein error aayi.`;
-        }
+        console.log("HTTP Status:", configRes.status);
+        console.log("Response OK:", configRes.ok);
+        console.log("Response Headers:",
+            Object.fromEntries(configRes.headers.entries())
+        );
+
+        const responseText = await configRes.clone().text();
+        console.log("Raw Firebase Config Response:", responseText);
+
+        if (!configRes.ok) throw new Error("Firebase config load failed");
+
+        const firebaseConfig = await configRes.json();
+
+        console.log("Firebase Config:", firebaseConfig);
+        console.log("API Key Present:", !!firebaseConfig.apiKey);
+        console.log("Auth Domain:", firebaseConfig.authDomain);
+        console.log("Project ID:", firebaseConfig.projectId);
+        console.log("App ID Present:", !!firebaseConfig.appId);
+
+        console.log("Initializing Firebase App...");
+        const app = initializeApp(firebaseConfig);
+        console.log("Firebase App Initialized:", app.name);
+
+        const auth = getAuth(app);
+        console.log("Firebase Auth Initialized:", auth);
+
+        onAuthStateChanged(auth, async (user) => {
+            console.log("Auth State Changed:", user);
+
+            if (user) {
+                console.log("User Logged In:", user.email);
+
+                currentUserToken = await user.getIdToken();
+                console.log("Firebase Token Generated Successfully");
+
+                document.getElementById('auth-status').innerHTML =
+                    `✅ Logged in as: ${user.email}`;
+            } else {
+                console.log("No User Logged In");
+                currentUserToken = null;
+
+                document.getElementById('auth-status').innerHTML =
+                    `⚠️ Kripya pehle login karein!`;
+            }
+        });
+
+    } catch (err) {
+        console.error("❌ FIREBASE ERROR:", err);
+        console.error("Error Name:", err.name);
+        console.error("Error Message:", err.message);
+        console.error("Error Stack:", err.stack);
+
+        document.getElementById('auth-status').innerHTML =
+            `❌ Setup Error: ${err.message}`;
     }
+}
 
     initApp();
 
