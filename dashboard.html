@@ -1,7 +1,10 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://rsh.gdsnotes.in https://gdsnotes.in https://apis.google.com; script-src 'self' 'unsafe-inline' https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
-<meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://rsh.gdsnotes.in https://gdsnotes.in https://admin.gdsnotes.in https://apis.google.com; script-src 'self' 'unsafe-inline' https://apis.google.com https://www.gstatic.com https://www.firebasejs.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://rsh.gdsnotes.in https://admin.gdsnotes.in https://gdsnotes.in https://*.firebaseio.com https://*.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.3.1/purify.min.js" defer></script>
+    <script src="js/security.js"></script>
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Candidate Dashboard</title>
 <style>
