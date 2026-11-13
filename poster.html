@@ -754,19 +754,48 @@ function buildBook3DLayout(rows) {
   let html = '<div class="book3d-master-wrap" style="width: 100%; background: transparent !important;">';
   
   rows.forEach((line) => {
-        if (line.includes(':') || line.includes(':-') || line.includes('प्रश्न') || line.includes('PO manual') || line.includes('Q.') || line.match(/^\d+[\.-]/) || line.includes('Section') || line.includes('अध्याय')) {
+    // 1. Smart Heading Detection (Jiske aage :- ho aur wo sawal/jawab na ho)
+    const isHeading = (line.endsWith(':-') || line.endsWith(':')) && !line.includes('प्रश्न') && !line.includes('उत्तर');
+    
+    // 2. Question Detection
+    const isQuestion = line.includes('प्रश्न') || line.includes('Q.') || line.match(/^\d+[\.-]/);
+
+    if (isHeading) {
+      // Unique 3D Heading Style
       html += `
-        <div style="width: 100%; padding-bottom: 8px; border-bottom: 2.5px solid #b00020; margin-top: 10px; flex-shrink: 0; background: transparent;">
-          <div style="color: #8b0000; font-weight: 800; font-size: 20px; line-height: 1.4; text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.1);">
+        <div style="margin: 14px 0 8px 0;">
+          <div style="
+            font-family: 'Oswald', 'Noto Sans Devanagari', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: #8b0000;
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border-left: 6px solid #b00020;
+            border-bottom: 3px solid #d4af37;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            text-shadow: 1px 1px 0px #ffffff, 2px 2px 4px rgba(0,0,0,0.2);
+            display: inline-block;
+          ">
             ${line}
           </div>
         </div>
       `;
-    } else {
+    } else if (isQuestion) {
+      // Question Style (Clean & Bold)
       html += `
-        <div style="width: 100%; padding: 7px 4px; border-bottom: 1px dashed rgba(176, 0, 32, 0.22); color: #0a0a0a; font-size: 18px; font-weight: 800; line-height: 1.5; background: transparent;">
+        <div style="width: 100%; padding: 10px 4px 4px 4px; margin-top: 6px; color: #b00020; font-size: 18px; font-weight: 800; line-height: 1.5; background: transparent;">
           ${line}
         </div>
+      `;
+        } else {
+      // Answer / Normal Text Style (More Bold & Readable)
+      html += `
+        <div style="width: 100%; padding: 6px 4px; border-bottom: 1px dashed rgba(176, 0, 32, 0.22); color: #000000; font-size: 17px; font-weight: 800; line-height: 1.6; background: transparent;">
+          ${line}
+        </div>
+
       `;
     }
   });
@@ -774,6 +803,7 @@ function buildBook3DLayout(rows) {
   html += '</div>';
   return html;
 }
+
 
  
 /* Page Number show/hide + digit-only sanitize */
