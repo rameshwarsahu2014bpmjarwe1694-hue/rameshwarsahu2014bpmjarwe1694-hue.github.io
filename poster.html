@@ -754,7 +754,7 @@ function buildBook3DLayout(rows) {
   let html = '<div class="book3d-master-wrap" style="width: 100%; background: transparent !important;">';
   
   rows.forEach((line) => {
-    if (line.includes('प्रश्न') || line.includes('PO manual') || line.includes('Q.') || line.match(/^\d+[\.-]/) || line.includes('Section') || line.includes('अध्याय')) {
+    if (line.includes(':') || line.includes(':-') || (line.includes('प्रश्न') || line.includes('PO manual') || line.includes('Q.') || line.match(/^\d+[\.-]/) || line.includes('Section') || line.includes('अध्याय')) {
       html += `
         <div style="width: 100%; padding-bottom: 8px; border-bottom: 2.5px solid #b00020; margin-top: 10px; flex-shrink: 0; background: transparent;">
           <div style="color: #8b0000; font-weight: 800; font-size: 20px; line-height: 1.4; text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.1);">
