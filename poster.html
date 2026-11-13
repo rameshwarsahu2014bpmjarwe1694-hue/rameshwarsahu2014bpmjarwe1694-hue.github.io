@@ -23,7 +23,7 @@
   .hint { font-size: 12px; color:#666; margin-top: 4px; }
   .exact-circular-watermark {
     position: absolute;
-    top: 430px; /* Center alignment ke liye fixed top/left */
+    top: 430px; 
     left: 215px;
     width: 650px;
     height: 650px;
@@ -48,7 +48,7 @@
     #posterWrap { 
     display: flex; 
     justify-content: center; 
-    background-color: #555; /* Background dark rakhne se 3D shadow achhi dikhti hai */
+    background-color: #555; 
     padding: 30px 0;
   }
 
@@ -60,7 +60,7 @@
     border-right: 2px solid #e8d9b0;
     border-bottom: 2px solid #e8d9b0;
     border-left: 6px solid #d0c29b;
-    padding: 15px 25px 12px 35px; /* Padding ko thoda balance kiya hai taaki jagah bache */
+    padding: 12px 25px 12px 30px; 
     box-shadow: 
       0 20px 40px rgba(0, 0, 0, 0.35), 
       inset 20px 0 30px -10px rgba(0, 0, 0, 0.12);
@@ -72,14 +72,11 @@
     overflow: hidden;
   }
     
-
 @media print {
   body {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
-
-  
 
   .poster {
     background-color: #fff8e7 !important;
@@ -92,11 +89,9 @@
   }
 }
 
- 
-
   .logo { 
-    width: 150px !important; 
-    height: 150px !important;
+    width: 125px !important; 
+    height: 125px !important;
     border: 3px solid #c9302c; 
     border-radius: 50% !important; 
     background: #fff; 
@@ -117,15 +112,14 @@
     display: block;
   }
 
+  .brand-strip{ display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:4px; flex-shrink:0; }
+  .brand-text{ flex:1; text-align:center; font-family:'Oswald',sans-serif; font-size:25px; font-weight:700; color:#6b2b16; line-height:1.1; letter-spacing:1px; text-transform:uppercase; }
 
-  .brand-strip{ display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:8px; flex-shrink:0; }
-  .brand-text{ flex:1; text-align:center; font-family:'Oswald',sans-serif; font-size:30px; font-weight:700; color:#6b2b16; line-height:1.2; letter-spacing:1px; text-transform:uppercase; }
-
-  .title-main{ text-align:center; font-family:'Anton','Oswald',sans-serif; font-size:76px; color:#b10000; letter-spacing:3px; line-height:1; margin:8px 0 6px; text-shadow:3px 3px 0 #ead39d; flex-shrink:0; }
+  .title-main{ text-align:center; font-family:'Anton','Oswald',sans-serif; font-size:68px; color:#b10000; letter-spacing:3px; line-height:1; margin:2px 0 4px; text-shadow:3px 3px 0 #ead39d; flex-shrink:0; }
   .badge-row{ text-align:center; flex-shrink:0; }
-  .volume-badge{ display:inline-block; background:linear-gradient(#c89d47,#8b6424); color:#fff; font-family:'Oswald',sans-serif; font-size:22px; font-weight:700; letter-spacing:4px; padding:5px 30px; border-radius:30px; margin:4px 6px; }
-  .chapter-badge{ display:inline-block; background:#143b73; color:#fff; font-family:'Oswald',sans-serif; font-size:26px; font-weight:700; letter-spacing:5px; padding:5px 32px; border-radius:30px; margin:6px; }
-  .subtitle-banner { background:#b00020; color:#fff; text-align:center; font-weight:700; font-size:22px; padding:6px 10px; margin:8px auto 10px; border-radius:4px; border:2px solid #7a0014; max-width:92%; flex-shrink:0; }
+  .volume-badge{ display:inline-block; background:linear-gradient(#c89d47,#8b6424); color:#fff; font-family:'Oswald',sans-serif; font-size:20px; font-weight:700; letter-spacing:3px; padding:4px 25px; border-radius:30px; margin:2px 4px; }
+  .chapter-badge{ display:inline-block; background:#143b73; color:#fff; font-family:'Oswald',sans-serif; font-size:22px; font-weight:700; letter-spacing:4px; padding:4px 26px; border-radius:30px; margin:2px 4px; }
+  .subtitle-banner { background:#b00020; color:#fff; text-align:center; font-weight:700; font-size:21px; padding:5px 10px; margin:6px auto 8px; border-radius:4px; border:2px solid #7a0014; max-width:92%; flex-shrink:0; }
 
   /* body area flex-grows; inner gets scaled to fit */
   #bodyArea{ flex:1 1 auto; overflow:hidden; display:flex; align-items:flex-start; justify-content:center; min-height:0; }
@@ -145,32 +139,29 @@
   .qa .q{ font-weight:700; color:#1a1a1a; font-size:17px; }
   .qa .a{ color:#0d7a3a; font-weight:600; margin-top:4px; font-size:16px; }
 
-  .footer-note{ margin-top:14px; background:#b00020; color:#fff; border:3px solid #7a0014; border-radius:8px; padding:12px 16px 12px 70px; font-size:16px; font-weight:600; line-height:1.5; position:relative; flex-shrink:0; }
-  .footer-note .tag{ position:absolute; left:12px; top:50%; transform:translateY(-50%); background:#fff; color:#b00020; font-size:15px; font-weight:800; padding:5px 10px; border-radius:6px; border:2px solid #7a0014; }
+  .footer-note{ margin-top:10px; background:#b00020; color:#fff; border:3px solid #7a0014; border-radius:8px; padding:10px 14px 10px 65px; font-size:15px; font-weight:600; line-height:1.4; position:relative; flex-shrink:0; }
+  .footer-note .tag{ position:absolute; left:10px; top:50%; transform:translateY(-50%); background:#fff; color:#b00020; font-size:14px; font-weight:800; padding:4px 8px; border-radius:6px; border:2px solid #7a0014; }
 
   /* ===== PAGE NUMBER (below footer, bottom-center) ===== */
-  .page-number-row { text-align:center; flex-shrink:0; margin:10px 0 2px; }
+  .page-number-row { text-align:center; flex-shrink:0; margin:8px 0 2px; }
   .page-number-badge {
     display:inline-block;
     background:linear-gradient(180deg,#143b73 0%,#0a2a55 100%);
     color:#fff;
     font-family:'Anton','Oswald',sans-serif;
-    font-size:28px; font-weight:800; letter-spacing:2px;
-    padding:6px 22px; border-radius:8px;
+    font-size:26px; font-weight:800; letter-spacing:2px;
+    padding:4px 18px; border-radius:8px;
     border:3px solid #c89d47;
     box-shadow:0 2px 6px rgba(0,0,0,0.2);
   }
   .page-number-row .label-text {
     font-family:'Oswald',sans-serif;
-    font-size:14px; font-weight:700; color:#6b2b16;
-    letter-spacing:2px; margin-right:8px; vertical-align:middle;
+    font-size:13px; font-weight:700; color:#6b2b16;
+    letter-spacing:2px; margin-right:6px; vertical-align:middle;
   }
-   /* ==========================================================================
-     NEW: REASONING / ANALOGY (SVG MODE) STYLING BLOCK (DO NOT CHANGE OLD CSS)
-     ========================================================================== */
+
   .reasoning-wrap { width: 100%; display: flex; flex-direction: column; gap: 20px; font-family: 'Noto Sans Devanagari', Arial, sans-serif; }
   
-  /* Main Analogy Header Card */
   .analogy-main-title-card {
     background: #ffd900; border: 3px solid #143b73; border-radius: 50px;
     padding: 10px 40px; text-align: center; margin: 0 auto 15px; max-width: 80%;
@@ -179,7 +170,6 @@
   .analogy-main-title-card h2 { margin: 0; font-size: 38px; font-weight: 800; color: #143b73; letter-spacing: 1px; }
   .analogy-main-title-card .lines { font-size: 34px; color: #ff3b30; font-weight: 800; }
 
-  /* Example Main Container */
   .example-block {
     background: #ffffff; border: 4px solid #143b73; border-radius: 16px;
     padding: 15px 20px; margin-bottom: 25px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); position: relative;
@@ -194,7 +184,6 @@
     padding: 4px 15px; border-radius: 6px; display: inline-block; margin: 8px 0 15px; border: 1px solid #b3e5fc;
   }
 
-  /* Grid Layout for Figure Rows */
   .figure-row-container {
     display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; margin-bottom: 15px; align-items: stretch;
   }
@@ -207,7 +196,6 @@
   }
   .figure-box-label.question-lbl { background: #ff7043; }
   
-  /* Flexbox for inside Figures & Options */
   .figures-flex-display {
     display: flex; align-items: center; justify-content: space-around; flex-wrap: nowrap; margin-top: 10px; flex: 1; padding: 10px 0;
   }
@@ -226,7 +214,6 @@
   .analogy-separator-colon { font-size: 32px; font-weight: 800; color: #143b73; line-height: 1; }
   .option-index-label { font-size: 15px; font-weight: 700; color: #444; }
 
-  /* Solution & Rules Block Styling */
   .solution-block-container {
     background: #fff9e6; border: 3px solid #ffb300; border-radius: 12px;
     padding: 12px 15px; display: grid; grid-template-columns: 80px 1fr 1fr; gap: 15px; align-items: start;
@@ -240,22 +227,17 @@
   .points-list-wrapper li { font-size: 14px; font-weight: 700; color: #2e7d32; list-style-type: disc; }
   .points-list-wrapper.right-side li { color: #c62828; }
 
-  /* Bottom Final Answer Banner */
   .final-answer-ribbon {
     background: #ff4a73; color: white; font-size: 18px; font-weight: 800;
     padding: 6px 20px; border-radius: 6px; display: inline-block; margin-top: 10px; box-shadow: 0 3px 6px rgba(0,0,0,0.1);
   }
 
- /* NEW: 4TH TYPE - A4 3D BOOK PAGE STYLING BLOCK (MASTER BOX FORMAT)
-     ========================================================================== */
-  
-  /* 3D Book Page Style with Shadow & Depth */
   .book3d-master-wrap {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding: 15px 22px;
+    gap: 12px;
+    padding: 10px 15px;
     font-family: 'Noto Sans Devanagari', Arial, sans-serif;
     background: linear-gradient(135deg, #ffffff 0%, #fdfbf7 100%);
     border-radius: 8px;
@@ -265,15 +247,15 @@
     background: #ffffff;
     border: 3px solid #143b73;
     border-radius: 10px;
-    padding: 14px 18px;
+    padding: 12px 16px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
     position: relative;
   }
   .book3d-q-title {
-    font-size: 19px;
+    font-size: 18px;
     font-weight: 800;
     color: #b00020;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -281,43 +263,23 @@
   .book3d-options-list {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    margin-bottom: 10px;
+    gap: 5px;
+    margin-bottom: 8px;
     padding-left: 10px;
   }
   .book3d-option-item {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     color: #1a1a1a;
   }
   .book3d-answer-box {
     background: #e8f5e9;
     border-left: 5px solid #0d7a3a;
-    padding: 6px 12px;
+    padding: 5px 10px;
     border-radius: 0 6px 6px 0;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: #0d7a3a;
-  }
-
-  .footer-note{ margin-top:14px; background:#b00020; color:#fff; border:3px solid #7a0014; border-radius:8px; padding:12px 16px 12px 70px; font-size:16px; font-weight:600; line-height:1.5; position:relative; flex-shrink:0; }
-  .footer-note .tag{ position:absolute; left:12px; top:50%; transform:translateY(-50%); background:#fff; color:#b00020; font-size:15px; font-weight:800; padding:5px 10px; border-radius:6px; border:2px solid #7a0014; }
-
-  .page-number-row { text-align:center; flex-shrink:0; margin:10px 0 2px; }
-  .page-number-badge {
-    display:inline-block;
-    background:linear-gradient(180deg,#143b73 0%,#0a2a55 100%);
-    color:#fff;
-    font-family:'Anton','Oswald',sans-serif;
-    font-size:28px; font-weight:800; letter-spacing:2px;
-    padding:6px 22px; border-radius:8px;
-    border:3px solid #c89d47;
-    box-shadow:0 2px 6px rgba(0,0,0,0.2);
-  }
-  .page-number-row .label-text {
-    font-family:'Oswald',sans-serif;
-    font-size:14px; font-weight:700; color:#6b2b16;
-    letter-spacing:2px; margin-right:8px; vertical-align:middle;
   }
 
   .watermark-overlay-svg {
@@ -329,10 +291,6 @@
     pointer-events: none !important;
     z-index: 9999 !important;
   }
-
-  /* ==========================================================================
-     REASONING MODE: PERFECT 4-QUESTION BALANCED A4 FIT
-     ========================================================================== */
 
   #bodyArea {
     width: 100% !important;
@@ -350,7 +308,7 @@
     width: 100% !important;
     display: flex !important;
     flex-direction: column !important;
-    gap: 8px !important; /* कार्ड्स के बीच गैप घटाया */
+    gap: 8px !important;
     margin: 0 !important;
   }
 
@@ -362,7 +320,6 @@
   }
   .analogy-main-title-card h2 { font-size: 26px !important; }
 
-  /* हर प्रश्न का कार्ड कॉम्पैक्ट और फुल-विड्थ */
   .reasoning-wrap .example-block {
     width: 100% !important;
     box-sizing: border-box !important;
@@ -379,7 +336,6 @@
     padding: 2px 14px !important;
   }
 
-  /* 2-कॉलम ग्रिड: बाएँ प्रश्न और दाएँ उत्तर */
   .reasoning-wrap .figure-row-container {
     width: 100% !important;
     display: grid !important;
@@ -390,7 +346,7 @@
 
   .reasoning-wrap .figure-row-container svg {
     width: 100% !important;
-    height: 72px !important; /* फिक्स हाइट जिससे 4 प्रश्न पूरे A4 में समाएँ */
+    height: 72px !important;
     display: block !important;
   }
 
@@ -408,101 +364,11 @@
     margin-bottom: 2px !important;
   }
 
-  /* सॉल्यूशन बॉक्स */
   .solution-block-container {
     padding: 4px 8px !important;
     margin-top: 4px !important;
     border-radius: 4px !important;
   }
-  /* ==========================================================================
-     DUAL DIAGONAL WATERMARK OVERLAY
-     ========================================================================== */
-  .watermark-overlay-svg {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    pointer-events: none !important;
-    z-index: 9999 !important; /* सभी कार्ड्स और आकृतियों के ऊपर दिखेगा */
-  }
-     /* Real 3D Book & Spine Shadow */
-    box-shadow: 
-      0 20px 40px rgba(0, 0, 0, 0.35), /* Bahar ka gahra 3D shadow */
-      inset 20px 0 30px -10px rgba(0, 0, 0, 0.12); /* Left side book fold/spine crease shadow */
-    
-    /* Book ke page me curve/gradient feel dene ke liye */
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.06) 0%, rgba(255, 255, 255, 0) 4%);
-    
-    font-family: 'Noto Sans Devanagari', Arial, sans-serif;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
- }
-  #bodyArea{ 
-    flex: 1 1 none; 
-    overflow: hidden; 
-    display: flex; 
-    align-items: flex-start; 
-    justify-content: center; 
-    min-height: 0; 
-    width: 100%;
-    background: transparent !important;
-  }
-
-  #bodyInner{ 
-    width: 100%; 
-    height: 100%;
-    transform-origin: top center; 
-    background: transparent !important;
-  }
-
-   .book3d-master-wrap {
-    width: 100% !important;
-    height: 100% !important;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 0 10px;
-    background: transparent !important; /* Safed background ko hatane ke liye */
-    box-shadow: none !important;
-   }
- 
-  .poster {
-    width: 1080px;
-    height: 1527px;
-    background: #fff8e7 !important;
-    border-top: 2px solid #e8d9b0;
-    border-right: 2px solid #e8d9b0;
-    border-bottom: 2px solid #e8d9b0;
-    border-left: 6px solid #d0c29b;
-    padding: 22px 30px 18px 40px;
-    box-shadow: 
-      0 20px 40px rgba(0, 0, 0, 0.35), 
-      inset 20px 0 30px -10px rgba(0, 0, 0, 0.12);
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.06) 0%, rgba(255, 255, 255, 0) 4%);
-    font-family: 'Noto Sans Devanagari', Arial, sans-serif;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-
-  .book3d-master-wrap {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 0;
-    font-family: 'Noto Sans Devanagari', Arial, sans-serif;
-    background: transparent !important; /* Alag se white box nahi dikhega */
-    box-shadow: none !important;
-  }
-
- 
 </style>
 </head>
 <body>
@@ -527,7 +393,7 @@
     </div>
     <div><label>Highlight Row #</label><input id="highlight" placeholder="e.g. 30" value="30"></div>
   </div>
-  <!-- NEW: Page Number Controls -->
+
   <div class="row">
     <div style="flex:0 1 220px;">
       <label>Page Number (only digits)</label>
@@ -586,7 +452,7 @@
 39|तार आवरण|42
 40|बदली स्टेशन|42
 41|संयोजक अनुभाग (कनैक्टिंग सेक्शन)|43
-42|समयोपरि काम (ओवरटाइम ड्यूटी)|43
+42|समयोपरि काम (ओवरтайм ड्यूटी)|43
 43|विश्राम-गृह|44
 44|निकाल दिया गया।|
 44-क.|कटघरा पारवहन थैला (केज टीबी)|44
@@ -619,9 +485,7 @@
   <div class="row">
     <div><label>Footer Note</label><input id="footer" value="महत्वपूर्ण सूचना एवं अस्वीकरण: यह सामग्री पाठकों की सुविधा एवं शैक्षणिक सहायता के उद्देश्य से उपलब्ध कराई गई है। यद्यपि सामग्री एवं उत्तरों की यथासंभव सावधानीपूर्वक जाँच की गई है, फिर भी अनजाने में किसी प्रकार की त्रुटि अथवा विसंगति संभव है। ऐसी किसी भी त्रुटि के लिए हमारी वेबसाइट किसी भी प्रकार से उत्तरदायी नहीं होगी। अतः पाठकों से अनुरोध है कि परीक्षा अथवा अन्य महत्वपूर्ण उपयोग से पूर्व दिए गए प्रश्नों एवं उत्तरों का संबंधित आधिकारिक स्रोतों से स्वयं सत्यापन अवश्य कर लें।"></div>
   </div>
-     <!-- ==========================================================================
-     UPDATED: 4 REASONING IMAGES UPLOAD FIELDS (DO NOT CHANGE OTHER BUTTONS)
-     ========================================================================== -->
+
   <div id="reasoningUploadRow" style="margin-top: 15px; background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px dashed #143b73;">
     <div style="font-weight: 700; color: #143b73; font-size: 14px; margin-bottom: 10px; border-bottom: 2px solid #143b73; padding-bottom: 4px;">📸 सादृश्यता अभ्यास सेट - 4 प्रश्न आकृतियाँ अपलोड करें (AI Auto-SVG Generation)</div>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
@@ -660,30 +524,26 @@
  <div id="posterWrap">
  <div class="poster" id="poster">
   
-  <div class="exact-circular-watermark">
-  <img src="/rsh-final-logo.png" />
-</div>
-
-
-
-
-  
-
-    <!-- 1. Upar Brand Name, Title aur Badges -->
-    <div style="text-align: center; margin-bottom: 6px; flex-shrink: 0;">
-      <div class="brand-text" id="brandText" style="font-family:'Oswald',sans-serif; font-size:28px; font-weight:700; color:#6b2b16; letter-spacing:1px; text-transform:uppercase; margin-bottom: 2px;">RAMESHWAR SAHU GDS DEPARTMENTAL EXAM STUDY HUB</div>
-      <div class="title-main" id="titleMain" style="margin: 2px 0;">POSTAL MANUAL</div>
-      <div class="badge-row">
-        <span class="volume-badge" id="volumeBadge">VOLUME 5</span>
-        <span class="chapter-badge" id="chapterBadge">CHAPTER 1</span>
-      </div>
+    <div class="exact-circular-watermark">
+      <img src="/rsh-final-logo.png" />
     </div>
 
-    <!-- 2. Niche Dono Logos -->
-    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 10px; margin-bottom: 6px; flex-shrink: 0;">
+    <!-- Unified Top Header: Left Logo | Center Title & Badges | Right Logo -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 0 4px; margin-bottom: 2px; flex-shrink: 0;">
       <div class="logo" id="logoLeft"></div>
+      
+      <div style="text-align: center; flex: 1; margin: 0 10px; flex-shrink: 0;">
+        <div class="brand-text" id="brandText">RAMESHWAR SAHU GDS DEPARTMENTAL EXAM STUDY HUB</div>
+        <div class="title-main" id="titleMain">POSTAL MANUAL</div>
+        <div class="badge-row">
+          <span class="volume-badge" id="volumeBadge">VOLUME 5</span>
+          <span class="chapter-badge" id="chapterBadge">CHAPTER 1</span>
+        </div>
+      </div>
+
       <div class="logo" id="logoRight"></div>
     </div>
+
     <div class="subtitle-banner" id="subtitleBanner">अध्याय 1 की विषय-सूची (नियम सूची)</div>
     <div id="bodyArea"><div id="bodyInner"></div></div>
     <div class="footer-note"><span class="tag">नोट :</span><span id="footerText"></span></div>
@@ -698,7 +558,6 @@
 
 <script>
  
-// Image load hone ki status check karne wala robust logo path
 const logoSVG = `
   <img src="/rsh-final-logo.png" 
        alt="RSH Logo" 
@@ -738,43 +597,32 @@ function buildListLayout(rows, highlight) {
   return `<div class="table-wrap" style="grid-template-columns:repeat(${colCount},1fr)">${cols}</div>`;
 }
 
-// Page load hote hi setLogos call karne ke liye yeh zaroor rakhein:
 window.addEventListener('DOMContentLoaded', () => {
   setLogos();
   renderPoster();
 });
 
-/* ==========================================================================
-   UPDATED: REAL BOOK PAGE LAYOUT (BOLD, DARK BLACK & LARGER FONT)
-   ========================================================================== */
-/* ==========================================================================
-   UPDATED: 3D BOOK PAGE LAYOUT (LARGER BOLD FONTS & CLEAN SEPARATORS)
-   ========================================================================== */
 function buildBook3DLayout(rows) {
   let html = '<div class="book3d-master-wrap" style="width: 100%; background: transparent !important;">';
   
   rows.forEach((line) => {
-    // 1. Smart Heading Detection (Jiske aage :- ho aur wo sawal/jawab na ho)
     const isHeading = (line.endsWith(':-') || line.endsWith(':')) && !line.includes('प्रश्न') && !line.includes('उत्तर');
-    
-    // 2. Question Detection
     const isQuestion = line.includes('प्रश्न') || line.includes('Q.') || line.match(/^\d+[\.-]/);
 
     if (isHeading) {
-      // Unique 3D Heading Style
       html += `
-        <div style="margin: 14px 0 8px 0;">
+        <div style="margin: 10px 0 6px 0;">
           <div style="
             font-family: 'Oswald', 'Noto Sans Devanagari', sans-serif;
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 800;
             color: #8b0000;
             background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 6px;
             border-left: 6px solid #b00020;
             border-bottom: 3px solid #d4af37;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6);
             text-shadow: 1px 1px 0px #ffffff, 2px 2px 4px rgba(0,0,0,0.2);
             display: inline-block;
           ">
@@ -783,19 +631,16 @@ function buildBook3DLayout(rows) {
         </div>
       `;
     } else if (isQuestion) {
-      // Question Style (Clean & Bold)
       html += `
-        <div style="width: 100%; padding: 2px 4px 0px 4px; margin-top: 2px; color: #b00020; font-size: 18px; font-weight: 800; line-height: 1.3; background: transparent;">
+        <div style="width: 100%; padding: 2px 4px 0px 4px; margin-top: 2px; color: #b00020; font-size: 17px; font-weight: 800; line-height: 1.3; background: transparent;">
           ${line}
         </div>
       `;
-        } else {
-      // Answer / Normal Text Style (More Bold & Readable)
+    } else {
       html += `
-        <div style="width: 100%; padding: 6px 4px; border-bottom: 1px dashed rgba(176, 0, 32, 0.22); color: #000000; font-size: 17px; font-weight: 800; line-height: 1.6; background: transparent;">
+        <div style="width: 100%; padding: 5px 4px; border-bottom: 1px dashed rgba(176, 0, 32, 0.22); color: #000000; font-size: 16px; font-weight: 800; line-height: 1.5; background: transparent;">
           ${line}
         </div>
-
       `;
     }
   });
@@ -804,9 +649,6 @@ function buildBook3DLayout(rows) {
   return html;
 }
 
-
- 
-/* Page Number show/hide + digit-only sanitize */
 function updatePageNumber() {
   const inp = document.getElementById('pageNumber');
   const clean = inp.value.replace(/[^0-9]/g, '');
@@ -821,7 +663,6 @@ function updatePageNumber() {
   document.getElementById('pageNumBadge').textContent = clean;
 }
 
-/* scale body so everything fits inside the A4 frame */
 function fitToFrame() {
   const area = document.getElementById('bodyArea');
   const inner = document.getElementById('bodyInner');
@@ -850,7 +691,6 @@ function renderPoster() {
   } else if (mode === 'book3d') {
     document.getElementById('bodyInner').innerHTML = buildBook3DLayout(rows);
   } else if (mode === 'reasoning') {
-    // reasoning mode already handled by override
   } else {
     document.getElementById('bodyInner').innerHTML = buildListLayout(rows, highlight);
   }
@@ -869,11 +709,9 @@ async function captureCanvas() {
     throw new Error("Poster element (#poster) not found on page!");
   }
 
-  // Capture ke dauran scale transform ko temporarily remove karna taaki download rotate/distort na ho
   const oldTransform = inner ? inner.style.transform : '';
   if (inner) inner.style.transform = 'none';
 
-  // Watermark image ke load hone ka wait karein
   const imgEl = poster.querySelector('.exact-circular-watermark img');
   if (imgEl && !imgEl.complete) {
     await new Promise((resolve) => {
@@ -885,7 +723,7 @@ async function captureCanvas() {
 
   try {
     const canvas = await html2canvas(poster, { 
-      scale: 2, // High resolution sharp output ke liye
+      scale: 2, 
       width: 1080,
       height: 1527,
       windowWidth: 1080,
@@ -896,7 +734,6 @@ async function captureCanvas() {
       logging: false
     });
 
-    // Transform wapas restore karein
     if (inner) inner.style.transform = oldTransform;
     console.log("[Poster Download] Canvas captured successfully!");
     return canvas;
@@ -909,12 +746,7 @@ async function captureCanvas() {
   }
 }
 
-
-
-
-
 function downloadPNG() {
-  
   captureCanvas().then(c => {
     const base64Data = c.toDataURL("image/png");
     const timestamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0].replace("T", "_");
@@ -931,7 +763,6 @@ function downloadPNG() {
   });
 }
 
-// Safe standard fallback download helper
 function fallbackDownload(dataUrl, filename) {
   const a = document.createElement("a");
   a.href = dataUrl;
@@ -941,10 +772,7 @@ function fallbackDownload(dataUrl, filename) {
   document.body.removeChild(a);
 }
 
-
-
 function downloadPDF() {
-  
   const { jsPDF } = window.jspdf;
 
   captureCanvas().then(canvas => {
@@ -973,7 +801,6 @@ function downloadPDF() {
     const pdfData = pdf.output("datauristring");
     const timestamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0].replace("T", "_");
     const fileName = `rsh-gds-poster_${timestamp}.pdf`;
-   
 
     if (window.AndroidBridge && typeof window.AndroidBridge.download === "function") {
       window.AndroidBridge.download(pdfData, fileName, "");
@@ -986,15 +813,8 @@ function downloadPDF() {
   });
 }
 
-
-// ==========================================================================
-// ADD THIS BLOCK JUST BEFORE renderPoster();
-// ==========================================================================
-
-// चारों प्रश्नों के HTML/SVG कोड को अलग-अलग ट्रैक करने के लिए ऑब्जेक्ट
 let generatedQuestionsData = { 1: "", 2: "", 3: "", 4: "" };
 
-// ड्रॉपडाउन में 'Reasoning / Analogy' मोड का नया ऑप्शन डायनामिकली जोड़ना
 window.addEventListener('DOMContentLoaded', () => {
   const modeSelect = document.getElementById('mode');
   if (modeSelect && modeSelect.options.length < 3) {
@@ -1005,7 +825,6 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// प्रत्येक अपलोड बटन के लिए इमेज को कनवर्ट करने का मुख्य फंक्शन
 function processMultipleReasoningImages(input, qNum) {
   const file = input.files[0];
   if (!file) return;
@@ -1016,22 +835,16 @@ function processMultipleReasoningImages(input, qNum) {
 
   const reader = new FileReader();
   reader.onload = function(e) {
-    // बेस64 डेटा को क्लीन निकालना
     const base64Data = e.target.result.split(',')[1];
     const mimeType = file.type;
-
     callGenerativeAIForQuestion(base64Data, mimeType, qNum);
   };
   reader.readAsDataURL(file);
 }
 
- // विशिष्ट प्रश्न संख्या (1 से 4) के लिए Render Server API कॉल करना
 function callGenerativeAIForQuestion(base64Data, mimeType, qNum) {
   const statusEl = document.getElementById(`aiStatus${qNum}`);
-  
-  // Render सर्वर रूट (अगर frontend और backend अलग डोमेन पर हैं, तो पूरा URL दें जैसे 'https://your-backend.onrender.com/api/generate-svg')
   const url = "https://payment-backend-2-g6go.onrender.com/api/generate-svg";
-
 
   const promptText = `Analyze the uploaded reasoning/analogy question image.
 Convert this single question, options, and full Hindi explanation into clean, precise HTML.
@@ -1040,7 +853,7 @@ Strict Visual & Layout Rules:
 1. All generated <svg> tags MUST have viewBox set accurately (e.g. viewBox="0 0 500 120") and style="width: 100%; height: auto; display: block;". Never use small fixed pixel widths.
 2. SVG outlines, shapes, and dividers must have bold visible strokes (stroke-width="2" or "2.5") for sharp A4 printing.
 3. No SVG, absolute coordinates, or broken spans inside the explanation container. The Hindi explanation MUST be standard flowing paragraph text.
-4. Output strictly raw HTML without markdown code blocks (\`\`\`html).
+4. Output strictly raw HTML without markdown code blocks.
 
 Structure strictly as:
 
@@ -1048,7 +861,6 @@ Structure strictly as:
   <span class="example-badge">प्रश्न (Question) ${qNum}</span>
 
   <div class="figure-row-container" style="display: flex; width: 100%; justify-content: space-between; gap: 15px; margin: 12px 0;">
-    <!-- Large, clear Question Figures and Options SVGs spanning full width -->
   </div>
 
   <div class="solution-block-container" style="background: #fff9e6; border: 1.5px solid #f59e0b; border-radius: 6px; padding: 12px; margin-top: 10px; font-family: sans-serif; text-align: left;">
@@ -1056,10 +868,9 @@ Structure strictly as:
       उत्तर (Logic) / स्पष्टीकरण:
     </div>
     <p style="margin: 0 0 8px 0; color: #1f2937; line-height: 1.6; font-size: 13px; text-align: justify;">
-      <!-- Complete Hindi explanation as standard readable text -->
     </p>
     <div style="background: #fef3c7; border-left: 4px solid #d97706; padding: 4px 10px; font-weight: bold; color: #92400e; display: inline-block; border-radius: 0 4px 4px 0; font-size: 13px;">
-      सही उत्तर विकल्प: <!-- Correct option number here e.g. (3) -->
+      सही उत्तर विकल्प: 
     </div>
   </div>
 </div>`;
@@ -1081,19 +892,13 @@ Structure strictly as:
   .then(data => {
     if (data.html) {
       let aiHTML = data.html.trim();
-      
-      // AI के मार्कडाउन बैकस्टिक्स हटाने के लिए
       if (aiHTML.startsWith("```html")) aiHTML = aiHTML.replace("```html", "").replace("```", "");
       if (aiHTML.endsWith("```")) aiHTML = aiHTML.slice(0, -3);
       aiHTML = aiHTML.replace(/```/g, "").trim();
 
-      // वर्तमान प्रश्न का HTML डेटा स्टोर करें
       generatedQuestionsData[qNum] = aiHTML;
-      
       statusEl.value = "✓ Generated!";
       statusEl.style.color = "#0d7a3a";
-      
-      // सभी प्रश्नों को कम्बाइन करके रेंडर करना
       combineAllQuestionsToContent();
     } else {
       throw new Error("Invalid response from server");
@@ -1103,14 +908,11 @@ Structure strictly as:
     console.error(err);
     statusEl.value = "⚠ Fallback Used";
     statusEl.style.color = "#b00020";
-    
-    // एरर आने पर डिफ़ॉल्ट टेम्पलेट रेंडर करना
     generatedQuestionsData[qNum] = getSingleFallbackStructure(qNum);
     combineAllQuestionsToContent();
   });
 }
 
-// चारों प्रश्नों के कोड को आपस में मिलाकर मुख्य #content में इंजेक्ट करना
 function combineAllQuestionsToContent() {
   let combinedHTML = `<div class="reasoning-wrap">
     <div class="analogy-main-title-card">
@@ -1127,13 +929,10 @@ function combineAllQuestionsToContent() {
   }
   
   combinedHTML += `</div>`;
-  
-  // मुख्य टेक्स्टएरिया को अपडेट करें और पोस्टर रेंडर करें
   document.getElementById('content').value = combinedHTML;
   renderPoster();
 }
 
-// सिंगल प्रश्न का रेडीमेड क्लीन SVG फॉलबैक टेम्पलेट
 function getSingleFallbackStructure(qNum) {
   return `
   <div class="example-block">
@@ -1174,7 +973,6 @@ function loadFallbackSvgStructure() {
   combineAllQuestionsToContent();
 }
 
-// आपके मूल 'renderPoster' फंक्शन को ओवरराइड करना ताकि तीसरे मोड का डेटा सही से रेंडर हो सके
 const originalRenderPoster = renderPoster;
 renderPoster = function() {
   originalRenderPoster();
@@ -1189,13 +987,12 @@ renderPoster = function() {
     requestAnimationFrame(fitToFrame);
   }
 };
- renderPoster();
+renderPoster();
 window.addEventListener('load', () => requestAnimationFrame(fitToFrame));
 if (document.fonts) {
   document.fonts.ready.then(renderPoster);
 }
 
-// 1. Select All Function
 function selectAllText() {
     const textarea = document.getElementById('content');
     if (!textarea) return;
@@ -1204,11 +1001,9 @@ function selectAllText() {
     textarea.setSelectionRange(0, textarea.value.length);
 }
 
-// 2. Copy Function (Selected text ya poora text copy karega)
 function copyText() {
     const textarea = document.getElementById('content');
     if (!textarea) return;
-    
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const textToCopy = (start !== end) ? textarea.value.substring(start, end) : textarea.value;
@@ -1222,16 +1017,13 @@ function copyText() {
     });
 }
 
-// 3. Cut Function (Selected text ya poora text cut karega)
 function cutText() {
     const textarea = document.getElementById('content');
     if (!textarea) return;
-    
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     
     if (start === end) {
-        // Agar kuch selected nahi hai toh poora text cut kar lo
         navigator.clipboard.writeText(textarea.value).then(() => {
             textarea.value = "";
             alert("Cut all text!");
@@ -1242,7 +1034,6 @@ function cutText() {
             alert("Cut!");
         });
     } else {
-        // Sirf selected text cut karo
         const selectedText = textarea.value.substring(start, end);
         navigator.clipboard.writeText(selectedText).then(() => {
             textarea.value = textarea.value.substring(0, start) + textarea.value.substring(end);
@@ -1255,11 +1046,9 @@ function cutText() {
     }
 }
 
-// 4. Paste Function
 async function pasteText() {
     const textarea = document.getElementById('content');
     if (!textarea) return;
-    
     try {
         const text = await navigator.clipboard.readText();
         const start = textarea.selectionStart;
@@ -1272,8 +1061,7 @@ async function pasteText() {
         alert("Clipboard permission required. Please use your keyboard/device paste option inside the box.");
     }
 }
-  
 </script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"7f7b0fd8732c4326aae4b9d58d5c514a","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
+        
