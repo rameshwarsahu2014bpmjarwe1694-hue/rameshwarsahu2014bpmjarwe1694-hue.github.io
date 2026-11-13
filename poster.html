@@ -606,7 +606,7 @@ function buildBook3DLayout(rows) {
   let html = '<div class="book3d-master-wrap" style="width: 100%; background: transparent !important;">';
   
   rows.forEach((line) => {
-    const isHeading = (line.startsWith('नोट') || line.startsWith('Note') || line.includes('नोट:-') || (line.endsWith(':-') || line.endsWith(':')) && !line.includes('प्रश्न') && !line.includes('उत्तर');
+    const isHeading = (line.startsWith('नोट') || line.startsWith('Note') || line.includes('नोट:-') || line.endsWith(':-') || line.endsWith(':')) && !line.includes('प्रश्न') && !line.includes('उत्तर');
     const isQuestion = line.includes('प्रश्न') || line.includes('Q.') || line.match(/^\d+[\.-]/);
 
     if (isHeading) {
