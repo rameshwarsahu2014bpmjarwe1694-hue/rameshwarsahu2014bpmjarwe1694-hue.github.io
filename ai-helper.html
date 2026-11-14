@@ -790,7 +790,7 @@ if (welcomeElement) welcomeElement.remove();
             }
         }
             
-            if (endpoint.includes('solve-math')) {
+            else if (endpoint.includes('solve-math')) {
                 if (data.success && data.result !== undefined) {
                     appendMessage(`🧮 गणितीय हल (Math Result): <b>${data.result}</b>`, 'ai-msg', true);
                 } else {
