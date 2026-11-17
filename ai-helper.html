@@ -723,11 +723,18 @@ if (welcomeElement) welcomeElement.remove();
                 return;
             }
 
-            // 👉 Intent B: Math Solver (`/api/solve-math`)
-            if (lowerQuery.includes('math') || lowerQuery.includes('हल करो') || lowerQuery.includes('calculate') || (/[\d\+\-\*\/\(\)]+/.test(lowerQuery) && lowerQuery.length < 30)) {
-                endpoint = `${BACKEND_URL}/api/solve-math`;
-                payload = { expression: queryText.replace(/[^0-9\+\-\*\/\(\)\.\s]/g, '') || queryText };
-            } 
+            // 👉 Intent B: Math Solver — only actual math expressions
+            const mathExpression = queryText
+            .replace(/[^0-9+\-*/().\s]/g, '')
+            .trim();
+
+            const hasNumbers = /\d/.test(mathExpression);
+            const hasOperator = /[+\-*/]/.test(mathExpression);
+
+            if (hasNumbers && hasOperator) {
+            endpoint = `${BACKEND_URL}/api/solve-math`;
+            payload = { expression: mathExpression };
+            }
             // 👉 Intent C: Video Lecture, Slides & Audio Assets (`/api/step2-generate-assets`)
             else if (lowerQuery.includes('video') || lowerQuery.includes('lecture') || lowerQuery.includes('वीडियो') || lowerQuery.includes('लेक्चर') || lowerQuery.includes('audio') || lowerQuery.includes('slide') || lowerQuery.includes('स्लाइड')) {
                 endpoint = `${BACKEND_URL}/api/step2-generate-assets`;
