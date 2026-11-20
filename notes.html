@@ -318,15 +318,15 @@ window.handleSecureAccess = async (category, subject, title, fileName, price) =>
         }
 
         const token = await auth.currentUser.getIdToken();
-        const secureUrl = `${BACKEND_URL}/get-notes-pdf?post=${encodeURIComponent(category)}&subject=${encodeURIComponent(subject)}`;
+const secureUrl = `${BACKEND_URL}/get-notes-pdf?post=${encodeURIComponent(category)}&subject=${encodeURIComponent(subject)}`;
 
-        const checkRes = await fetch(secureUrl, {
-            method: "GET",
-            headers: {
-                "X-Source-Auth": "RSH-GDS-SECURE-ACCESS",
-                "Authorization": `Bearer ${token}`
-            }
-        });
+const checkRes = await fetch(secureUrl, {
+    method: "GET",
+    headers: {
+        "Authorization": `Bearer ${token}`
+    }
+});
+
 
         // 1. Agar payment ho chuka hai (200 OK)
         if (checkRes.status === 200) {
@@ -402,11 +402,11 @@ window.autoCheckPayment = async function(txnId) {
             const secureUrl = `${BACKEND_URL}/get-pdf?year=Notes&post=${encodeURIComponent(category)}&subject=${encodeURIComponent(subject)}`;
 
             const pdfRes = await fetch(secureUrl, {
-                headers: {
-                    'X-Source-Auth': 'RSH-GDS-SECURE-ACCESS',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+    headers: {
+        "Authorization": `Bearer ${token}`
+    }
+});
+
 
             if (pdfRes.status === 200) {
                 const blob = await pdfRes.blob();
