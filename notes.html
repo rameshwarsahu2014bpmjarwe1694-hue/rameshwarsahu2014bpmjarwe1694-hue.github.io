@@ -84,9 +84,19 @@
           },
           handler: async function (response) {
             try {
+              const currentAuth = (typeof auth !== "undefined" && auth)
+                ? auth
+                : (window.firebaseAuth || null);
+              const idToken = currentAuth?.currentUser
+                ? await currentAuth.currentUser.getIdToken()
+                : "";
+
               const verifyRes = await fetch(`${RZP_BACKEND_URL}/api/verify-payment`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                  "Content-Type": "application/json",
+                  ...(idToken ? { "Authorization": `Bearer ${idToken}` } : {})
+                },
                 body: JSON.stringify({
                   razorpay_payment_id: response.razorpay_payment_id,
                   razorpay_order_id: response.razorpay_order_id,
@@ -108,6 +118,7 @@
               alert("Server se payment verify karne me network error aaya.");
             }
           },
+
           modal: {
             ondismiss: async function () {
               try {
@@ -219,12 +230,15 @@ async function loadNotes(){
 
 // यह फंक्शन बटन्स को अपडेट करेगा
 async function updateUIBasedOnPayment() {
-    if (!window.currentUserEmail) return;
+    if (!auth.currentUser) return;
     const token = await auth.currentUser.getIdToken();
     try {
-        // हम एक नया बैकएंड रूट मान रहे हैं जो सिर्फ status देता है
-        const res = await fetch(`${BACKEND_URL}/payment-status?email=${window.currentUserEmail}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
+        const res = await fetch(`${BACKEND_URL}/payment-status`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
         });
         const data = await res.json().catch(() => ({}));
 
@@ -233,12 +247,12 @@ async function updateUIBasedOnPayment() {
             buttons.forEach(btn => {
                 btn.innerText = "📥 Download PDF";
                 btn.style.backgroundColor = "#28a745";
-                // क्लिक पर डाउनलोड ट्रिगर करें
                 btn.onclick = () => handleSecureAccess(btn.dataset.cat, btn.dataset.sub, null, null, null);
             });
         }
     } catch(e) { console.error("UI Update Error:", e); }
 }
+
 
  window.renderNotes = function(arr){
      console.log("Rendering started for count:", arr.length);
@@ -333,15 +347,46 @@ const checkRes = await fetch(secureUrl, {
         if (checkRes.status === 200) {
             alert("Payment Verified! Downloading started...");
             const outName = `${category}_${subject}_Notes.pdf`.replace(/[\/\\]/g, '_');
+            const identifier = subject || category;
+
+            const tokenRes = await fetch(`${BACKEND_URL}/get-download-token`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    fileType: "notes",
+                    identifier
+                })
+            });
+
+            const tokenData = await tokenRes.json().catch(() => ({}));
+            if (!tokenRes.ok || !tokenData.token) {
+                alert("Download token generate nahi ho paya.");
+                return;
+            }
+
+            const signedDownloadUrl = `${secureUrl}&token=${encodeURIComponent(tokenData.token)}`;
 
             // 🚀 Android Native Bridge Handler (PYQ Format)
             if (window.AndroidBridge && typeof AndroidBridge.download === "function") {
-                AndroidBridge.download(secureUrl, outName, token);
+                AndroidBridge.download(signedDownloadUrl, outName, token);
                 return;
             }
 
             // Web Fallback Download
-            const blob = await checkRes.blob();
+            const blobRes = await fetch(signedDownloadUrl, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            if (!blobRes.ok) {
+                alert("PDF download karne me samasya aayi.");
+                return;
+            }
+
+            const blob = await blobRes.blob();
             const blobUrl = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.style.display = "none";
@@ -356,6 +401,7 @@ const checkRes = await fetch(secureUrl, {
             }, 1000);
             return;
         }
+
 
         // 2. Agar payment pending / missing hai (403 Forbidden)
         if (checkRes.status === 403) {
