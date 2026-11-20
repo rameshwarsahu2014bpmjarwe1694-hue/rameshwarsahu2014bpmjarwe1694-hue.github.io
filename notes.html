@@ -33,35 +33,127 @@
     </style>
 </head>
 <body>
-<div id="qrBox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; align-items:center; justify-content:center; padding:20px;">
-    <div style="background:#fff; padding:25px; border-radius:15px; text-align:center; max-width:400px; width:100%;">
-        <h3>Payment Required</h3>
-        <h4 id="amountDisplay" style="margin: 10px 0;">Amount: ₹29</h4>
-        
-        <!-- 🚀 Direct Auto UPI Launch Button -->
-        <button id="autoUpiBtn" onclick="triggerAutoUPI()" style="width:100%; padding:12px; background:#ffd600; color:#000; border:none; border-radius:8px; font-weight:bold; font-size:15px; margin:10px 0; cursor:pointer;">
-            🚀 Pay via Any UPI App (GPay / PhonePe / Paytm)
-        </button>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  (function () {
+    const RZP_BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
 
-        <p style="font-size:12px; color:#666; margin-bottom:8px;">या क्यूआर कोड स्कैन करके भुगतान करें:</p>
+    window.startRazorpayNotesCheckout = async function ({
+      category = "",
+      subject = "",
+      title = "GDS Notes PDF",
+      onVerifiedSuccess = null
+    } = {}) {
+      if (typeof window.Razorpay !== "function") {
+        alert("Razorpay checkout script load nahi ho payi. Kripya page refresh karein.");
+        return;
+      }
 
-        <img id="qrImage" src="" style="width:200px; height:200px; margin: 10px auto; display: block;" />
-        
-        <div style="background:#f0f0f0; padding:10px; border-radius:5px; margin:10px 0; font-weight:bold;">
-            <span id="upiDisplay">6268782886@ybl</span>
-            <button onclick="navigator.clipboard.writeText('6268782886@ybl'); alert('Copied!');" style="margin-left:10px; cursor:pointer;">Copy</button>
-        </div>
+      let createdOrderId = null;
 
-        <div style="margin-top:15px; border-top:1px solid #ddd; padding-top:10px; text-align:left;">
-            <p style="font-size:13px; margin-bottom:5px;">Payment Karne Ke Baad Details bhejein (Transaction ID ya Screenshot):</p>
-            <input type="text" id="txnIdInput" placeholder="Enter Transaction ID" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #ccc; border-radius:4px;">
-            <input type="file" id="screenshotInput" accept="image/*" style="width:100%; margin-bottom:8px;">
-            <button onclick="submitPaymentProof()" style="width:100%; padding:10px; background:#28a745; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Submit Proof</button>
-        </div>
+      try {
+        // Amount server.js par decide hoga; frontend sirf item details bhejega
+        const orderRes = await fetch(`${RZP_BACKEND_URL}/api/create-order`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            itemType: "notes",
+            category,
+            subject,
+            currency: "INR",
+            receipt: `notes_${Date.now()}`
+          })
+        });
 
-        <button onclick="closeQR()" style="margin-top:15px; background:red; color:white; border:none; padding:8px 20px; border-radius:5px;">Close</button>
-    </div>
-</div>
+        const orderData = await orderRes.json().catch(() => ({}));
+        if (!orderRes.ok || !orderData.order_id || !orderData.key_id || !orderData.amount) {
+          throw new Error(orderData.error || "Order create karne me samasya aayi.");
+        }
+
+        createdOrderId = orderData.order_id;
+
+        const options = {
+          key: orderData.key_id,
+          amount: orderData.amount,
+          currency: orderData.currency || "INR",
+          name: "RAMESHWAR SAHU STUDY HUB",
+          description: title || `${category} - ${subject} Notes`,
+          order_id: orderData.order_id,
+          prefill: {
+            email: window.currentUserEmail || ""
+          },
+          handler: async function (response) {
+            try {
+              const verifyRes = await fetch(`${RZP_BACKEND_URL}/api/verify-payment`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_signature: response.razorpay_signature
+                })
+              });
+
+              const verifyData = await verifyRes.json().catch(() => ({}));
+              if (!verifyRes.ok || !verifyData.success) {
+                alert(verifyData.error || "Payment signature verify nahi ho paya.");
+                return;
+              }
+
+              alert(`Payment verified! Payment ID: ${verifyData.payment_id}`);
+              if (typeof onVerifiedSuccess === "function") {
+                onVerifiedSuccess(verifyData, { category, subject, title });
+              }
+            } catch (err) {
+              alert("Server se payment verify karne me network error aaya.");
+            }
+          },
+          modal: {
+            ondismiss: async function () {
+              try {
+                await fetch(`${RZP_BACKEND_URL}/api/payment-failure`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    order_id: createdOrderId,
+                    reason: "Checkout modal closed by user"
+                  })
+                });
+              } catch (_) {}
+              alert("Payment cancel kar diya gaya.");
+            }
+          }
+        };
+
+        const rzp = new window.Razorpay(options);
+
+        rzp.on("payment.failed", async function (resp) {
+          const errMsg = resp?.error?.description || "Payment fail ho gaya. Kripya dobara koshish karein.";
+          const failedOrderId = resp?.error?.metadata?.order_id || createdOrderId;
+          const failedPaymentId = resp?.error?.metadata?.payment_id || "";
+
+          try {
+            await fetch(`${RZP_BACKEND_URL}/api/payment-failure`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                order_id: failedOrderId,
+                payment_id: failedPaymentId,
+                reason: errMsg
+              })
+            });
+          } catch (_) {}
+
+          alert(errMsg);
+        });
+
+        rzp.open();
+      } catch (err) {
+        alert(err.message || "Checkout shuru nahi ho paya.");
+      }
+    };
+  })();
+</script>
 
 
     
@@ -216,18 +308,6 @@ async function updateUIBasedOnPayment() {
         `;
     }).join('');
 };
- window.triggerAutoUPI = function() {
-    const p = window.currentPrice || 29;
-    const myUpiId = "6268782886@ybl";
-    const appName = "RAMESHWAR SAHU STUDY HUB";
-    const note = "GDS Notes PDF";
-
-    // Standard UPI Intent URL
-    const upiUrl = `upi://pay?pa=${encodeURIComponent(myUpiId)}&pn=${encodeURIComponent(appName)}&am=${p}&cu=INR&tn=${encodeURIComponent(note)}`;
-
-    // WebView / Native App में UPI Apps लॉन्च करेगा
-    window.location.href = upiUrl;
-};
 
 window.handleSecureAccess = async (category, subject, title, fileName, price) => {
     try {
@@ -278,22 +358,18 @@ window.handleSecureAccess = async (category, subject, title, fileName, price) =>
 
         // 2. Agar payment pending / missing hai (403 Forbidden)
         if (checkRes.status === 403) {
-            window.pendingTxn = { category, subject };
-            window.currentPrice = price || 29;
-
-            const p = window.currentPrice;
-            const myUpiId = "6268782886@ybl";
-            const qrData = `upi://pay?pa=${myUpiId}&pn=RAMESHWAR%20SAHU%20STUDY%20HUB&am=${p}&cu=INR&tn=GDS%20Notes%20PDF`;
-            const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(qrData);
-
-            document.getElementById("qrImage").src = qrUrl;
-            document.getElementById("upiDisplay").innerText = myUpiId;
-            document.getElementById("amountDisplay").innerText = `Amount: ₹${p}`;
-            document.getElementById("qrBox").style.display = "flex";
-
-            triggerAutoUPI();
-            return;
+    window.pendingTxn = { category, subject };
+    window.startRazorpayNotesCheckout({
+        category,
+        subject,
+        title,
+        onVerifiedSuccess: () => {
+            window.handleSecureAccess(category, subject, title, fileName, price);
         }
+    });
+    return;
+}
+
 
         // 3. Agar File nahi mili (404 Not Found)
         if (checkRes.status === 404) {
@@ -305,79 +381,6 @@ window.handleSecureAccess = async (category, subject, title, fileName, price) =>
     } catch (err) {
         alert("Connection error! Please try again.");
     }
-};
-    
-window.submitPaymentProof = async () => {
-
-    const txnId =
-        document.getElementById("txnIdInput").value.trim();
-
-    const file =
-        document.getElementById("screenshotInput").files[0];
-
-    if (!txnId && !file) {
-
-        alert("Txn ID bharein ya Screenshot upload karein!");
-
-        return;
-    }
-
-    const formData = new FormData();
-
-    formData.append("txnId", txnId);
-
-    formData.append(
-        "email",
-        window.currentUserEmail
-    );
-
-    if (file) {
-        formData.append(
-            "screenshot",
-            file
-        );
-    }
-
-    try {
-
-        const res = await fetch(
-            `${BACKEND_URL}/submit-proof`,
-            {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "Authorization":
-                        `Bearer ${await auth.currentUser.getIdToken()}`,
-                    "X-Source-Auth":
-                        "RSH-GDS-SECURE-ACCESS"
-                }
-            }
-        );
-
-        if (res.ok) {
-
-            alert(
-                "Proof submit ho gaya! Admin verify karenge."
-            );
-
-            closeQR();
-
-        } else {
-
-            alert(
-                "Submit karne mein error aaya."
-            );
-        }
-
-    } catch (e) {
-
-        alert("Server error!");
-    }
-};
-
-window.closeQR = function () {
-
-    document.getElementById("qrBox").style.display = "none";
 };
 
 window.autoCheckPayment = async function(txnId) {
