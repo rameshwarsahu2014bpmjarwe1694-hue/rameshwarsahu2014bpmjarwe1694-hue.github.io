@@ -296,7 +296,7 @@ async function updateUIBasedOnPayment() {
                 : ""
             }
 
-            <button
+                        <button
                 id="${btnId}"
                 data-cat="${x.category}"
                 data-sub="${x.subject}"
@@ -305,7 +305,7 @@ async function updateUIBasedOnPayment() {
                     '${subject}',
                     '${title}',
                     '${fileName}',
-                    ${Number(x.price || 29)}
+                    ${Number(x.price || 0)}
                 )"
                 style="
                     width:100%;
@@ -319,9 +319,8 @@ async function updateUIBasedOnPayment() {
                     cursor:pointer;
                 "
             >
-                Pay & Open (₹${x.price || 29})
+                Pay & Open
             </button>
-        </div>
         `;
     }).join('');
 };
