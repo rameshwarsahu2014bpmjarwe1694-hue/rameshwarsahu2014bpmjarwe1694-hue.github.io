@@ -94,11 +94,15 @@ console.log("[RZP_FRONTEND] Android checkout request sent");
 
       let createdOrderId = null;
 
-      try {
+            try {
+        const currentAuth = (typeof auth !== "undefined" && auth) ? auth : (window.firebaseAuth || null);
+        const idToken = currentAuth?.currentUser ? await currentAuth.currentUser.getIdToken() : "";
+        if (!idToken) { alert("Please login before payment."); return; }
+
         // Amount server.js par decide hoga; frontend sirf item details bhejega
         const orderRes = await fetch(`${RZP_BACKEND_URL}/api/create-order`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${idToken}` },
           body: JSON.stringify({
             itemType: "notes",
             category,
