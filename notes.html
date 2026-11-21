@@ -217,6 +217,23 @@ console.log("[RZP_FRONTEND] Android checkout request sent");
         alert(err.message || "Checkout shuru nahi ho paya.");
       }
     };
+          window.restoreRazorpayPurchase = async function ({ category = "", subject = "", onRestoredSuccess = null } = {}) {
+      const currentAuth = (typeof auth !== "undefined" && auth) ? auth : (window.firebaseAuth || null);
+      const idToken = currentAuth?.currentUser ? await currentAuth.currentUser.getIdToken() : "";
+      if (!idToken) return alert("Please login first.");
+      const paymentId = prompt("Apna Razorpay Payment ID (pay_...) dalein:");
+      if (!paymentId) return;
+      const res = await fetch(`${RZP_BACKEND_URL}/api/restore-purchase`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${idToken}` },
+        body: JSON.stringify({ payment_id: paymentId.trim(), category, subject })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) return alert(data.error || "Verification failed.");
+      alert("PDF Unlocked Successfully!");
+      if (typeof onRestoredSuccess === "function") onRestoredSuccess(data);
+    };
+      
   })();
 </script>
 
@@ -395,8 +412,25 @@ async function updateUIBasedOnPayment() {
                     font-weight:bold;
                     cursor:pointer;
                 "
-            >
+                >
                 Pay & Open
+            </button>
+            <button
+                onclick="window.restoreRazorpayPurchase({ category: '${category}', subject: '${subject}', onRestoredSuccess: () => handleSecureAccess('${category}', '${subject}', '${title}', '${fileName}', 0, true) })"
+                style="
+                    width:100%;
+                    margin-top:8px;
+                    background:#f1f5f9;
+                    color:#334155;
+                    border:1px solid #cbd5e1;
+                    padding:9px;
+                    border-radius:8px;
+                    font-size:13px;
+                    font-weight:600;
+                    cursor:pointer;
+                "
+            >
+                Already Paid? Unlock Now
             </button>
         `;
     }).join('');
