@@ -44,6 +44,36 @@
       title = "GDS Notes PDF",
       onVerifiedSuccess = null
     } = {}) {
+              // Android APK: Native Razorpay Checkout
+      if (
+        window.AndroidBridge &&
+        typeof window.AndroidBridge.startRazorpayNotesCheckout === "function"
+      ) {
+        const currentAuth = window.firebaseAuth;
+        const idToken = currentAuth?.currentUser
+          ? await currentAuth.currentUser.getIdToken()
+          : "";
+
+        if (!idToken) {
+          alert("Please login before payment.");
+          return;
+        }
+
+        window.__nativeRazorpaySuccess =
+          typeof onVerifiedSuccess === "function"
+            ? onVerifiedSuccess
+            : null;
+
+        window.AndroidBridge.startRazorpayNotesCheckout(
+          String(category || ""),
+          String(subject || ""),
+          String(title || "GDS Notes PDF"),
+          idToken,
+          String(window.currentUserEmail || "")
+        );
+
+        return;
+      }
       if (typeof window.Razorpay !== "function") {
         alert("Razorpay checkout script load nahi ho payi. Kripya page refresh karein.");
         return;
