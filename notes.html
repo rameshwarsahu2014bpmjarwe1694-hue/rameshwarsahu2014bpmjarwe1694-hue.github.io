@@ -122,6 +122,10 @@ console.log("[RZP_FRONTEND] Android checkout request sent");
           name: "RAMESHWAR SAHU STUDY HUB",
           description: title || `${category} - ${subject} Notes`,
           order_id: orderData.order_id,
+            method: {
+            upi: true,
+            card: true,
+            netbanking: true
           prefill: {
             email: window.currentUserEmail || ""
           },
