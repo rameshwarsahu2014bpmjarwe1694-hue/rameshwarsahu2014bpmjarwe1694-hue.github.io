@@ -276,7 +276,9 @@ async function loadNotes(){
 // यह फंक्शन बटन्स को अपडेट करेगा
 async function updateUIBasedOnPayment() {
     if (!auth.currentUser) return;
+
     const token = await auth.currentUser.getIdToken();
+
     try {
         const res = await fetch(`${BACKEND_URL}/payment-status`, {
             method: "POST",
@@ -285,17 +287,38 @@ async function updateUIBasedOnPayment() {
                 "Authorization": `Bearer ${token}`
             }
         });
+
         const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+            console.log("[NOTES_PAYMENT] Payment status check failed:", res.status);
+            return;
+        }
+
+        console.log("[NOTES_PAYMENT] Backend payment status:", data.status);
 
         if (data.status === "COMPLETED") {
             const buttons = document.querySelectorAll('button[id^="btn-"]');
+
             buttons.forEach(btn => {
                 btn.innerText = "📥 Download PDF";
                 btn.style.backgroundColor = "#28a745";
-                btn.onclick = () => handleSecureAccess(btn.dataset.cat, btn.dataset.sub, null, null, null);
-            });
+
+                btn.onclick = () => {
+                    handleSecureAccess(
+                        btn.dataset.cat,
+                        btn.dataset.sub,
+                        null,
+                        null,
+                        null,
+                        true
+                    );
+                };
+            }
         }
-    } catch(e) { console.error("UI Update Error:", e); }
+    } catch (e) {
+        console.error("[NOTES_PAYMENT] UI update error:", e);
+    }
 }
 
 
@@ -368,7 +391,7 @@ async function updateUIBasedOnPayment() {
     }).join('');
 };
 
-window.handleSecureAccess = async (category, subject, title, fileName, price) => {
+window.handleSecureAccess = async (category, subject, title, fileName, price, downloadOnly = false) => {
     try {
         if (!auth.currentUser) {
             alert("Security Alert: Pehle login karein!");
@@ -449,6 +472,10 @@ const checkRes = await fetch(secureUrl, {
 
         // 2. Agar payment pending / missing hai (403 Forbidden)
         if (checkRes.status === 403) {
+            if (downloadOnly) {
+    alert("Payment abhi complete nahi hua. PDF download locked hai.");
+    return;
+            }
     window.pendingTxn = { category, subject };
     window.startRazorpayNotesCheckout({
         category,
