@@ -64,13 +64,26 @@
             ? onVerifiedSuccess
             : null;
 
-        window.AndroidBridge.startRazorpayNotesCheckout(
-          String(category || ""),
-          String(subject || ""),
-          String(title || "GDS Notes PDF"),
-          idToken,
-          String(window.currentUserEmail || "")
-        );
+        console.log("[RZP_FRONTEND] Native checkout branch reached");
+
+console.log("[RZP_FRONTEND] Checkout request:", {
+  category: category,
+  subject: subject,
+  title: title,
+  androidBridge: !!window.AndroidBridge,
+  bridgeMethod: typeof window.AndroidBridge?.startRazorpayNotesCheckout,
+  loggedIn: !!idToken
+});
+
+window.AndroidBridge.startRazorpayNotesCheckout(
+  String(category || ""),
+  String(subject || ""),
+  String(title || "GDS Notes PDF"),
+  idToken,
+  String(window.currentUserEmail || "")
+);
+
+console.log("[RZP_FRONTEND] Android checkout request sent");
 
         return;
       }
