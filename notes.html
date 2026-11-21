@@ -414,11 +414,15 @@ const checkRes = await fetch(secureUrl, {
 });
 
 
-        // 1. Agar payment ho chuka hai (200 OK)
+           // 1. Agar payment ho chuka hai (200 OK)
         if (checkRes.status === 200) {
             alert("Payment Verified! Downloading started...");
-            const outName = `${category}_${subject}_Notes.pdf`.replace(/[\/\\]/g, '_');
-            const identifier = subject || category;
+
+            const cleanFileName = String(fileName || "").trim();
+            const outName = cleanFileName
+                ? cleanFileName.replace(/[\/\\]/g, "_")
+                : `${category}_${subject}_Notes.pdf`.replace(/[\/\\]/g, "_");
+            const identifier = cleanFileName || subject || category;
 
             const tokenRes = await fetch(`${BACKEND_URL}/get-download-token`, {
                 method: "POST",
@@ -428,7 +432,10 @@ const checkRes = await fetch(secureUrl, {
                 },
                 body: JSON.stringify({
                     fileType: "notes",
-                    identifier
+                    identifier,
+                    fileName: cleanFileName,
+                    category,
+                    subject
                 })
             });
 
@@ -438,8 +445,10 @@ const checkRes = await fetch(secureUrl, {
                 return;
             }
 
-            const signedDownloadUrl = `${secureUrl}&token=${encodeURIComponent(tokenData.token)}`;
-
+            const signedDownloadUrl =
+                `${secureUrl}` +
+                `${cleanFileName ? `&fileName=${encodeURIComponent(cleanFileName)}` : ""}` +
+                `&token=${encodeURIComponent(tokenData.token)}`;
             // 🚀 Android Native Bridge Handler (PYQ Format)
             if (window.AndroidBridge && typeof AndroidBridge.download === "function") {
                 AndroidBridge.download(signedDownloadUrl, outName, token);
