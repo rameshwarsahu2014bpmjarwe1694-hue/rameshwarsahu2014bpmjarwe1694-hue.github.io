@@ -221,8 +221,13 @@ console.log("[RZP_FRONTEND] Android checkout request sent");
       } catch (err) {
         alert(err.message || "Checkout shuru nahi ho paya.");
       }
+      }
     });
-          window.restoreRazorpayPurchase = async function ({ category = "", subject = "", onRestoredSuccess = null } = {}) {
+        Object.defineProperty(window, "restoreRazorpayPurchase", {
+      writable: false,
+      configurable: false,
+      value: async function ({ category = "", subject = "", onRestoredSuccess = null } = {}) {
+          
       const currentAuth = (typeof auth !== "undefined" && auth) ? auth : (window.firebaseAuth || null);
       const idToken = currentAuth?.currentUser ? await currentAuth.currentUser.getIdToken() : "";
       if (!idToken) return alert("Please login first.");
@@ -276,7 +281,8 @@ console.log("[RZP_FRONTEND] Android checkout request sent");
     const db = getFirestore(app);
     
     console.log("Firebase initialized successfully");
-    window.BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
+    Object.defineProperty(window, "BACKEND_URL", { value: "https://payment-backend-2-g6go.onrender.com", writable: false, configurable: false });
+    
     window.allNotes = [];
 window.pendingTxn = null;
 
