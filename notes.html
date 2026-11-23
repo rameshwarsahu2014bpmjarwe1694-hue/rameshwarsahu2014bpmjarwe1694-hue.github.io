@@ -353,7 +353,7 @@ async function updateUIBasedOnPayment() {
         return;
     }
 
-    box.innerHTML = arr.map(x => {
+        const rawHtml = arr.map(x => {
 
         const category = String(x.category || "").replace(/'/g, "\\'");
         const subject = String(x.subject || "").replace(/'/g, "\\'");
@@ -372,8 +372,8 @@ async function updateUIBasedOnPayment() {
                 <span class="tag">📖 ${safe(x.subject || "-")}</span>
             </div>
 
-            <img
-                src="${x.imageURL || ''}"
+                        <img
+                src="${String(x.imageURL || '').startsWith('https://') ? safe(x.imageURL) : ''}"
                 class="preview"
                 onerror="this.style.display='none';"
             >
@@ -427,10 +427,14 @@ async function updateUIBasedOnPayment() {
                 Already Paid? Unlock Now
             </button>
         `;
-    }).join('');
+        }).join('');
+    box.innerHTML = window.DOMPurify ? DOMPurify.sanitize(rawHtml, { ADD_ATTR: ['onclick', 'data-cat', 'data-sub'] }) : rawHtml;
 };
 
-window.handleSecureAccess = async (category, subject, title, fileName, price, downloadOnly = false) => {
+Object.defineProperty(window, "handleSecureAccess", {
+  writable: false,
+  configurable: false,
+  value: async (category, subject, title, fileName, price, downloadOnly = false) => {
     try {
         if (!auth.currentUser) {
             alert("Security Alert: Pehle login karein!");
@@ -547,7 +551,8 @@ const checkRes = await fetch(secureUrl, {
     } catch (err) {
         alert("Connection error! Please try again.");
     }
-};
+    }
+});
 
 window.autoCheckPayment = async function(txnId) {
     const token = await auth.currentUser.getIdToken();
