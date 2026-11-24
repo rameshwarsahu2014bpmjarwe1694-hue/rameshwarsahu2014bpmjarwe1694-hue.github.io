@@ -1,0 +1,29 @@
+name: Build Signed Native APK
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'twa-manifest.json'
+      - '.github/workflows/build-apk.yml'
+      - 'manifest.json'
+      - 'icon-*.png'
+
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Create a GitHub Release with the APK/AAB'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build & Sign Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
