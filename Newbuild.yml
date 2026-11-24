@@ -589,3 +589,480 @@ jobs:
           }
           EOF
           
+- name: Verify Generated MainActivity
+        run: |
+         echo "===== Package ====="
+         grep "^package " webview-build/app/src/main/java/io/gdsnote/rshtwa/MainActivity.java
+
+         echo ""
+         echo "===== Splash API ====="
+         grep -n "SplashScreen.installSplashScreen" webview-build/app/src/main/java/io/gdsnote/rshtwa/MainActivity.java
+
+         echo ""
+         echo "===== onCreate ====="
+         grep -n "protected void onCreate" webview-build/app/src/main/java/io/gdsnote/rshtwa/MainActivity.java
+         
+      - name: Generate Android Resources
+        run: |
+          mkdir -p webview-build/app/src/main/res/layout
+          mkdir -p webview-build/app/src/main/res/values
+          mkdir -p webview-build/app/src/main/res/drawable
+          mkdir -p webview-build/app/src/main/res/xml
+          mkdir -p webview-build/app/src/main/res/mipmap-anydpi-v26
+          mkdir -p webview-build/app/src/main/res/mipmap-hdpi
+          mkdir -p webview-build/app/src/main/res/mipmap-mdpi
+          mkdir -p webview-build/app/src/main/res/mipmap-xhdpi
+          mkdir -p webview-build/app/src/main/res/mipmap-xxhdpi
+          mkdir -p webview-build/app/src/main/res/mipmap-xxxhdpi
+          convert icon-512.png -resize 48x48 \
+          webview-build/app/src/main/res/mipmap-mdpi/ic_launcher.png
+
+          convert icon-512.png -resize 48x48 \
+          webview-build/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
+
+          convert icon-512.png -resize 72x72 \
+          webview-build/app/src/main/res/mipmap-hdpi/ic_launcher.png
+
+          convert icon-512.png -resize 72x72 \
+          webview-build/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
+
+          convert icon-512.png -resize 96x96 \
+          webview-build/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+
+          convert icon-512.png -resize 96x96 \
+          webview-build/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
+
+          convert icon-512.png -resize 144x144 \
+          webview-build/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+
+          convert icon-512.png -resize 144x144 \
+          webview-build/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
+
+          convert icon-512.png -resize 192x192 \
+          webview-build/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+
+          convert icon-512.png -resize 192x192 \
+          webview-build/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
+          convert icon-512.png -resize 432x432 \
+          webview-build/app/src/main/res/drawable/ic_launcher_foreground.png
+          file webview-build/app/src/main/res/mipmap-*/ic_launcher.png
+          cat > webview-build/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+          <background android:drawable="@android:color/white"/>
+          <foreground android:drawable="@drawable/ic_launcher_foreground"/>
+          </adaptive-icon>
+          EOF
+
+          cat > webview-build/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+          <background android:drawable="@android:color/white"/>
+          <foreground android:drawable="@drawable/ic_launcher_foreground"/>
+          </adaptive-icon>
+          EOF
+                    cat > webview-build/app/src/main/res/layout/activity_main.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <FrameLayout
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+              <WebView
+                  android:id="@+id/webView"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"/>
+
+              <include
+                  android:id="@+id/offlineLayout"
+                  layout="@layout/network_error"
+                  android:visibility="gone"/>
+
+          </FrameLayout>
+          EOF
+
+          cat > webview-build/app/src/main/res/layout/network_error.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+
+          <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:gravity="center"
+              android:padding="24dp"
+              android:background="#FFFFFF">
+
+              <TextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="No Internet Connection"
+                  android:textSize="22sp"
+                  android:textStyle="bold"
+                  android:textColor="#000000"/>
+
+              <TextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="12dp"
+                  android:text="Please check your internet connection and try again."
+                  android:textSize="16sp"
+                  android:gravity="center"
+                  android:textColor="#666666"/>
+
+              <Button
+                  android:id="@+id/btnRetry"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="24dp"
+                  android:text="Retry"/>
+
+          </LinearLayout>
+          EOF
+          cat > webview-build/app/src/main/res/values/strings.xml <<'EOF'
+          <resources>
+              <string name="app_name"> RSH GDS Notes</string>
+          </resources>
+          EOF
+
+          cat > webview-build/app/src/main/res/values/colors.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <color name="black">#FF000000</color>
+              <color name="white">#FFFFFFFF</color>
+          </resources>
+          EOF
+
+          cat > webview-build/app/src/main/res/values/themes.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources xmlns:tools="http://schemas.android.com/tools">
+
+             <style name="Theme.GDSNotes"
+              parent="Theme.Material3.DayNight.NoActionBar">
+
+          <!-- Android 12+ Splash -->
+          <item name="android:windowSplashScreenBackground">@android:color/white</item>
+          <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+          <item name="android:windowSplashScreenAnimationDuration">300</item>
+
+          <!-- Normal Background -->
+          <item name="android:windowBackground">@android:color/white</item>
+
+            </style>
+
+          </resources>
+          EOF
+          cat > webview-build/app/src/main/res/xml/file_paths.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <paths xmlns:android="http://schemas.android.com/apk/res/android">
+          <external-files-path
+          name="camera_images"
+          path="Pictures/" />
+          </paths>
+          EOF
+          cat > webview-build/app/src/main/res/xml/network_security_config.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <network-security-config>
+
+          <base-config cleartextTrafficPermitted="false">
+          <trust-anchors>
+            <certificates src="system"/>
+          </trust-anchors>
+          </base-config>
+
+          </network-security-config>
+          EOF
+          echo "===== Resources ====="
+          find webview-build/app/src/main/res -type f | sort
+      - name: Debug Launcher Icons
+        run: |
+         echo "========== Mipmap Files =========="
+         find webview-build/app/src/main/res -type f | grep mipmap | sort
+
+         echo ""
+         echo "========== File Sizes =========="
+         ls -lh webview-build/app/src/main/res/mipmap-*/ic_launcher*
+    
+         echo ""
+         echo "========== Adaptive Icon XML =========="
+         cat webview-build/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+
+         echo ""
+         echo "========== Round Icon XML =========="
+         cat webview-build/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+
+         echo ""
+         echo "========== PNG Info =========="
+         file webview-build/app/src/main/res/mipmap-*/ic_launcher.png || true
+      - name: Download Gradle Wrapper
+        run: |
+          cd webview-build
+          gradle wrapper --gradle-version 8.10
+      - name: Configure Release Signing
+        run: |
+          cat >> webview-build/app/build.gradle <<EOF
+
+          android {
+              signingConfigs {
+                  release {
+                      storeFile file("../../android.keystore")
+                      storePassword "${{ secrets.KEYSTORE_PASSWORD }}"
+                      keyAlias "${{ secrets.KEY_ALIAS }}"
+                      keyPassword "${{ secrets.KEY_PASSWORD }}"
+                      v1SigningEnabled true
+                      v2SigningEnabled true
+
+                  }
+              }
+
+              buildTypes {
+                  release {
+                      signingConfig signingConfigs.release
+                  }
+              }
+          }
+          EOF
+          
+      - name: Build Native APK & AAB
+        env:
+          RAZORPAY_KEY_ID: ${{ secrets.RAZORPAY_KEY_ID }}
+        run: |
+          cd webview-build
+          chmod +x gradlew
+          ./gradlew assembleRelease bundleRelease
+      - name: Replace latest APK in repository
+        run: |
+          cp webview-build/app/build/outputs/apk/release/app-release.apk app-release.apk
+      - name: Generate APK SHA256
+        id: apk_hash
+        run: |
+          set -euo pipefail
+
+          APK="app-release.apk"
+
+          if [ ! -f "$APK" ]; then
+            echo "ERROR: app-release.apk not found"
+            exit 1
+          fi
+
+          SHA256=$(sha256sum "$APK" | awk '{print $1}')
+
+          if [ -z "$SHA256" ]; then
+            echo "ERROR: SHA256 generation failed"
+            exit 1
+          fi
+
+          echo "APK SHA256: $SHA256"
+
+          echo "APK_SHA256=$SHA256" >> "$GITHUB_ENV"
+          echo "sha256=$SHA256" >> "$GITHUB_OUTPUT"
+
+      - name: Update version.json with APK SHA256
+        run: |
+          set -euo pipefail
+
+          if [ ! -f "version.json" ]; then
+            echo "ERROR: version.json not found"
+            exit 1
+          fi
+
+          if [ -z "${APK_SHA256:-}" ]; then
+            echo "ERROR: APK_SHA256 is empty"
+            exit 1
+          fi
+
+          python3 - "$APK_SHA256" <<'PY'
+          import json
+          import sys
+          import re
+
+          sha256 = sys.argv[1]
+
+          with open("version.json", "r", encoding="utf-8") as f:
+              data = json.load(f)
+
+          with open("webview-build/app/build.gradle", "r", encoding="utf-8") as g:
+              gradle_text = g.read()
+
+          v_code = re.search(r'versionCode\s+(\d+)', gradle_text)
+          v_name = re.search(r'versionName\s+["\']([^"\']+)["\']', gradle_text)
+
+          if v_code:
+              data["versionCode"] = int(v_code.group(1))
+          if v_name:
+              data["versionName"] = str(v_name.group(1))
+
+          data["sha256"] = sha256
+
+          with open("version.json", "w", encoding="utf-8") as f:
+              json.dump(data, f, indent=2, ensure_ascii=False)
+              f.write("\n")
+          PY
+
+          echo "===== Updated version.json ====="
+          cat version.json
+
+      - name: Commit APK and version.json
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add app-release.apk version.json
+
+          if git diff --cached --quiet; then
+            echo "No APK or version.json changes"
+            exit 0
+          fi
+
+          git commit -m "Update latest APK and SHA256"
+
+          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
+      - name: Find APK Files
+        run: |
+         echo "===== APK ====="
+         find webview-build -name "*.apk"
+
+         echo ""
+         echo "===== AAB ====="
+         find webview-build -name "*.aab"
+      - name: Verify APK Contents
+        run: |
+         APK=$(find webview-build/app/build/outputs/apk/release -name "*.apk" | head -1)
+
+         echo "===== APK Resources ====="
+         unzip -l "$APK" | grep -E "ic_launcher|mipmap|themes|AndroidManifest" || true
+
+         echo ""
+         echo "===== Manifest Strings ====="
+         strings "$APK" | grep "Theme.GDSNotes" || true
+
+         echo ""
+         echo "===== Splash ====="
+         strings "$APK" | grep "windowSplash" || true
+
+      - name: Verify Manifest
+        run: |
+          strings webview-build/app/build/outputs/apk/release/app-release.apk | grep -E "Theme.GDSNotes|ic_launcher|roundIcon|windowSplash"
+         
+      - name: Inspect APK Icons
+        run: |
+         APK=$(find webview-build/app/build/outputs/apk/release -name "*.apk" | head -n1)
+
+         echo "APK = $APK"
+
+         unzip -l "$APK" | grep -E "mipmap|ic_launcher|round|splash" || true
+      - name: Locate output artifacts
+        id: artifacts
+        run: |
+         cd webview-build
+
+         APK_PATH=$(find . -name "app-release-signed.apk" | head -n1)
+
+         if [ -z "$APK_PATH" ]; then
+         APK_PATH=$(find . -path "*/outputs/apk/release/*.apk" | head -n1)
+         fi
+
+         AAB_PATH=$(find . -path "*/outputs/bundle/release/*.aab" | head -n1)
+
+         if [ -z "$APK_PATH" ]; then
+         echo "APK not found!"
+         exit 1
+         fi
+
+         if [ -z "$AAB_PATH" ]; then
+         echo "AAB not found!"
+         exit 1
+         fi
+
+         echo "apk_path=webview-build/${APK_PATH#./}" >> "$GITHUB_OUTPUT"
+         echo "aab_path=webview-build/${AAB_PATH#./}" >> "$GITHUB_OUTPUT"
+
+         echo "Found APK: $APK_PATH"
+         echo "Found AAB: $AAB_PATH"
+      - name: Verify Final APK Icons
+        run: |
+         APK=$(find webview-build/app/build/outputs/apk/release -name "*.apk" | head -1)
+
+         echo "===== Launcher Resources in APK ====="
+         unzip -l "$APK" | grep ic_launcher || true
+
+         echo ""
+         echo "===== PNG Resources ====="
+         unzip -l "$APK" | grep png || true
+         
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdsnotes-signed-apk
+          path: ${{ steps.artifacts.outputs.apk_path }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdsnotes-signed-aab
+          path: ${{ steps.artifacts.outputs.aab_path }}
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Remove google-services.json
+        if: always()
+        run: rm -f app/google-services.json
+        
+          
+      - name: Verify Final APK
+        run: |
+         APK=$(find webview-build/app/build/outputs/apk/release -name "*.apk" | head -1)
+
+         echo "===== APK ====="
+         ls -lh "$APK"
+
+         echo ""
+         echo "===== SHA256 ====="
+         sha256sum "$APK"
+
+         echo ""
+         echo "===== APK Exists ====="
+         test -f "$APK" && echo "APK OK"
+     
+      - name: Show SHA256 fingerprint (for assetlinks.json)
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          keytool -list -v \
+            -keystore android.keystore \
+            -alias "$KEY_ALIAS" \
+            -storepass "$KEYSTORE_PASSWORD" \
+            | grep -E "SHA256|SHA1" || true
+            
+      - name: Verify assetlinks.json
+        run: |
+         echo "===== assetlinks.json ====="
+
+         if [ -f .well-known/assetlinks.json ]; then
+         cat .well-known/assetlinks.json
+           else
+         echo "assetlinks.json not found"
+         exit 1
+         fi
+      
+      - name: Create GitHub Release (optional)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.release == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-${{ github.run_number }}
+          name: GDS Notes APK build ${{ github.run_number }}
+          files: |
+            ${{ steps.artifacts.outputs.apk_path }}
+            ${{ steps.artifacts.outputs.aab_path }}
+          generate_release_notes: true
+
+      - name: Build Summary
+        run: |
+          echo "================================="
+          echo "Build completed successfully."
+          echo "APK : ${{ steps.artifacts.outputs.apk_path }}"
+          echo "AAB : ${{ steps.artifacts.outputs.aab_path }}"
+          echo "================================="
