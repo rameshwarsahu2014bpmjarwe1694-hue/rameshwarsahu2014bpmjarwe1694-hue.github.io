@@ -387,12 +387,15 @@ async function updateUIBasedOnPayment() {
         return;
     }
 
-        const rawHtml = arr.map(x => {
+        const rawHtml = arr.map((x, idx) => {
 
         const category = String(x.category || "").replace(/'/g, "\\'");
         const subject = String(x.subject || "").replace(/'/g, "\\'");
         const title = String(x.title || "").replace(/'/g, "\\'");
         const fileName = String(x.fileName || "").replace(/'/g, "\\'");
+        const cleanSubKey = String(x.subject || idx).replace(/[^a-zA-Z0-9_-]/g, "_");
+        const btnId = `btn-${cleanSubKey}-${idx}`;
+            
         
         // Button ID create karna taaki baad mein status update ho sake
         const btnId = `btn-${safe(x.subject).replace(/\s+/g, '')}`;
@@ -420,8 +423,9 @@ async function updateUIBasedOnPayment() {
 
                         <button
                 id="${btnId}"
-                data-cat="${x.category}"
-                data-sub="${x.subject}"
+                data-cat="${safe(x.category || "")}"
+                data-sub="${safe(x.subject || "")}"
+
                 onclick="handleSecureAccess(
                     '${category}',
                     '${subject}',
@@ -460,6 +464,8 @@ async function updateUIBasedOnPayment() {
             >
                 Already Paid? Unlock Now
             </button>
+        </div>
+                    
         `;
         }).join('');
     box.innerHTML = window.DOMPurify ? DOMPurify.sanitize(rawHtml, { ADD_ATTR: ['onclick', 'data-cat', 'data-sub'] }) : rawHtml;
