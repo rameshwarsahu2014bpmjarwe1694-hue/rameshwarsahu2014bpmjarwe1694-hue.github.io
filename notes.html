@@ -353,15 +353,17 @@ console.log("[RZP_FRONTEND] Android checkout request sent");
     const firebaseConfig = await configRes.json();
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    auth = getAuth(app);
     window.firebaseAuth = auth;
-    const db = getFirestore(app);
+    db = getFirestore(app);
     } catch (err) {
             console.error("[FIREBASE_INIT]", err);
             setFloatingLoading(false);
+           console.log("Firebase initialized successfully");
         }
+        
     })();
-     console.log("Firebase initialized successfully");
+     
     Object.defineProperty(window, "BACKEND_URL", { value: "https://payment-backend-2-g6go.onrender.com", writable: false, configurable: false });
     
     window.allNotes = [];
