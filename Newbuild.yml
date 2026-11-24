@@ -25,14 +25,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+   - name: Checkout repository
         uses: actions/checkout@v5
-      - name: Create google-services.json
-        env:
-          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: |
-          mkdir -p app
-          printf '%s' "$GOOGLE_SERVICES_JSON" > app/google-services.json
+   - name: Create google-services.json
+     env:
+       GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+     run: |
+       mkdir -p webview-build/app
+       printf '%s' "$GOOGLE_SERVICES_JSON" > webview-build/app/google-services.json
+       
           
 
       - name: Set up JDK 17
@@ -242,10 +243,10 @@ jobs:
 
       
           
-      - name: Verify Gradle Dependencies
+     - name: Verify Gradle Dependencies
         run: |
          grep "core-splashscreen" webview-build/app/build.gradle
-       - name: Generate AndroidManifest.xml
+     - name: Generate AndroidManifest.xml
         run: |
           mkdir -p webview-build/app/src/main
 
@@ -254,6 +255,7 @@ jobs:
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
               <uses-permission android:name="android.permission.INTERNET"/>
+              <uses-permission android:name="android.permission.CAMERA"/>
               <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
               <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
