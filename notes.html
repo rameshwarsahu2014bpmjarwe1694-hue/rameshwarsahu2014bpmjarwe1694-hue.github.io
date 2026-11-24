@@ -276,7 +276,8 @@ console.log("[RZP_FRONTEND] Android checkout request sent");
       } catch (err) {
         alert(err.message || "Restore karne me network ya server error aaya.");
       }
-     );
+      }
+    });
       
   })();
 </script>
@@ -608,8 +609,8 @@ window.autoCheckPayment = async function(txnId) {
 
     if (res.ok && data?.status === "COMPLETED") {
         if (window.pendingTxn) {
-            const safeFileName = `${String(subject || "Notes").replace(/[^a-zA-Z0-9_-]/g, "_")}.pdf`;
             const { category, subject } = window.pendingTxn;
+            const safeFileName = `${String(subject || "Notes").replace(/[^a-zA-Z0-9_-]/g, "_")}.pdf`;
             const secureUrl = `${BACKEND_URL}/get-pdf?year=Notes&post=${encodeURIComponent(category)}&subject=${encodeURIComponent(subject)}`;
 
             const pdfRes = await fetch(secureUrl, {
@@ -683,9 +684,16 @@ const rawTxnId = (urlParams.get("txnId") || "").trim();
 const isValidTxnId = /^[a-zA-Z0-9_-]{6,64}$/.test(rawTxnId);
 
 if (isValidTxnId) {
-    autoCheckPayment(rawTxnId);
     window.history.replaceState({}, document.title, window.location.pathname);
+    const waitForAuthAndCheck = setInterval(() => {
+        if (auth.currentUser) {
+            clearInterval(waitForAuthAndCheck);
+            autoCheckPayment(rawTxnId);
+        }
+    }, 300);
+    setTimeout(() => clearInterval(waitForAuthAndCheck), 10000);
 }
+
     
 </script>
 </body>
