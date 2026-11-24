@@ -27,3 +27,565 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+      - name: Create google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          mkdir -p app
+          printf '%s' "$GOOGLE_SERVICES_JSON" > app/google-services.json
+          
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platforms;android-34 build-tools;34.0.0 platform-tools'
+          cmdline-tools-version: 'latest'
+          
+      - name: Install ImageMagick
+        run: |
+         sudo apt-get update
+         sudo apt-get install -y imagemagick
+
+         convert -version
+         
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses >/dev/null || true
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Decode keystore from secret
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::error::KEYSTORE_BASE64 secret is missing."
+            exit 1
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > android.keystore
+          ls -lh android.keystore
+      - name: Create Native WebView workspace
+        run: |
+          mkdir -p webview-build
+          
+          mkdir -p webview-build/app/libs
+          mkdir -p webview-build/app/src/main/java
+          mkdir -p webview-build/app/src/main/res/layout
+          mkdir -p webview-build/app/src/main/res/values
+          mkdir -p webview-build/app/src/main/res/xml
+          mkdir -p webview-build/gradle/wrapper
+          cp libs/tez-client-api-0.9.4.aar webview-build/app/libs/ 2>/dev/null || true
+          echo "===================================="
+          echo "Native WebView workspace created."
+          find webview-build -type d | sort
+          echo "===================================="
+      - name: Generate Gradle project files
+        run: |
+          cat > webview-build/settings.gradle <<'EOF'
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+
+          rootProject.name = "GDSNotes"
+          include ':app'
+          EOF
+
+          cat > webview-build/build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application' version '8.7.3' apply false
+              id 'com.google.gms.google-services' version '4.4.6' apply false
+          }
+          EOF
+
+          cat > webview-build/gradle.properties <<'EOF'
+          org.gradle.jvmargs=-Xmx4096m -Dfile.encoding=UTF-8
+          android.useAndroidX=true
+          android.enableJetifier=true
+          EOF
+
+          echo "===== settings.gradle ====="
+          cat webview-build/settings.gradle
+
+          echo "===== build.gradle ====="
+          cat webview-build/build.gradle
+
+          echo "===== gradle.properties ====="
+          cat webview-build/gradle.properties
+      - name: Generate app build.gradle
+        run: |
+          cat > webview-build/app/build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application'
+              id 'com.google.gms.google-services'
+          }
+
+          android {
+              namespace 'io.gdsnote.rshtwa'
+              compileSdk 34
+
+              defaultConfig {
+                  applicationId "io.gdsnote.rshtwa"
+                  minSdk 21
+                  targetSdk 34
+                  versionCode 20
+                  versionName "1.8.10.1"
+
+                  testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+              }
+
+              buildTypes {
+                  release {
+                      minifyEnabled true
+                      shrinkResources true
+                      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                  }
+              }
+
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_17
+                  targetCompatibility JavaVersion.VERSION_17
+              }
+
+              buildFeatures {
+              viewBinding true
+              buildConfig true
+           }
+
+          }
+
+          dependencies {
+              implementation fileTree(dir: 'libs', include: ['*.jar'])
+              implementation platform('com.google.firebase:firebase-bom:35.2.0')
+              implementation 'com.google.firebase:firebase-auth'
+              implementation 'com.google.firebase:firebase-firestore'
+              implementation 'androidx.appcompat:appcompat:1.7.0'
+              implementation 'com.google.android.material:material:1.12.0'
+              implementation 'androidx.activity:activity:1.9.1'
+              implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
+              implementation 'androidx.core:core-splashscreen:1.0.1'
+              implementation 'com.razorpay:checkout:1.6.40'
+              
+          }
+          EOF
+
+                    cat > webview-build/app/proguard-rules.pro <<'EOF'
+          # 1. Aggressive Obfuscation & Class Repackaging
+          -repackageclasses ''
+          -allowaccessmodification
+          -optimizationpasses 5
+          -dontusemixedcaseclassnames
+          -dontskipnonpubliclibraryclasses
+          -verbose
+
+          # 2. Strip Line Numbers, Source Files & Debug Logs
+          -assumenosideeffects class android.util.Log {
+              public static boolean isLoggable(java.lang.String, int);
+              public static int v(...);
+              public static int d(...);
+              public static int i(...);
+              public static int w(...);
+              public static int e(...);
+          }
+          -renamesourcefileattribute SourceFile
+          -keepattributes SourceFile,LineNumberTable
+
+          # 3. Protect Critical JS Interface & Bridge
+          -keepclassmembers class * {
+              @android.webkit.JavascriptInterface <methods>;
+          }
+          -keepattributes JavascriptInterface
+          -keepclassmembers class io.gdsnote.rshtwa.MainActivity$AndroidBridge {
+              <methods>;
+          }
+
+          # 4. Splash Screen Keep
+          -keep class androidx.core.splashscreen.** { *; }
+          -dontwarn androidx.core.splashscreen.**
+          # Razorpay SDK ProGuard Rules
+          -keepclassmembers class * {
+           @android.webkit.JavascriptInterface <methods>;
+          }
+          -keepattributes JavascriptInterface
+          -keepattributes *Annotation*
+          -dontwarn com.razorpay.**
+          -keep class com.razorpay.** {*;}
+          -optimizations !method/inlining/*
+          -keepclasseswithmembers class * {
+           public void onPayment*(...);
+          }
+
+          EOF
+
+
+          echo "===== app/build.gradle ====="
+          cat webview-build/app/build.gradle
+
+      
+          
+      - name: Verify Gradle Dependencies
+        run: |
+         grep "core-splashscreen" webview-build/app/build.gradle
+       - name: Generate AndroidManifest.xml
+        run: |
+          mkdir -p webview-build/app/src/main
+
+          cat > webview-build/app/src/main/AndroidManifest.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+              <uses-permission android:name="android.permission.INTERNET"/>
+              <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+              <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+              <application
+                  android:allowBackup="false"
+                  android:extractNativeLibs="false"
+                  android:icon="@mipmap/ic_launcher"
+                  android:roundIcon="@mipmap/ic_launcher_round"
+                  android:label="@string/app_name"
+                  android:supportsRtl="true"
+                  android:usesCleartextTraffic="false"
+                  android:networkSecurityConfig="@xml/network_security_config"
+                  android:theme="@style/Theme.GDSNotes">
+
+                  <activity
+                      android:name="io.gdsnote.rshtwa.MainActivity"
+                      android:exported="true"
+                      android:configChanges="orientation|keyboardHidden|screenSize">
+
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN"/>
+
+                          <category android:name="android.intent.category.LAUNCHER"/>
+                      </intent-filter>
+
+                  </activity>
+
+                  <provider
+                      android:name="androidx.core.content.FileProvider"
+                      android:authorities="${applicationId}.fileprovider"
+                      android:exported="false"
+                      android:grantUriPermissions="true">
+
+                      <meta-data
+                          android:name="android.support.FILE_PROVIDER_PATHS"
+                          android:resource="@xml/file_paths"/>
+
+                  </provider>
+
+              </application>
+
+          </manifest>
+          EOF
+
+          echo "===== AndroidManifest.xml ====="
+          cat webview-build/app/src/main/AndroidManifest.xml
+
+      - name: Verify App Links
+        run: |
+         echo "===== App Links ====="
+         grep -n "autoVerify" webview-build/app/src/main/AndroidManifest.xml
+
+         echo ""
+         grep -n "rsh.gdsnotes.in" webview-build/app/src/main/AndroidManifest.xml
+
+         echo ""
+         grep -n "pathPrefix" webview-build/app/src/main/AndroidManifest.xml
+      - name: Generate MainActivity.java
+        run: |
+          mkdir -p webview-build/app/src/main/java/io/gdsnote/rshtwa
+                cat > webview-build/app/src/main/java/io/gdsnote/rshtwa/MainActivity.java <<'EOF'
+          package io.gdsnote.rshtwa;
+
+          import android.app.Activity;
+          import android.app.DownloadManager;
+          import android.content.Context;
+          import android.content.Intent;
+          import android.net.Uri;
+          import android.os.Bundle;
+          import android.os.Environment;
+          import android.provider.MediaStore;
+          import android.widget.Button;
+          import android.widget.TextView;
+          import android.widget.Toast;
+          import androidx.activity.result.ActivityResultLauncher;
+          import androidx.activity.result.contract.ActivityResultContracts;
+          import androidx.appcompat.app.AppCompatActivity;
+          import androidx.core.content.FileProvider;
+          import androidx.core.splashscreen.SplashScreen;
+          import com.google.firebase.auth.FirebaseAuth;
+          import com.google.firebase.firestore.FirebaseFirestore;
+          import com.razorpay.Checkout;
+          import com.razorpay.PaymentData;
+          import com.razorpay.PaymentResultWithDataListener;
+          import org.json.JSONObject;
+          import java.io.BufferedReader;
+          import java.io.File;
+          import java.io.IOException;
+          import java.io.InputStreamReader;
+          import java.io.OutputStream;
+          import java.net.HttpURLConnection;
+          import java.net.URL;
+          import java.text.SimpleDateFormat;
+          import java.util.Date;
+          import java.util.Locale;
+
+          public class MainActivity extends AppCompatActivity implements PaymentResultWithDataListener {
+
+              private FirebaseAuth auth;
+              private FirebaseFirestore db;
+              private TextView tvStatus;
+              private Uri cameraImageUri;
+
+              private final ActivityResultLauncher<Intent> filePickerLauncher =
+                      registerForActivityResult(
+                              new ActivityResultContracts.StartActivityForResult(),
+                              result -> {
+                                  if (result.getResultCode() == Activity.RESULT_OK) {
+                                      Uri selectedUri = null;
+                                      if (result.getData() != null && result.getData().getData() != null) {
+                                          selectedUri = result.getData().getData();
+                                      } else if (cameraImageUri != null) {
+                                          selectedUri = cameraImageUri;
+                                      }
+
+                                      if (selectedUri != null) {
+                                          updateStatus("Selected: " + selectedUri.toString());
+                                          Toast.makeText(this, "File/Image selected", Toast.LENGTH_SHORT).show();
+                                      }
+                                  }
+                              });
+
+              @Override
+              protected void onCreate(Bundle savedInstanceState) {
+                  SplashScreen.installSplashScreen(this);
+                  super.onCreate(savedInstanceState);
+                  Checkout.preload(getApplicationContext());
+                  setContentView(R.layout.activity_main);
+
+                  auth = FirebaseAuth.getInstance();
+                  db = FirebaseFirestore.getInstance();
+
+                  tvStatus = findViewById(R.id.tvStatus);
+                  Button btnNotes = findViewById(R.id.btnNotes);
+                  Button btnPyq = findViewById(R.id.btnPyq);
+                  Button btnMockTest = findViewById(R.id.btnMockTest);
+                  Button btnDownload = findViewById(R.id.btnDownload);
+                  Button btnPickFile = findViewById(R.id.btnPickFile);
+                  Button btnPay = findViewById(R.id.btnPay);
+
+                  updateStatus("Native Android Ready");
+
+                  btnNotes.setOnClickListener(v -> loadCollectionItems("notes"));
+                  btnPyq.setOnClickListener(v -> loadCollectionItems("pyq"));
+                  btnMockTest.setOnClickListener(v -> loadCollectionItems("mock_tests"));
+
+                  btnDownload.setOnClickListener(v ->
+                          downloadFileNative(
+                                  "https://rsh.gdsnotes.in/sample.pdf",
+                                  "GDS_Notes_Sample.pdf"
+                          )
+                  );
+
+                  btnPickFile.setOnClickListener(v -> openCameraOrFilePicker());
+
+                  btnPay.setOnClickListener(v -> startNativeRazorpayCheckout("notes", "gds", "RSH GDS Notes"));
+              }
+
+              private void updateStatus(String text) {
+                  if (tvStatus != null) {
+                      tvStatus.setText(text);
+                  }
+              }
+
+              private void loadCollectionItems(String collectionName) {
+                  updateStatus("Loading " + collectionName + "...");
+                  db.collection(collectionName)
+                          .get()
+                          .addOnSuccessListener(queryDocumentSnapshots -> {
+                              int count = queryDocumentSnapshots.size();
+                              updateStatus(collectionName + " loaded: " + count + " items");
+                              Toast.makeText(this, collectionName + ": " + count + " items", Toast.LENGTH_SHORT).show();
+                          })
+                          .addOnFailureListener(e -> {
+                              updateStatus("Error loading " + collectionName + ": " + e.getMessage());
+                              Toast.makeText(this, "Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                          });
+              }
+
+              private void downloadFileNative(String fileUrl, String fileName) {
+                  try {
+                      DownloadManager.Request request = new DownloadManager.Request(Uri.parse(fileUrl));
+                      request.setTitle(fileName);
+                      request.setDescription("Downloading file...");
+                      request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                      request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+
+                      DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+                      if (dm != null) {
+                          dm.enqueue(request);
+                          updateStatus("Downloading: " + fileName);
+                          Toast.makeText(this, "Download started", Toast.LENGTH_SHORT).show();
+                      }
+                  } catch (Exception e) {
+                      Toast.makeText(this, "Download error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                  }
+              }
+
+              private void openCameraOrFilePicker() {
+                  try {
+                      File photoFile = createImageFile();
+                      cameraImageUri = FileProvider.getUriForFile(
+                              this,
+                              getPackageName() + ".fileprovider",
+                              photoFile
+                      );
+
+                      Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                      cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri);
+                      cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                      cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                      Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                      galleryIntent.setType("*/*");
+                      galleryIntent.addCategory(Intent.CATEGORY_OPENABLE);
+
+                      Intent chooser = Intent.createChooser(galleryIntent, "Select File or Camera");
+                      chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{cameraIntent});
+                      filePickerLauncher.launch(chooser);
+                  } catch (Exception e) {
+                      Toast.makeText(this, "Unable to open picker: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                  }
+              }
+
+              private File createImageFile() throws IOException {
+                  String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+                  String imageFileName = "IMG_" + timeStamp + "_";
+                  File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                  return File.createTempFile(imageFileName, ".jpg", storageDir);
+              }
+
+              private void startNativeRazorpayCheckout(String category, String subject, String title) {
+                  if (auth.getCurrentUser() == null) {
+                      Toast.makeText(this, "Please login first", Toast.LENGTH_LONG).show();
+                      return;
+                  }
+
+                  updateStatus("Creating order...");
+                  auth.getCurrentUser().getIdToken(true)
+                          .addOnSuccessListener(tokenResult -> {
+                              String idToken = tokenResult.getToken();
+                              String email = auth.getCurrentUser().getEmail() != null ? auth.getCurrentUser().getEmail() : "";
+
+                              new Thread(() -> {
+                                  try {
+                                      URL url = new URL("https://payment-backend-2-g6go.onrender.com/api/create-order");
+                                      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                                      conn.setRequestMethod("POST");
+                                      conn.setRequestProperty("Content-Type", "application/json");
+                                      conn.setRequestProperty("Authorization", "Bearer " + idToken);
+                                      conn.setConnectTimeout(15000);
+                                      conn.setReadTimeout(20000);
+                                      conn.setDoOutput(true);
+
+                                      JSONObject reqJson = new JSONObject();
+                                      reqJson.put("itemType", "notes");
+                                      reqJson.put("category", category);
+                                      reqJson.put("subject", subject);
+                                      reqJson.put("currency", "INR");
+                                      reqJson.put("receipt", "notes_" + System.currentTimeMillis());
+
+                                      try (OutputStream os = conn.getOutputStream()) {
+                                          os.write(reqJson.toString().getBytes("UTF-8"));
+                                      }
+
+                                      int code = conn.getResponseCode();
+                                      BufferedReader reader = new BufferedReader(
+                                              new InputStreamReader(code >= 200 && code < 300 ? conn.getInputStream() : conn.getErrorStream())
+                                      );
+                                      StringBuilder sb = new StringBuilder();
+                                      String line;
+                                      while ((line = reader.readLine()) != null) {
+                                          sb.append(line);
+                                      }
+                                      reader.close();
+                                      conn.disconnect();
+
+                                      if (code < 200 || code >= 300) {
+                                          throw new Exception(sb.toString());
+                                      }
+
+                                      JSONObject orderData = new JSONObject(sb.toString());
+                                      String keyId = orderData.getString("key_id");
+                                      String orderId = orderData.getString("order_id");
+                                      int amount = orderData.getInt("amount");
+                                      String currency = orderData.optString("currency", "INR");
+
+                                      runOnUiThread(() -> {
+                                          try {
+                                              Checkout checkout = new Checkout();
+                                              checkout.setKeyID(keyId);
+
+                                              JSONObject options = new JSONObject();
+                                              options.put("name", "RAMESHWAR SAHU STUDY HUB");
+                                              options.put("description", title);
+                                              options.put("order_id", orderId);
+                                              options.put("amount", amount);
+                                              options.put("currency", currency);
+
+                                              JSONObject prefill = new JSONObject();
+                                              prefill.put("email", email);
+                                              options.put("prefill", prefill);
+
+                                              checkout.open(MainActivity.this, options);
+                                          } catch (Exception e) {
+                                              Toast.makeText(MainActivity.this, "Checkout error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                          }
+                                      });
+                                  } catch (Exception e) {
+                                      runOnUiThread(() -> {
+                                          updateStatus("Order failed");
+                                          Toast.makeText(MainActivity.this, "Order error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                      });
+                                  }
+                              }).start();
+                          })
+                          .addOnFailureListener(e ->
+                                  Toast.makeText(this, "Token error: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                          );
+              }
+
+              @Override
+              public void onPaymentSuccess(String razorpayPaymentID, PaymentData paymentData) {
+                  updateStatus("Payment Success: " + razorpayPaymentID);
+                  Toast.makeText(this, "Payment Successful", Toast.LENGTH_LONG).show();
+              }
+
+              @Override
+              public void onPaymentError(int code, String response, PaymentData paymentData) {
+                  updateStatus("Payment Failed");
+                  Toast.makeText(this, "Payment Failed: " + response, Toast.LENGTH_LONG).show();
+              }
+          }
+          EOF
+          
