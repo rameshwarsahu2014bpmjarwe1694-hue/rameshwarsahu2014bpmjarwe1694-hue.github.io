@@ -340,8 +340,10 @@ console.log("[RZP_FRONTEND] Android checkout request sent");
 
         // YEH RAHA AAPKA RENDER URL
     const BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
-    setFloatingLoading(true, "Connecting server...");
-    
+    let auth, db;
+    (async () => {
+           setFloatingLoading(true, "Connecting server...");
+    try {
     // Backend se Firebase Web Config load karein
     const configRes = await fetch(`${BACKEND_URL}/firebase-config`);
 
@@ -354,8 +356,12 @@ console.log("[RZP_FRONTEND] Android checkout request sent");
     const auth = getAuth(app);
     window.firebaseAuth = auth;
     const db = getFirestore(app);
-    
-    console.log("Firebase initialized successfully");
+    } catch (err) {
+            console.error("[FIREBASE_INIT]", err);
+            setFloatingLoading(false);
+        }
+    })();
+     console.log("Firebase initialized successfully");
     Object.defineProperty(window, "BACKEND_URL", { value: "https://payment-backend-2-g6go.onrender.com", writable: false, configurable: false });
     
     window.allNotes = [];
@@ -367,7 +373,10 @@ window.setFloatingLoading = function (show, text = "Loading...") {
     if (label && text) label.textContent = text;
     loader.classList.toggle("hidden", !show);
 };
-    
+  const authWaiter = setInterval(() => {
+  if (!auth) return;
+  clearInterval(authWaiter);
+            
 onAuthStateChanged(auth, (user) => {
     if (user) {
         window.currentUserEmail = user.email;
@@ -379,6 +388,8 @@ onAuthStateChanged(auth, (user) => {
         window.location.href = "login.html";
     }
 });
+  }, 150);
+    
 
 async function loadNotes(){
     const box = document.getElementById("notesList");
