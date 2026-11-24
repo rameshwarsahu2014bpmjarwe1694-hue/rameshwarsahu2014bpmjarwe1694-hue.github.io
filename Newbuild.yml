@@ -661,24 +661,73 @@ jobs:
           <foreground android:drawable="@drawable/ic_launcher_foreground"/>
           </adaptive-icon>
           EOF
-                    cat > webview-build/app/src/main/res/layout/activity_main.xml <<'EOF'
+          cat > webview-build/app/src/main/res/layout/activity_main.xml <<'EOF'
           <?xml version="1.0" encoding="utf-8"?>
-          <FrameLayout
+          <ScrollView
               xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:background="#FFFFFF">
 
-              <WebView
-                  android:id="@+id/webView"
+              <LinearLayout
                   android:layout_width="match_parent"
-                  android:layout_height="match_parent"/>
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:padding="24dp">
 
-              <include
-                  android:id="@+id/offlineLayout"
-                  layout="@layout/network_error"
-                  android:visibility="gone"/>
+                  <TextView
+                      android:id="@+id/tvStatus"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="RSH GDS Notes"
+                      android:textSize="18sp"
+                      android:textStyle="bold"
+                      android:textColor="#000000"
+                      android:paddingBottom="16dp"/>
 
-          </FrameLayout>
+                  <Button
+                      android:id="@+id/btnNotes"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="Notes"/>
+
+                  <Button
+                      android:id="@+id/btnPyq"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="10dp"
+                      android:text="PYQ"/>
+
+                  <Button
+                      android:id="@+id/btnMockTest"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="10dp"
+                      android:text="Mock Test"/>
+
+                  <Button
+                      android:id="@+id/btnDownload"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="10dp"
+                      android:text="Download PDF"/>
+
+                  <Button
+                      android:id="@+id/btnPickFile"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="10dp"
+                      android:text="Camera / File Picker"/>
+
+                  <Button
+                      android:id="@+id/btnPay"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="10dp"
+                      android:text="Pay Now"/>
+
+              </LinearLayout>
+          </ScrollView>
           EOF
 
           cat > webview-build/app/src/main/res/layout/network_error.xml <<'EOF'
@@ -1008,7 +1057,7 @@ jobs:
           retention-days: 30
       - name: Remove google-services.json
         if: always()
-        run: rm -f app/google-services.json
+        run: rm -f webview-build/app/google-services.json
         
           
       - name: Verify Final APK
