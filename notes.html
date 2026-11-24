@@ -395,10 +395,6 @@ async function updateUIBasedOnPayment() {
         const fileName = String(x.fileName || "").replace(/'/g, "\\'");
         const cleanSubKey = String(x.subject || idx).replace(/[^a-zA-Z0-9_-]/g, "_");
         const btnId = `btn-${cleanSubKey}-${idx}`;
-            
-        
-        // Button ID create karna taaki baad mein status update ho sake
-        const btnId = `btn-${safe(x.subject).replace(/\s+/g, '')}`;
 
         return `
         <div class="note">
