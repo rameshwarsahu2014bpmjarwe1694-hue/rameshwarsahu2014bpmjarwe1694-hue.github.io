@@ -37,7 +37,17 @@
 <script>
   (function () {
     const RZP_BACKEND_URL = "https://payment-backend-2-g6go.onrender.com";
-    if (window.top !== window.self) { window.top.location = window.self.location; } // Clickjacking Lock
+    const getAuthInstance = () =>
+  (typeof auth !== "undefined" && auth) ? auth : (window.firebaseAuth || null);
+      
+    if (window.top !== window.self) {
+  try {
+    window.top.location = window.self.location.href;
+  } catch (_) {
+    window.self.location.replace(window.self.location.href);
+  }
+    }
+      
 
         Object.defineProperty(window, "startRazorpayNotesCheckout", {
       writable: false,
@@ -54,7 +64,7 @@
         window.AndroidBridge &&
         typeof window.AndroidBridge.startRazorpayNotesCheckout === "function"
       ) {
-        const currentAuth = window.firebaseAuth;
+        const currentAuth = getAuthInstance();
         const idToken = currentAuth?.currentUser
           ? await currentAuth.currentUser.getIdToken()
           : "";
@@ -178,12 +188,20 @@ console.log("[RZP_FRONTEND] Android checkout request sent");
             }
           },
 
-          modal: {
+         modal: {
             ondismiss: async function () {
               try {
+                const currentAuth = getAuthInstance();
+                const idToken = currentAuth?.currentUser
+                  ? await currentAuth.currentUser.getIdToken()
+                  : "";
+
                 await fetch(`${RZP_BACKEND_URL}/api/payment-failure`, {
                   method: "POST",
-                  headers: { "Content-Type": "application/json" },
+                  headers: {
+                    "Content-Type": "application/json",
+                    ...(idToken ? { "Authorization": `Bearer ${idToken}` } : {})
+                  },
                   body: JSON.stringify({
                     order_id: createdOrderId,
                     reason: "Checkout modal closed by user"
@@ -192,20 +210,29 @@ console.log("[RZP_FRONTEND] Android checkout request sent");
               } catch (_) {}
               alert("Payment cancel kar diya gaya.");
             }
-          }
-        };
+           }
+            
+        });            
 
         const rzp = new window.Razorpay(options);
 
-        rzp.on("payment.failed", async function (resp) {
+                rzp.on("payment.failed", async function (resp) {
           const errMsg = resp?.error?.description || "Payment fail ho gaya. Kripya dobara koshish karein.";
           const failedOrderId = resp?.error?.metadata?.order_id || createdOrderId;
           const failedPaymentId = resp?.error?.metadata?.payment_id || "";
 
           try {
+            const currentAuth = getAuthInstance();
+            const idToken = currentAuth?.currentUser
+              ? await currentAuth.currentUser.getIdToken()
+              : "";
+
             await fetch(`${RZP_BACKEND_URL}/api/payment-failure`, {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: {
+                "Content-Type": "application/json",
+                ...(idToken ? { "Authorization": `Bearer ${idToken}` } : {})
+              },
               body: JSON.stringify({
                 order_id: failedOrderId,
                 payment_id: failedPaymentId,
@@ -228,21 +255,28 @@ console.log("[RZP_FRONTEND] Android checkout request sent");
       configurable: false,
       value: async function ({ category = "", subject = "", onRestoredSuccess = null } = {}) {
           
-      const currentAuth = (typeof auth !== "undefined" && auth) ? auth : (window.firebaseAuth || null);
-      const idToken = currentAuth?.currentUser ? await currentAuth.currentUser.getIdToken() : "";
-      if (!idToken) return alert("Please login first.");
-      const paymentId = prompt("Apna 12-digit UPI Transaction ID (ya pay_... ID) dalein (Auto-check ke liye khali chhod kar OK dabayein):");
-      if (paymentId === null) return;     
-      const res = await fetch(`${RZP_BACKEND_URL}/api/restore-purchase`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${idToken}` },
-        body: JSON.stringify({ payment_id: paymentId.trim(), category, subject })
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.success) return alert(data.error || "Verification failed.");
-      alert("PDF Unlocked Successfully!");
-      if (typeof onRestoredSuccess === "function") onRestoredSuccess(data);
-    };
+            try {
+        const currentAuth = getAuthInstance();
+        const idToken = currentAuth?.currentUser ? await currentAuth.currentUser.getIdToken() : "";
+        if (!idToken) return alert("Please login first.");
+
+        const paymentId = prompt("Apna 12-digit UPI Transaction ID (ya pay_... ID) dalein (Auto-check ke liye khali chhod kar OK dabayein):");
+        if (paymentId === null) return;
+
+        const res = await fetch(`${RZP_BACKEND_URL}/api/restore-purchase`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${idToken}` },
+          body: JSON.stringify({ payment_id: paymentId.trim(), category, subject })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.success) return alert(data.error || "Verification failed.");
+
+        alert("PDF Unlocked Successfully!");
+        if (typeof onRestoredSuccess === "function") onRestoredSuccess(data);
+      } catch (err) {
+        alert(err.message || "Restore karne me network ya server error aaya.");
+      }
+     );
       
   })();
 </script>
