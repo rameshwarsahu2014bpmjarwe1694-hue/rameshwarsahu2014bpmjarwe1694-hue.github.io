@@ -356,10 +356,11 @@ console.log("[RZP_FRONTEND] Android checkout request sent");
     auth = getAuth(app);
     window.firebaseAuth = auth;
     db = getFirestore(app);
+    console.log("Firebase initialized successfully");
     } catch (err) {
             console.error("[FIREBASE_INIT]", err);
             setFloatingLoading(false);
-           console.log("Firebase initialized successfully");
+           
         }
         
     })();
