@@ -591,10 +591,13 @@ const checkRes = await fetch(secureUrl, {
 });
 
 window.autoCheckPayment = async function(txnId) {
+      try {
+    if (!auth.currentUser || !txnId) return;
+          
     const token = await auth.currentUser.getIdToken();
 
     const res = await fetch(
-        `${BACKEND_URL}/payment-status?txnId=${txnId}&email=${window.currentUserEmail}`,
+        `${BACKEND_URL}/payment-status?txnId=${encodeURIComponent(txnId)}&email=${encodeURIComponent(window.currentUserEmail || "")}`,
         {
             method: "POST",
             headers: { "Authorization": `Bearer ${token}` }
@@ -605,6 +608,7 @@ window.autoCheckPayment = async function(txnId) {
 
     if (res.ok && data?.status === "COMPLETED") {
         if (window.pendingTxn) {
+            const safeFileName = `${String(subject || "Notes").replace(/[^a-zA-Z0-9_-]/g, "_")}.pdf`;
             const { category, subject } = window.pendingTxn;
             const secureUrl = `${BACKEND_URL}/get-pdf?year=Notes&post=${encodeURIComponent(category)}&subject=${encodeURIComponent(subject)}`;
 
@@ -621,7 +625,7 @@ window.autoCheckPayment = async function(txnId) {
                 const a = document.createElement('a');
                 a.style.display = 'none';
                 a.href = url;
-                a.download = `${subject}.pdf`;
+                a.download = safeFileName;
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(url);
@@ -637,8 +641,14 @@ window.autoCheckPayment = async function(txnId) {
         } else if (data?.status === "NOT_FOUND") {
             alert("ट्रांजैक्शन नहीं मिला। कृपया सही Txn ID का उपयोग करें।");
         }
+
     }
-};
+  } catch (err) {
+    console.error("[AUTO_CHECK_PAYMENT]", err);
+    alert("Payment status check karne me samasya aayi.");
+      }
+    
+  };
 
 
 window.safe = function(v){
@@ -658,7 +668,7 @@ window.applyFilter = function(){
 
     renderNotes(
         window.allNotes.filter(x =>
-            x.title.toLowerCase().includes(q) &&
+                        String(x.title || "").toLowerCase().includes(q) &&
             (post === "ALL" || x.category === post) &&
             (sub === "ALL" || x.subject === sub)
         )
@@ -668,13 +678,15 @@ window.applyFilter = function(){
 document.getElementById("searchInput").addEventListener("input", applyFilter);
 document.getElementById("postFilter").addEventListener("change", applyFilter);
 document.getElementById("subFilter").addEventListener("change", applyFilter);
-
 const urlParams = new URLSearchParams(window.location.search);
-const txnId = urlParams.get("txnId");
+const rawTxnId = (urlParams.get("txnId") || "").trim();
+const isValidTxnId = /^[a-zA-Z0-9_-]{6,64}$/.test(rawTxnId);
 
-if (txnId) {
-    autoCheckPayment(txnId);
+if (isValidTxnId) {
+    autoCheckPayment(rawTxnId);
+    window.history.replaceState({}, document.title, window.location.pathname);
 }
+    
 </script>
 </body>
 </html>
